@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="30">
+<title>Spread · situação</title>
+<style>
+  :root { --fundo:#1e1c1d; --cartao:#2a2728; --linha:#3a3637; --texto:#f2f0ee; --apagado:#b3adaa; --amarelo:#f5d20a; --verde:#5fd08a; --laranja:#f0a23c; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:14px 18px; background:var(--fundo); color:var(--texto); font:14px/1.35 system-ui, "Segoe UI", Roboto, sans-serif; }
+  header { display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 16px; margin-bottom:10px; }
+  h1 { margin:0; font-size:22px; letter-spacing:.5px; }
+  h1 b { color:var(--amarelo); }
+  .sub { color:var(--apagado); font-size:13px; }
+  .grade { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:10px; }
+  @media (max-width: 900px) { .grade { grid-template-columns: 1fr; } }
+  section { background:var(--cartao); border-top:3px solid var(--amarelo); border-radius:6px; padding:10px 12px; }
+  h2 { margin:0 0 6px; font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--amarelo); }
+  ul { margin:0; padding:0; list-style:none; }
+  li { padding:3px 0; border-bottom:1px solid var(--linha); }
+  li:last-child { border-bottom:0; }
+  .ok::before { content:"✓ "; color:var(--verde); font-weight:700; }
+  .falta::before { content:"… "; color:var(--laranja); font-weight:700; }
+  .n { font-variant-numeric: tabular-nums; font-weight:700; }
+  .hora { display:inline-block; width:46px; color:var(--amarelo); font-weight:700; font-variant-numeric: tabular-nums; }
+  .destaque { color:var(--amarelo); font-weight:700; }
+  .pequeno { color:var(--apagado); font-size:12px; }
+  .tres { display:grid; grid-template-columns: repeat(3,1fr); gap:6px; margin-top:4px; text-align:center; }
+  .tres div { background:var(--fundo); border-radius:5px; padding:6px 2px; }
+  .tres b { display:block; font-size:18px; }
+  .pos { color:var(--verde); } .neg { color:#ff7b6b; }
+  a { color: var(--amarelo); }
+  details.ia { margin-top:10px; background:var(--cartao); border-radius:6px; padding:8px 12px; }
+  details.ia summary { cursor:pointer; color:var(--amarelo); font-weight:700; font-size:13px; }
+  details.ia button { margin-left:8px; background:var(--fundo); color:var(--texto); border:1px solid var(--linha); border-radius:4px; padding:2px 8px; cursor:pointer; }
+  details.ia pre { white-space:pre-wrap; font:12px/1.45 ui-monospace, Menlo, Consolas, monospace; margin:8px 0 0; max-height:60vh; overflow:auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1><b>SPREAD</b> · Desafio Fortuna Crédito</h1>
+  <span class="sub">situação às 09h15 · entrega até <b>15h30</b> · arquivo <b>spread_final.csv</b> · decisão final do time</span>
+</header>
+
+<div class="grade">
+
+  <section>
+    <h2>Já temos</h2>
+    <ul>
+      <li class="ok">Base restaurada: <span class="n">10.000</span> históricos + <span class="n">2.000</span> novos</li>
+      <li class="ok">Política atual reproduzida: <span class="n">100%</span> das <span class="n">8.737</span> decisões</li>
+      <li class="ok">Birô: <span class="n">2.000</span> de <span class="n">2.000</span> clientes consultados e guardados</li>
+      <li class="ok">Duas análises independentes da base, que batem no essencial</li>
+      <li class="ok">Dois padrões fortes conferidos em duas metades da base</li>
+      <li class="ok">CSV gerado por código e validador das regras do manual</li>
+      <li class="ok">Repositório do time no ar, com prompts e análises</li>
+      <li class="falta">Decidir a política final (5 testes de 15 minutos)</li>
+      <li class="falta">Painel de experimentação e pitch</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>A política atual, exata</h2>
+    <ul>
+      <li>1 · Score do birô <span class="destaque">acima de 600</span></li>
+      <li>2 · Renda declarada <span class="destaque">acima de R$ 2.000</span></li>
+      <li>3 · <span class="destaque">Zero</span> restrição ativa</li>
+      <li>4 · Valor = o menor entre o pedido, R$ 30 mil e o valor cuja parcela cabe em <span class="destaque">30% da renda</span> <span class="pequeno">(reduz o valor, não nega)</span></li>
+    </ul>
+    <h2 style="margin-top:10px">A conta do jogo</h2>
+    <div class="tres">
+      <div><b class="pos">+15%</b>paga em dia</div>
+      <div><b class="pos">+5%</b>paga com atraso</div>
+      <div><b class="neg">−60%</b>não paga</div>
+    </div>
+    <ul style="margin-top:6px">
+      <li>1 calote apaga <span class="destaque">4 bons pagadores</span></li>
+      <li>Nota = nosso resultado <span class="destaque">menos</span> o da política atual</li>
+      <li>Valor alto demais <span class="destaque">aumenta</span> o calote (manual, pág. 12)</li>
+      <li>Pontos: resultado 40 · padrões 25 · pitch 15 · painel 10 · código 10</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Roteiro do dia</h2>
+    <ul>
+      <li><span class="hora">09h00</span>Token no lugar · buscar os 2.000 no birô</li>
+      <li><span class="hora">09h15</span>1º CSV real · pedir validação no canal</li>
+      <li><span class="hora">09h30</span>1ª leva de padrões na mesa</li>
+      <li><span class="hora">10h30</span>Política v1: filtros novos + regra de valor</li>
+      <li><span class="hora">11h00</span>Sessão com a cliente (3 perguntas)</li>
+      <li><span class="hora">12h00</span>Almoço · v1 congelada como reserva</li>
+      <li><span class="hora">13h00</span>Política v2 · painel com as frases do manual</li>
+      <li><span class="hora">14h15</span>Checkpoint: arquivo enviado + mentor</li>
+      <li><span class="hora">14h30</span>Ensaio do pitch, rodando do zero</li>
+      <li><span class="hora">15h00</span>Envio final (30 min de folga)</li>
+      <li><span class="hora">15h45</span>Pitch: 5 min + 2 de perguntas</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Padrões mais fortes</h2>
+    <ul>
+      <li><span class="destaque">Conta apertada:</span> saídas maiores que as entradas em algum dos 3 meses antes → <span class="n">91%</span> não pagam <span class="pequeno">(média 14% · 97 dos novos)</span></li>
+      <li><span class="destaque">Parcela pesada:</span> acima de 28% da renda real → <span class="n">50%</span> <span class="pequeno">(até 28% fica em 8% · 159 dos novos)</span></li>
+      <li><span class="destaque">Saldo negativo em 2+ meses:</span> <span class="n">64%</span> <span class="pequeno">(análise do Juliano)</span></li>
+      <li><span class="destaque">Score não separa</span> bom de mau pagador <span class="pequeno">(nas duas análises)</span></li>
+      <li><span class="destaque">Aposentados</span> pagam melhor: <span class="n">7%</span></li>
+      <li class="pequeno">Dos 1.145 que a política atual aprova nos novos: 34 têm conta apertada e 76 pedem parcela acima de 28% da renda real</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Documentos</h2>
+    <ul>
+      <li><a href="analysis/resumo-abertura.html">Resumo da abertura</a> <span class="pequeno">regras, nota, prazos</span></li>
+      <li><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-banco.md">Análise do banco</a> <span class="pequeno">Juliano</span></li>
+      <li><a href="analysis/analise-enio.html">Complementos e divergências</a> <span class="pequeno">Enio</span></li>
+      <li><a href="analysis/para-discussao.html">Para discussão</a> <span class="pequeno">como não tirar zero · 5 testes</span></li>
+      <li><a href="https://github.com/guibellonia/spread-fortuna-credit/tree/main/analysis">Prompts de contexto e scripts</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Perguntas para a cliente</h2>
+    <ul>
+      <li>1 · Por que o piloto parou, e o que a Fortuna aprendeu com ele?</li>
+      <li>2 · O que ela faz hoje quando o birô não responde?</li>
+      <li>3 · A renda declarada é conferida contra o salário que entra na conta?</li>
+    </ul>
+    <p class="pequeno" style="margin:8px 0 0">Formato do padrão no painel: "Clientes com [característica] têm inadimplência de N%, contra N% da média. Afeta N clientes."</p>
+  </section>
+
+</div>
+
+<details class="ia">
+  <summary>Versão para a sua IA (Markdown: resumo da abertura, análise e pontos para discussão) · <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('md').textContent);this.textContent='copiado'">copiar</button></summary>
+  <pre id="md"># Resumo da abertura (kickoff das 08h) + manual
+
+Resumo do que foi dito na abertura, conferido contra o Manual do Participante. Não é a transcrição: é o que importa para decidir.
+
+## O jogo
+- Fortuna Crédito: crédito pessoal até R$ 30 mil, juros de 3% ao mês, parcela pela tabela Price.
+- Base: 10.000 pedidos históricos (out/24 a set/26, corte em 30/09/2026) e 2.000 pedidos novos (out/26) para decidir.
+- A organização já tem o desfecho dos 2.000 novos, gerado por regras que ela definiu. O desfecho considera o valor aprovado.
+
+## A nota (0 a 100)
+| Critério | Peso | Como |
+|---|---|---|
+| Ganho sobre a política atual | 40 | nosso resultado menos o da atual, nos mesmos 2.000. Maior ganho = nota 10; ganho zero ou negativo = nota zero |
+| Padrões descobertos pela IA | 25 | quantos padrões corretos, bem explicados |
+| Pitch | 15 | 5 minutos com a solução funcionando + 2 de perguntas |
+| Painel de experimentação | 10 | o analista entende sem ler código; a banca avalia conteúdo, não visual |
+| Qualidade técnica | 10 | código organizado, falha do birô tratada, reprodutível, README de um comando |
+
+Resultado por pedido aprovado: pagou em dia **+15%** do valor aprovado · com atraso **+5%** · não pagou **−60%** · negado **0**.
+Um calote custa o lucro de quatro bons pagadores.
+
+## Prazos
+- 14h15: checkpoint (arquivo validado + 10 minutos com mentor).
+- **15h30: code freeze, sem tolerância.** Arquivo `spread_final.csv` na pasta do time no Teams.
+- 15h45: pitches.
+- Validação do formato do CSV: a qualquer hora, quantas vezes quiser, pelo canal.
+
+## O que desclassifica ou zera
+- CSV que a solução não gerou (editado à mão).
+- Arquivo fora do formato: não pontua.
+- Enviado depois das 15h30: não pontua.
+
+## CSV
+`id_pedido,decisao,valor_aprovado` · UTF-8 · vírgula · ponto decimal com 2 casas · `APROVADO` ou `NEGADO` em maiúsculas · `0.00` quando negado · valor nunca acima do pedido nem de 30000 · não abrir no Excel.
+
+## Regras
+- A IA precisa participar da descoberta dos padrões e da decisão. Só escrever código com IA não conta.
+- Só dados do kit (banco e API do birô).
+- A IA sugere, o analista de risco decide.
+- Pode conversar com outros times, sem compartilhar código, consultas ou arquivos.
+
+## Birô
+`GET /v1/bureau/{id_cliente}` com o token do time. Falha com 503 e demora de propósito. A resposta de um cliente não muda. Sem limite de chamadas.
+
+## Pessoas
+- Cliente (representa a Fortuna e desempata): Gabi. Sessões de até 15 minutos por time, pela agenda dela no Teams; dúvidas também por mensagem.
+- Banca: Cadu, Miguel, Bruno e Gabi.
+
+## O pitch precisa mostrar
+Onde a IA entra · os principais padrões · a política e o que mudou depois do checkpoint · como o analista valida o que a IA propõe. A banca pode pedir a decisão de alguns pedidos ao vivo.
+
+
+---
+
+# Análise do Enio · o que complementa e onde diverge
+
+Complementa `analise-banco.md` (Juliano). Não repete o que já está lá: traz só o que medi em separado, o que confirma e onde diverge.
+Cada número tem script em `scripts-enio/` que o refaz.
+
+## O que bate com a versão do time
+- Política atual nos 2.000 novos: **1.145 aprovados, R$ 8.856.449,87**. Reproduz 100% das 8.737 decisões do histórico.
+- A regra dos 30% **reduz o valor**, não nega.
+- **Score não separa** bom de mau pagador.
+- A árvore do Juliano também corta em **28% de parcela sobre a renda**, o mesmo degrau que achei por outro caminho.
+- O grupo dele &quot;sobra mensal até R$ 565&quot; (75%) e o meu &quot;saídas maiores que as entradas&quot; (91%) apontam para os mesmos clientes de conta apertada.
+
+## Como medimos
+- &quot;Não paga&quot; = alguma parcela com 90 dias ou mais de atraso (bate 582 de 582 com `inadimplente`).
+- Base madura: **2.844 aprovados com pedido até 30/09/2025** (12 meses ou mais de contrato).
+  Em dia 66,4% · atraso 20,0% · não paga **13,6%**.
+- Cada padrão foi conferido em duas metades da base, por tempo.
+
+## Dois padrões fortes
+1. **Conta apertada:** saídas maiores que as entradas em algum dos 3 meses antes do pedido.
+   **91% não pagam** (67 contratos maduros; 97% e 86% nas metades). Sem esse sinal: 11,6%.
+   Nos novos: **97 pedidos**. Grupo menor, só cheque especial nos 2 meses antes: 30% (23 maduros; 29 novos).
+2. **Parcela pesada sobre a renda real:** renda real = a menor entre a renda declarada e as entradas médias da conta.
+   Até 28% a inadimplência fica plana em ~8%. Acima de 28%: **50%** (30–32%: 50%; 35–40%: 75%).
+   Nos novos: **159 pedidos** pedem acima de 28%.
+   Consequência: os reduzidos pela atual para 30% da renda declarada não pagam em 55% dos casos.
+
+## Onde discordamos da política do time
+| Ponto | Política do time | O que medimos |
+|---|---|---|
+| Conta apertada | 2+ meses de saldo negativo em 12: pega 38 novos | saídas &gt; entradas em 3 meses: 91% de calote, 97 novos (126 com o grupo do cheque especial) |
+| Teto da parcela | 20% da renda declarada, reduz 575 aprovações | o degrau está em 28% da renda real; entre 20% e 28% o calote não sobe, e cortar valor ali perde 15% por real cortado |
+| Reduzir valor | o modelo escolhe de 100% a 10% | na base, só existem reduzidos a exatamente 30% da renda; abaixo disso é extrapolação |
+| Restrição | nega toda restrição (377) | 1 restrição no piloto: ~13% estimado, abaixo do ponto de equilíbrio de 20%; contratos ainda novos |
+| Maturidade | contratos com 6+ meses | 12+ meses; as safras de 2026 caem a 0% só por falta de tempo |
+
+## Três variantes prontas (todas passam no validador do manual)
+| Política | Aprovados | Valor aprovado | Histórico maduro |
+|---|---|---|---|
+| Atual | 1.145 | R$ 8,86 mi | R$ 251 mil · calote 13,6% |
+| A · nega conta apertada e parcela &gt; 28% da renda real | 1.563 | R$ 10,84 mi | R$ 1,30 mi · calote 8,3% |
+| B · igual à A, mas reduz o valor até caber em 27% da renda real | 1.702 | R$ 12,13 mi | R$ 738 mil se o desfecho não mudar · R$ 1,47 mi se mudar (hipótese) |
+| C · reserva: mantém score &gt; 600 e zero restrição | 1.111 | R$ 8,40 mi | igual à B no histórico |
+
+A e B também aceitam score a partir de 450 e até 1 restrição. Esse grupo (528 a 591 pedidos novos) não tem desfecho maduro na base: é aposta medida só no piloto.
+
+## O que proponho ao time
+1. Trocar o filtro de saldo negativo por &quot;saídas &gt; entradas em algum dos 3 meses antes&quot;.
+2. Medir o teto da parcela pela **renda real, em 28%**, no lugar de 20% da declarada.
+3. Decidir juntos: negar acima de 28% (seguro) ou reduzir até 27% (ganha mais se o manual estiver certo sobre o valor).
+4. Rodar o validador em todo CSV antes de mandar.
+
+## Birô
+2.000 de 2.000 clientes consultados e guardados em disco. 113 erros 503 em 2.113 tentativas (5,3%), todos resolvidos com nova tentativa.
+
+## Não medido
+- Se reduzir o valor muda mesmo o desfecho (o manual diz que sim; a base não tem caso).
+- Como os contratos ainda abertos viram desfecho na nota.
+- O ganho real nos 2.000 novos: só a organização tem.
+
+
+---
+
+# Para discussão: como não tirar zero e onde está o ganho seguro
+
+Revisão por um conselho de outros modelos de IA (5 papéis) sobre as duas políticas, a do time e a minha. Conclusão: não entregar nenhuma das duas crua.
+
+## O risco que pesa 40 pontos
+A nota é o ganho sobre a política atual. **Ganho zero ou negativo = zero.**
+- Copiar a atual dá zero.
+- Aprovar quem a atual nega (score até 600, restrição) troca 0 por −60% se o calote estiver subestimado. É a única direção que pode negativar sozinha.
+- Negar quem a atual aprova e não paga só pode melhorar.
+
+## Fusão conservadora (piso seguro)
+Partir da política atual e **só apertar**:
+1. Negar o grupo &quot;saídas maiores que as entradas nos 3 meses antes&quot; (91% de calote). Dos 1.145 que a atual aprova nos novos, **34** estão nele.
+2. Tratar os que pedem parcela acima de 28% da renda real (50% de calote). Dos 1.145, **76** estão nessa faixa.
+3. Não cortar valor de quem está entre 20% e 28%: ali o calote não sobe.
+
+Depois, em cima do piso, decidir o que afrouxar (score, 1 restrição) com teste na base.
+
+## Cinco testes de 15 minutos que decidem
+| # | Dúvida | Teste |
+|---|---|---|
+| 1 | Cheque especial sozinho (30%, só 23 casos) entra no filtro? | taxa nas duas metades; entra só se passar de 20% nas duas |
+| 2 | 20% da renda declarada é o mesmo degrau que 28% da renda real? | calote por faixa, nas duas medidas, e quantos reais o teto de 20% corta na zona plana |
+| 3 | Reduzir o valor muda o desfecho, ou o risco é da pessoa? | comparar parcela pedida × aprovada; se a pedida prever igual, negar em vez de reduzir |
+| 4 | Dá para aprovar quem tem 1 restrição? | resultado financeiro desse grupo, só com contratos de 12+ meses |
+| 5 | 6 meses de contrato bastam para treinar? | quantos &quot;bons aos 6 meses&quot; viram calote aos 12 |
+
+## Minha posição
+- Os dois filtros (conta apertada e 28% da renda real) entram em qualquer política.
+- Afrouxar score e restrição: só com o teste 4 e 5 na mão.
+- Reduzir valor em vez de negar: o manual sugere que funciona; a base não tem caso que prove.
+</pre>
+</details>
+</body>
+</html>
