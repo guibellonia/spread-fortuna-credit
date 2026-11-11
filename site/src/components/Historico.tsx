@@ -361,8 +361,8 @@ function EstimativaCard({ e }: { e: DadosHistorico["estimativa"] }) {
         Nos {int(e.contratos)} contratos maduros que a Fortuna aprovou ({int(e.calotes)} não pagaram), com o risco
         estimado no valor que ela aprovou por um modelo que não viu o trimestre do pedido. AUC: o quanto o número separa
         quem paga de quem não paga (0,50 é sorteio).
-        {subestima && " O modelo subestima o calote de quem ele vê como mais seguro."} O ganho que ele promete
-        sai {pct(Math.abs(desvio))} {desvio < 0 ? "acima" : "abaixo"} do que aconteceu, nos {int(e.aprovadosProposta)} pedidos
+        {subestima && " O modelo subestima o calote de quem ele vê como mais seguro."} O ganho observado ficou
+        {" "}{pct(Math.abs(desvio))} {desvio < 0 ? "abaixo" : "acima"} do que ele estimou, nos {int(e.aprovadosProposta)} pedidos
         que as duas aprovam, no valor da Proposta.
       </p>
     </ChartCard>
