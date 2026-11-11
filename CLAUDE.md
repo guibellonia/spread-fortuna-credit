@@ -52,6 +52,19 @@ a alternância para tabela.
 
 - Local: PostgreSQL 16+, banco `fortuna`, schema `hackathon` (`docker compose up -d`). Conexão pelo `.env`
   (`PG*`); o `src/` usa `FORTUNA_DSN`.
-- Supabase: `supabase/restaurar_banco.py` restaura o dump e fecha o schema `hackathon` para a Data API
-  (sem acesso para `anon`/`authenticated`, RLS ligado). Nunca exponha `hackathon` na API; o que for exposto
-  vai num schema próprio, com RLS e login. Detalhe em `supabase/README.md`.
+- Supabase (projeto `vjxwagiqgecsscoogxln`, São Paulo): mesmo dump no schema `hackathon`, fechado para a Data
+  API (sem acesso para `anon`/`authenticated`, RLS ligado). Nunca exponha `hackathon` na API.
+- Schema `painel` (exposto, só para membros logados): `decisoes` (publicadas por `supabase/publicar_decisoes.py`),
+  `revisoes` (só acréscimo, carimbadas pelo banco), `bureau_consultas` (cache da Edge Function), `membros`.
+  Mudança de schema = arquivo novo em `supabase/migrations/` aplicado por `supabase/aplicar_migracoes.py`.
+- Edge Function `supabase/functions/bureau`: token do bureau só como segredo da função; CORS só do Pages e do
+  localhost. Publicar de novo: `supabase/configurar_projeto.py` (idempotente).
+- Nenhum segredo passa pelo chat ou por saída de comando: scripts leem do `.env` e não imprimem valores.
+- Detalhe em `supabase/README.md`.
+
+## Revisão (`site/src/app/revisao/`)
+
+Página do painel com login (Supabase Auth, e-mail e senha; cadastro público fechado): fila de pedidos com
+filtros, decisão da IA, bureau ao vivo e registro da revisão. Usa `supabaseUrl` e a chave anon de
+`site/site.config.json` (pública por desenho; o RLS protege). Navegação entre páginas com `<a>` comum: o
+prefetch do `next/link` dá 404 no export estático do Next 16.

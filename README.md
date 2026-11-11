@@ -5,6 +5,8 @@ Regras do desafio: [analysis/resumo-abertura.md](analysis/resumo-abertura.md).
 
 - **Site do time:** https://guibellonia.github.io/spread-fortuna-credit/
 - **Painel:** https://guibellonia.github.io/spread-fortuna-credit/dashboard/
+- **Revisão do analista (login):** https://guibellonia.github.io/spread-fortuna-credit/dashboard/revisao/
+- **Supabase:** https://supabase.com/dashboard/project/vjxwagiqgecsscoogxln
 
 ## Comandos
 
@@ -15,7 +17,8 @@ Regras do desafio: [analysis/resumo-abertura.md](analysis/resumo-abertura.md).
 | Testes | `pytest tests` | `src/README.md` |
 | Atualizar o painel | `.venv/Scripts/python site/scripts/snapshot.py`, depois commit e push | `site/README.md` |
 | Banco local | `docker compose up -d` | `docker-compose.yml` |
-| Banco no Supabase | `.venv/Scripts/python supabase/restaurar_banco.py --leitor` | `supabase/README.md` |
+| Publicar decisões para revisão | `.venv/Scripts/python supabase/publicar_decisoes.py` | `supabase/README.md` |
+| Dar acesso à revisão | `.venv/Scripts/python supabase/configurar_projeto.py --org-id qskawawwcfrqkbwcigzy --usuario <e-mail>` | `supabase/README.md` |
 
 Segredos (token do bureau, senhas e URIs do banco, chaves de LLM) ficam só no `.env` (modelo em `.env.example`) e
 nos segredos do GitHub. Nunca no Git.
@@ -31,7 +34,7 @@ nos segredos do GitHub. Nunca no Git.
 | `prompts/` | prompts de contexto, com autor e versão | Enio Rocha |
 | `api-baseline/` | baseline da API do bureau | Guilherme Bellonia |
 | `site/` | painel Next.js publicado em `/dashboard/` | Guilherme Bellonia |
-| `supabase/` | restauração do banco no Supabase e papel só de leitura | Guilherme Bellonia |
+| `supabase/` | banco compartilhado, schema `painel` da revisão, Edge Function do bureau e scripts de configuração | Guilherme Bellonia |
 | `docker/`, `docker-compose.yml` | banco local | Guilherme Bellonia |
 | `.github/workflows/` | `ci.yml`: segredos, lint, testes, integração com o banco e formato dos CSVs · `static.yml`: publica o site a cada push na `main` | Juliano Ferreira · Guilherme Bellonia |
 | `index.html` | página do time | Enio Rocha |
@@ -83,3 +86,9 @@ python -m venv .venv && .venv/Scripts/python -m pip install -r requirements.txt
 | 10h28 | página e README no padrão visual do painel |
 | 10h36 | CI de validação: segredos, lint, testes, integração com o banco e formato dos CSVs |
 | 10h45 | banco no Supabase (restauração e papel só de leitura) e `CLAUDE.md` com o contexto do projeto |
+| 11h25 | revisão do analista no painel (login, fila, bureau ao vivo, revisão registrada) sobre o Supabase |
+
+## Backlog
+
+- **Simular política pelo painel:** mudar parâmetros e ver o resultado. Precisa rodar o Python do `src/` (modelo)
+  num servidor fora do Supabase; as tools `simular_politica` e `comparar_politicas` já existem.
