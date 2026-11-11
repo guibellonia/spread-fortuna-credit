@@ -29,11 +29,11 @@ form button:disabled{opacity:.5;cursor:wait}
 </style>
 </head>
 <body>
-<header><div><b>Hermes</b> <span>assistente de risco · Fortuna Crédito · time Spread</span></div><button class="link" id="sair" type="button">trocar chave</button></header>
+<header><div><b>Hermes</b> <span>assistente de risco · Fortuna Crédito · time Spread</span></div><button class="link" id="sair" type="button">chave do time</button></header>
 
 <section id="chave">
-  <p>Digite a chave de acesso do Hermes. Ela fica só nesta aba do navegador e some quando você fecha.</p>
-  <form id="fchave"><input id="k" type="password" autocomplete="off" placeholder="chave de acesso" required><button>Entrar</button></form>
+  <p>Opcional: com a chave do time, o chat não tem limite de perguntas. Ela fica só nesta aba do navegador.</p>
+  <form id="fchave"><input id="k" type="password" autocomplete="off" placeholder="chave do time (deixe vazio para sair)"><button>Entrar</button></form>
 </section>
 
 <main id="chat">
@@ -52,8 +52,9 @@ const $ = s => document.querySelector(s);
 const guardar = { get: () => { try { return sessionStorage.getItem("hk") || "" } catch { return "" } },
                   set: v => { try { v ? sessionStorage.setItem("hk", v) : sessionStorage.removeItem("hk") } catch {} } };
 let chave = guardar.get();
-function tela() { const ok = !!chave; $("#chave").style.display = ok ? "none" : "block";
-  $("#chat").style.display = ok ? "block" : "none"; $("#fperg").style.display = ok ? "flex" : "none"; }
+let mostrarChave = false;
+function tela() { $("#chave").style.display = mostrarChave ? "block" : "none";
+  $("#sair").textContent = chave ? "chave do time ✓" : "chave do time"; }
 function esc(t) { return t.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function md(t) { return esc(t).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>"); }
 function bolha(html, cls) { const d = document.createElement("div"); d.className = "msg " + (cls || ""); d.innerHTML = html;
@@ -63,10 +64,12 @@ async function perguntar(texto) {
   bolha(esc(texto), "eu"); $("#p").value = ""; $("#enviar").disabled = true;
   const espera = bolha("<span class='meta'>pensando e consultando as ferramentas…</span>");
   try {
-    const r = await fetch("perguntar", { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Key": chave },
+    const cab = { "Content-Type": "application/json" }; if (chave) cab["X-Access-Key"] = chave;
+    const r = await fetch("perguntar", { method: "POST", headers: cab,
                                         body: JSON.stringify({ pergunta: texto }) });
     const j = await r.json().catch(() => ({}));
-    if (r.status === 401) { chave = ""; guardar.set(""); tela(); espera.remove(); return; }
+    if (r.status === 401) { chave = ""; guardar.set(""); mostrarChave = true; tela();
+      espera.innerHTML = "<span class='erro'>chave inválida ou chat restrito; confira a chave do time</span>"; return; }
     if (!r.ok) { espera.innerHTML = "<span class='erro'>" + esc(j.erro || ("erro " + r.status)) + "</span>"; return; }
     const tools = (j.tools || []).map(t => t.tool);
     espera.innerHTML = md(j.resposta || "(sem resposta)") +
@@ -74,11 +77,12 @@ async function perguntar(texto) {
   } catch (e) { espera.innerHTML = "<span class='erro'>falha de conexão: " + esc(String(e)) + "</span>"; }
   finally { $("#enviar").disabled = false; $("#p").focus(); }
 }
-$("#fchave").addEventListener("submit", e => { e.preventDefault(); chave = $("#k").value.trim(); guardar.set(chave); $("#k").value = ""; tela(); });
+$("#fchave").addEventListener("submit", e => { e.preventDefault(); chave = $("#k").value.trim(); guardar.set(chave);
+  $("#k").value = ""; mostrarChave = false; tela(); });
 $("#fperg").addEventListener("submit", e => { e.preventDefault(); perguntar($("#p").value); });
 $("#p").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); perguntar($("#p").value); } });
 $("#chips").addEventListener("click", e => { if (e.target.tagName === "BUTTON") perguntar(e.target.textContent); });
-$("#sair").addEventListener("click", () => { chave = ""; guardar.set(""); tela(); });
+$("#sair").addEventListener("click", () => { mostrarChave = !mostrarChave; tela(); if (mostrarChave) $("#k").focus(); });
 tela();
 </script>
 </body>

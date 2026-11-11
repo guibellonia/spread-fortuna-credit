@@ -37,8 +37,10 @@ def test_health_reflete_estado(servidor, monkeypatch):
 
 
 @pytest.mark.parametrize("chave", [None, "errada"])
-def test_sem_chave_valida_e_401(servidor, chave):
+def test_sem_chave_valida_e_401(servidor, chave, monkeypatch):
     assert _req(servidor + "/tools", chave=chave)[0] == 401
+    assert _req(servidor + "/tools/decidir_pedido", "POST", {"id_pedido": "P-1"}, chave=chave)[0] == 401
+    monkeypatch.setattr(api, "PUBLICO", False)
     assert _req(servidor + "/perguntar", "POST", {"pergunta": "oi"}, chave=chave)[0] == 401
 
 
@@ -71,3 +73,27 @@ def test_pagina_de_chat_sem_chave_e_sem_segredo(servidor):
         assert r.status == 200 and "text/html" in r.headers["Content-Type"]
         assert "frame-ancestors" in r.headers["Content-Security-Policy"]
     assert "Hermes" in html and "chave-de-teste" not in html
+
+
+def test_modo_publico_responde_sem_chave_e_limita(servidor, monkeypatch):
+    import agente
+    monkeypatch.setitem(api.ESTADO, "status", "ok")
+    monkeypatch.setattr(api, "PUBLICO", True)
+    monkeypatch.setattr(api, "LIMITE", api.Limite(por_ip=2, janela_s=600, por_dia=100))
+    monkeypatch.setattr(agente, "perguntar", lambda p, **k: ("ok", [], [], "groq/x"))
+    assert _req(servidor + "/perguntar", "POST", {"pergunta": "a"})[0] == 200
+    assert _req(servidor + "/perguntar", "POST", {"pergunta": "b"})[0] == 200
+    code, j = _req(servidor + "/perguntar", "POST", {"pergunta": "c"})
+    assert code == 429 and "tente de novo" in j["erro"]
+    # com a chave do time não há limite
+    assert _req(servidor + "/perguntar", "POST", {"pergunta": "d"}, chave="chave-de-teste")[0] == 200
+
+
+def test_limite_diario_e_janela():
+    lim = api.Limite(por_ip=1, janela_s=60, por_dia=2)
+    assert lim.permitir("1.1.1.1", 1000)[0]
+    assert not lim.permitir("1.1.1.1", 1010)[0]          # mesmo IP dentro da janela
+    assert lim.permitir("2.2.2.2", 1010)[0]              # outro IP
+    ok, motivo = lim.permitir("3.3.3.3", 1020)
+    assert not ok and "diário" in motivo                 # teto do dia
+    assert lim.permitir("3.3.3.3", 1020 + 86400)[0]      # dia seguinte zera
