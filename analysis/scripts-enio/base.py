@@ -6,7 +6,11 @@ import numpy as np
 import pandas as pd
 import psycopg
 
-DSN = "host=127.0.0.1 port=5544 dbname=fortuna user=postgres"
+# lê PG* do .env da raiz (antes: DSN fixo na porta 5544, da máquina do Enio)
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+DSN = ""
 CORTE = pd.Timestamp("2026-09-30")
 CACHE = os.path.join(os.path.dirname(__file__), "_base.pkl")
 
@@ -67,6 +71,7 @@ def carregar(refazer=False, tipo="historico"):
     })
     m3 = mov[mov.lag <= 3].groupby("id_cliente")
     f["cheque_3m"] = m3.dias_cheque_especial.sum()
+    f["meses_saida_maior_3m"] = m3.apply(lambda d: (d.total_saidas > d.total_entradas).sum())
     f["ent_3m"] = m3.total_entradas.mean()
     f["sal_3m"] = m3.entradas_salario.mean()
     f["saldo_min_3m"] = m3.saldo_minimo.min()

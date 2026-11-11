@@ -1,0 +1,4 @@
+out/*.pkl
+out/*.joblib
+out/*.log
+out/g06_saida/

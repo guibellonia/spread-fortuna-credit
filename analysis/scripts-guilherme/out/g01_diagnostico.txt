@@ -1,0 +1,260 @@
+
+====================================================================================================
+clientes: 12,000 linhas · 9 colunas
+====================================================================================================
+nulos (%): nenhum
+linhas duplicadas (todas as colunas): 0
+id_cliente únicos: 12,000
+  data_abertura_conta: 2016-10-01 → 2026-09-28
+  data_nascimento: 1945-05-03 → 2006-10-10
+  id_cliente: 12000 valores distintos
+  renda_declarada: 403 valores distintos
+  profissao: 46 valores distintos
+  tipo_vinculo: {'assalariado': 6565, 'autonomo': 2980, 'empresario': 1243, 'aposentado': 1212}
+  data_abertura_conta: 3140 valores distintos
+  genero: {'feminino': 5965, 'masculino': 5909, 'nao_informado': 126}
+  data_nascimento: 8864 valores distintos
+  estado_civil: {'solteiro': 4696, 'casado': 4296, 'uniao_estavel': 1422, 'divorciado': 1211, 'viuvo': 375}
+  cep: 11127 valores distintos
+
+====================================================================================================
+pedidos: 12,000 linhas · 10 colunas
+====================================================================================================
+nulos (%): {'decisao': 16.67, 'valor_aprovado': 49.72, 'politica_aplicada': 16.67, 'situacao_final': 49.72}
+linhas duplicadas (todas as colunas): 0
+id_cliente únicos: 12,000
+id_pedido únicos: 12,000
+  data_pedido: 2024-10-01 → 2026-10-31
+               count   mean   std  min   1%   50%   99%   max
+prazo_meses  12000.0  22.57  9.35  6.0  6.0  24.0  36.0  36.0
+  id_pedido: 12000 valores distintos
+  id_cliente: 12000 valores distintos
+  data_pedido: 761 valores distintos
+  valor_solicitado: 293 valores distintos
+  tipo_base: {'historico': 10000, 'novo': 2000}
+  decisao: {'aprovado': 6033, 'negado': 3967, nan: 2000}
+  valor_aprovado: 521 valores distintos
+  politica_aplicada: {'atual': 8737, nan: 2000, 'piloto': 1263}
+  situacao_final: {nan: 5967, 'em_dia': 3443, 'em_atraso': 1080, 'quitado_em_dia': 718, 'inadimplente': 582, 'quitado_com_atraso': 210}
+
+====================================================================================================
+movimentacao_mensal: 132,156 linhas · 8 colunas
+====================================================================================================
+nulos (%): nenhum
+linhas duplicadas (todas as colunas): 0
+id_cliente únicos: 12,000
+  mes_referencia: 2023-10-01 → 2026-09-01
+                         count  mean   std  min   1%  50%   99%   max
+dias_cheque_especial  132156.0  0.58  3.48  0.0  0.0  0.0  23.0  30.0
+  id_cliente: 12000 valores distintos
+  mes_referencia: 36 valores distintos
+  total_entradas: 121680 valores distintos
+  entradas_salario: 117287 valores distintos
+  total_saidas: 105263 valores distintos
+  saldo_medio: 130402 valores distintos
+  saldo_minimo: 130363 valores distintos
+
+====================================================================================================
+parcelas: 135,792 linhas · 6 colunas
+====================================================================================================
+nulos (%): {'data_pagamento': 58.35, 'dias_atraso': 54.0}
+linhas duplicadas (todas as colunas): 0
+id_pedido únicos: 6,033
+  data_vencimento: 2024-11-01 → 2029-09-28
+  data_pagamento: 2024-10-28 → 2026-09-30
+                   count   mean    std  min   1%   50%    99%    max
+numero_parcela  135792.0  13.69   9.17  1.0  1.0  12.0   36.0   36.0
+dias_atraso      62464.0  21.48  75.60  0.0  0.0   0.0  424.0  677.0
+  id_pedido: 6033 valores distintos
+  data_vencimento: 1648 valores distintos
+  valor_parcela: 1064 valores distintos
+  data_pagamento: 703 valores distintos
+
+====================================================================================================
+bureau: 10,000 linhas · 6 colunas
+====================================================================================================
+nulos (%): nenhum
+linhas duplicadas (todas as colunas): 0
+id_pedido únicos: 10,000
+                          count    mean     std    min     1%    50%    99%     max
+score                   10000.0  718.61  135.19  399.0  457.0  736.0  980.0  1000.0
+restricoes_ativas       10000.0    0.32    0.73    0.0    0.0    0.0    3.0     7.0
+consultas_90_dias       10000.0    1.64    1.98    0.0    0.0    1.0    9.0    10.0
+meses_historico_bureau  10000.0   78.07   56.89    0.0    0.0   75.0  178.0   180.0
+  id_pedido: 10000 valores distintos
+  parcelas_outras_instituicoes: 5939 valores distintos
+
+====================================================================================================
+Integridade referencial e relacionamentos
+====================================================================================================
+                            0
+pedidos_sem_cliente         0
+clientes_sem_pedido         0
+clientes_com_2mais_pedidos  0
+clientes_sem_mov            0
+hist_sem_bureau             0
+bureau_de_novos             0
+aprovados_sem_parcelas      0
+parcelas_de_nao_aprovados   0
+
+====================================================================================================
+Pedidos: base × decisão × política × situação
+====================================================================================================
+    tipo_base   decisao politica_aplicada      situacao_final     n solic_medio aprov_medio          de         ate
+0   historico  aprovado             atual           em_atraso   789        8587        8128  2024-10-01  2026-08-31
+1   historico  aprovado             atual              em_dia  2768        8195        7999  2024-10-01  2026-09-30
+2   historico  aprovado             atual        inadimplente   454       11427        9354  2024-10-02  2026-04-30
+3   historico  aprovado             atual  quitado_com_atraso   203        7528        7225  2024-10-01  2026-01-27
+4   historico  aprovado             atual      quitado_em_dia   693        8241        7888  2024-10-01  2026-03-08
+5   historico  aprovado            piloto           em_atraso   291        8595        8236  2025-10-01  2026-03-31
+6   historico  aprovado            piloto              em_dia   675        7052        6998  2025-10-01  2026-03-31
+7   historico  aprovado            piloto        inadimplente   128       12120       10084  2025-10-01  2026-03-31
+8   historico  aprovado            piloto  quitado_com_atraso     7        7600        6899  2025-10-14  2026-02-11
+9   historico  aprovado            piloto      quitado_em_dia    25        6048        6048  2025-10-13  2026-03-28
+10  historico    negado             atual                 NaN  3830        7560        None  2024-10-01  2026-09-30
+11  historico    negado            piloto                 NaN   137        6683        None  2025-10-02  2026-03-31
+12       novo       NaN               NaN                 NaN  2000        7673        None  2026-10-01  2026-10-31
+politica_aplicada    atual          piloto       
+decisao           aprovado negado aprovado negado
+tri                                              
+2024-10              717.0  584.0      0.0    0.0
+2025-01              708.0  501.0      0.0    0.0
+2025-04              704.0  546.0      0.0    0.0
+2025-07              715.0  526.0      0.0    0.0
+2025-10              351.0  276.0    563.0   64.0
+2026-01              343.0  277.0    563.0   73.0
+2026-04              676.0  582.0      0.0    0.0
+2026-07              693.0  538.0      0.0    0.0
+
+====================================================================================================
+Consistências de valores
+====================================================================================================
+                       0
+aprov_maior_solic      0
+aprov_acima_30k        0
+aprov_reduzido       347
+aprovados           6033
+negado_com_valor       0
+solic_nao_positivo     0
+prazos: {6: 606, 12: 2425, 18: 2362, 24: 3523, 36: 3084}
+
+====================================================================================================
+Parcelas: aderência a Price 3% a.m., quantidade = prazo, pagamento × atraso
+====================================================================================================
+                         0
+contratos             6033
+n_parcelas_dif_prazo     0
+parcela_dif_price        0
+                           0
+parcelas              135792
+vencem_apos_corte      73328
+pagas_apos_corte           0
+vencidas_sem_pagto      5902
+paga_sem_atraso_info       0
+atraso_incoerente      43152
+sem_pagto_com_atraso    5902
+pagas_antecipadas      43152
+max_atraso_pago           60
+max_atraso_aberto        677
+situacao_final × status das parcelas vencidas (contagem de contratos):
+       situacao_final     n venc_media  com_abertas  min_atraso_max  max_atraso_max  algum_atraso
+0           em_atraso  1080       10.2          480               2              87          1080
+1              em_dia  3443        9.4            0               0               0             0
+2        inadimplente   582       12.8          582              94             677           582
+3  quitado_com_atraso   210       12.1            0              15              60           210
+4      quitado_em_dia   718       12.5            0               0               0             0
+
+====================================================================================================
+Movimentação: meses por cliente e posição em relação ao pedido (vazamento?)
+====================================================================================================
+    n_meses  clientes
+0         1       292
+1         2       316
+2         3       119
+3         4       105
+4         5       108
+5         6       135
+6         7       128
+7         8       149
+8         9       125
+9        10       125
+10       11       134
+11       12     10264
+                              0
+min_meses_antes               1
+max_meses_antes              12
+meses_no_ou_apos_mes_pedido   0
+                        0
+salario_maior_entradas  0
+saldo_min_maior_medio   0
+negativos               0
+cheque_sem_saldo_neg    0
+saldo_neg_sem_cheque    0
+meses_sem_salario       0
+meses_sem_entrada       0
+
+====================================================================================================
+Clientes: consistências
+====================================================================================================
+                             0
+renda_nao_positiva           0
+conta_futura                 0
+min                 1945-05-03
+max                 2006-10-10
+min                 2016-10-01
+max                 2026-09-28
+ceps                     11127
+regioes                     10
+prefixos3                   85
+profissoes                  46
+   tipo_base  conta_aberta_apos_pedido idade_media  idade_min  idade_max
+0  historico                         0        44.7         20         80
+1       novo                         0        45.1         20         80
+   tipo_vinculo                profissao  count
+0    aposentado               Aposentado    792
+1    aposentado      Servidor aposentado    420
+2   assalariado  Analista administrativo    642
+3   assalariado    Assistente financeiro    637
+4   assalariado                 Vendedor    627
+5   assalariado   Técnico em informática    612
+6   assalariado                Professor    588
+7   assalariado    Técnico de enfermagem    575
+8   assalariado            Recepcionista    378
+9   assalariado                Atendente    368
+10  assalariado                Motorista    358
+11  assalariado        Operador de caixa    345
+12  assalariado     Auxiliar de produção    336
+13  assalariado  Auxiliar administrativo    324
+14  assalariado                   Médico    144
+15  assalariado  Coordenador de projetos    131
+16  assalariado     Analista de sistemas    130
+17  assalariado                 Advogado    130
+18  assalariado        Gerente comercial    128
+19  assalariado               Engenheiro    112
+20     autonomo                 Designer    288
+21     autonomo      Corretor de imóveis    285
+22     autonomo             Cabeleireiro    280
+23     autonomo                Fotógrafo    271
+24     autonomo         Personal trainer    270
+25     autonomo              Eletricista    243
+26     autonomo                 Manicure    176
+27     autonomo                 Diarista    173
+28     autonomo               Costureira    168
+29     autonomo       Vendedor ambulante    165
+30     autonomo  Motorista de aplicativo    154
+31     autonomo                 Pedreiro    147
+32     autonomo                 Advogado     70
+33     autonomo      Corretor de seguros     64
+34     autonomo                 Dentista     63
+35     autonomo              Programador     57
+36     autonomo                Consultor     55
+37     autonomo                Arquiteto     51
+38   empresario  Proprietário de oficina    249
+39   empresario             Dono de loja    237
+40   empresario      Dono de restaurante    223
+41   empresario              Comerciante    136
+42   empresario       Dono de lanchonete    127
+43   empresario        Microempreendedor    120
+44   empresario   Empresário do comércio     54
+45   empresario       Sócio de indústria     53
+46   empresario   Empresário de serviços     44
