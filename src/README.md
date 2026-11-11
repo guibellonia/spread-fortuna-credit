@@ -12,7 +12,6 @@ export FORTUNA_BUREAU_TOKEN=<token do time>
 cd src
 python gerar_decisoes.py          # treina, consulta o bureau (com retry e cache) e grava saida/spread_final.csv
 python validar_csv.py ../saida/spread_final.csv
-python painel.py                  # gera saida/painel.html
 ```
 
 ## Ferramentas (determinísticas, para o agente chamar)
@@ -26,7 +25,6 @@ python painel.py                  # gera saida/painel.html
 | `backtest.py` | Teste fora da amostra: treina até set/25 e compara as políticas em out/25–mar/26 |
 | `bureau.py` | Cliente do bureau: retry com backoff em 503 e timeout, cache em disco, paralelo |
 | `validar_csv.py` | Confere o CSV nas regras do manual |
-| `painel.py` | Painel de experimentação para o analista de risco |
 
 ## Tools para o agente LLM (`tools.py`)
 
@@ -54,7 +52,7 @@ Teste pela linha de comando:
 
 ```bash
 python tools.py listar
-python tools.py decidir_pedido '{"id_pedido": "P-00070"}'
+python tools.py decidir_pedido '{"id_pedido": "P-NNNNN"}'
 python tools.py medir_grupo '{"condicoes": [{"campo": "r_saidas", "op": ">=", "valor": 0.8}]}'
 ```
 

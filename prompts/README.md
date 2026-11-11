@@ -7,4 +7,4 @@ Versão nova = arquivo novo; a anterior fica, para comparar.
 |---|---|---|
 | `enio-rocha_head-de-credito_v1.md` | Enio Rocha | a IA como ferramenta do head de crédito: motor determinístico para as contas, IA para hipóteses e explicação |
 
-Prompts de contexto anteriores do time: `../analysis/contexto-claude.md` e `../analysis/contexto-gpt.md`.
+Prompts de contexto anteriores do time (arquivados, no histórico do git): `../_arquivo/2026-11-11/analysis/contexto-claude.md` e `../_arquivo/2026-11-11/analysis/contexto-gpt.md`.
