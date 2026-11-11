@@ -56,6 +56,10 @@ URL do papel de leitura: `postgresql://fortuna_leitura.vjxwagiqgecsscoogxln:<SUP
 | `publicar_decisoes.py` | publica o CSV de decisões em `painel.decisoes` |
 | `functions/bureau/` | Edge Function do bureau ao vivo (retry, cache em `painel.bureau_consultas`, CORS só do Pages e do localhost) |
 
+O segredo `FORTUNA_DSN` do GitHub Actions já está cadastrado com a URL do papel de leitura. Em repositório de conta
+pessoal só o dono (`guibellonia`) cadastra ou troca segredos. Para o Hermes, use a mesma URL de leitura no
+`FORTUNA_DSN` do `~/.hermes/config.yaml`; a senha (`SUPABASE_LEITOR_SENHA`) vai por mensagem privada, nunca no chat do time.
+
 ## Segurança
 
 - **Dados crus fora da API:** o schema `hackathon` não é exposto; `anon` e `authenticated` não têm acesso e o RLS está ligado.

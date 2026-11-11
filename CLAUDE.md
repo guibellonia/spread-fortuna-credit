@@ -11,6 +11,9 @@ Regras de Git (pull antes do push, conflitos): `.claude/CLAUDE.md`, importado ab
 - Responda em português do Brasil, de forma direta.
 - Análise ou opinião vai num arquivo do autor; não reescreva o de outra pessoa. O `README.md` é do time.
 - Segredos só no `.env` (fora do Git): token do bureau, senha do banco, `SUPABASE_DB_URL`, chaves de LLM.
+- O repositório é de conta pessoal (`guibellonia`): colaborador só tem escrita, não existe papel de admin, e só o
+  dono cadastra segredos do Actions. Hoje o único segredo é `FORTUNA_DSN` (papel `fortuna_leitura`, só leitura),
+  usado pelo job de integração do `ci.yml`. Chaves do Hermes ficam no `~/.hermes/.env` de quem roda.
 - Todo número com a fonte: o script ou a consulta que o produz.
 
 ## Toda automação nova vai para o repositório
