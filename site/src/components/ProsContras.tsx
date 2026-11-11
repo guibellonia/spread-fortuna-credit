@@ -91,7 +91,7 @@ export function ProsContras({ motor, entrada, padroes, faixa, pontos }: {
   return (
     <div className="pc-box">
       <div className="pc-head">
-        <span className={`selo ${d.aprova ? "is-ok" : "is-no"}`}>{d.aprova ? `IA aprova ${moeda(d.valor)}` : "IA nega"}</span>
+        <span className={`selo ${d.aprova ? "is-ok" : "is-no"}`}>{d.aprova ? `IA sugere aprovar ${moeda(d.valor)}` : "IA sugere negar"}</span>
         {faixa && faixa !== "barreira" && (
           <span className={`faixa is-${faixa}`}>Faixa {faixa[0].toUpperCase() + faixa.slice(1)}{pontos != null ? ` · ${pontos} ponto(s)` : ""}</span>
         )}

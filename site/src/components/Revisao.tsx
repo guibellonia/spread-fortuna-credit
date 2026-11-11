@@ -234,7 +234,7 @@ function Area({ onResumo }: { onResumo: (s: string) => void }) {
         <Detalhe key={sel} id={sel} motor={motor} onSalvo={() => setVersao((v) => v + 1)} />
       ) : (
         <section className="card vazio">
-          <p className="muted">Escolha um pedido na fila para ver a decisão da IA, consultar o bureau e registrar a revisão.</p>
+          <p className="muted">Escolha um pedido na fila para ver a sugestão da IA, consultar o bureau e registrar a revisão.</p>
         </section>
       )}
 
@@ -356,7 +356,7 @@ function Detalhe({ id, motor, onSalvo }: { id: string; motor: Motor | null; onSa
       {motor && entrada && <ProsContras motor={motor} entrada={entrada} padroes={PADROES} faixa={d.faixa} pontos={d.pontos} />}
 
       <div className="det-grid">
-        <Info rotulo={`Decisão da IA${d.politica ? ` (${d.politica})` : ""}`} valor={dec(d.decisao, d.valor_aprovado)} />
+        <Info rotulo={`Sugestão da IA${d.politica ? ` (${d.politica})` : ""}`} valor={dec(d.decisao, d.valor_aprovado)} />
         <Info rotulo="Política atual" valor={dec(d.atual_decisao, d.atual_valor)} />
         <Info rotulo="Regras do time" valor={dec(d.regras_decisao, d.regras_valor)} />
         <Info rotulo="Solicitado" valor={`${moeda(d.valor_solicitado)} · ${d.prazo_meses}x`} />
@@ -490,7 +490,7 @@ function ArquivoEntrega() {
         </button>
       </div>
       <p className="foot">
-        A versão com revisões troca a decisão da IA pela do analista onde houve revisão. Antes de entregar assim,
+        A versão com revisões troca a sugestão da IA pela decisão do analista onde houve revisão. Antes de entregar assim,
         confirme com a organização: arquivo que a solução não gerou desclassifica.
       </p>
       {msg && <p className={msg.ok ? "ok" : "erro"} role="status">{msg.texto}</p>}

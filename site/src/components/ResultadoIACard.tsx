@@ -21,7 +21,7 @@ export function ResultadoIACard({ r }: { r: ResultadoIA }) {
 
   return (
     <ChartCard
-      title="Lucro e prejuízo esperados das decisões da IA"
+      title="Lucro e prejuízo esperados das sugestões da IA"
       area="res"
       actions={
         <div className="seg" role="group" aria-label="Agrupar por">
