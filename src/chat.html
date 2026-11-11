@@ -29,14 +29,15 @@ form button:disabled{opacity:.5;cursor:wait}
 </style>
 </head>
 <body>
-<header><div><b>Hermes</b> <span>assistente de risco · Fortuna Crédito · time Spread</span></div><button class="link" id="sair" type="button">trocar chave</button></header>
+<header><div><b>Hermes</b> <span>assistente de risco · Fortuna Crédito · time Spread</span></div><button class="link" id="sair" type="button">chave do time</button></header>
 
 <section id="chave">
-  <p>Digite a chave de acesso do Hermes. Ela fica só nesta aba do navegador e some quando você fecha.</p>
-  <form id="fchave"><input id="k" type="password" autocomplete="off" placeholder="chave de acesso" required><button>Entrar</button></form>
+  <p>Opcional, para testes: a chave técnica do time substitui o login do painel. Ela fica só nesta aba do navegador.</p>
+  <form id="fchave"><input id="k" type="password" autocomplete="off" placeholder="chave do time (deixe vazio para sair)"><button>Entrar</button></form>
 </section>
 
 <main id="chat">
+  <div class="msg" id="aviso" style="display:none">Para usar o Hermes, entre no painel do time (aba <b>Revisão</b>) com o seu e-mail de membro. O chat usa esse login automaticamente.</div>
   <div class="chips" id="chips">
     <button>Como a política decide?</button>
     <button>Por que o pedido P-00070 foi aprovado?</button>
@@ -52,8 +53,21 @@ const $ = s => document.querySelector(s);
 const guardar = { get: () => { try { return sessionStorage.getItem("hk") || "" } catch { return "" } },
                   set: v => { try { v ? sessionStorage.setItem("hk", v) : sessionStorage.removeItem("hk") } catch {} } };
 let chave = guardar.get();
-function tela() { const ok = !!chave; $("#chave").style.display = ok ? "none" : "block";
-  $("#chat").style.display = ok ? "block" : "none"; $("#fperg").style.display = ok ? "flex" : "none"; }
+// token de login do painel, entregue pelo ícone de chat do site do time (postMessage); só vive na memória
+const SITE = "https://guibellonia.github.io";
+let tokenSite = "";
+window.addEventListener("message", e => {
+  if (e.origin !== SITE || !e.data || e.data.tipo !== "hermes-token") return;
+  tokenSite = typeof e.data.token === "string" ? e.data.token : "";
+  aviso();
+});
+function aviso() {
+  const a = document.getElementById("aviso");
+  a.style.display = (tokenSite || chave) ? "none" : "block";
+}
+let mostrarChave = false;
+function tela() { $("#chave").style.display = mostrarChave ? "block" : "none";
+  $("#sair").textContent = chave ? "chave do time ✓" : "chave do time"; }
 function esc(t) { return t.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function md(t) { return esc(t).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>"); }
 function bolha(html, cls) { const d = document.createElement("div"); d.className = "msg " + (cls || ""); d.innerHTML = html;
@@ -63,10 +77,13 @@ async function perguntar(texto) {
   bolha(esc(texto), "eu"); $("#p").value = ""; $("#enviar").disabled = true;
   const espera = bolha("<span class='meta'>pensando e consultando as ferramentas…</span>");
   try {
-    const r = await fetch("perguntar", { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Key": chave },
+    const cab = { "Content-Type": "application/json" };
+    if (chave) cab["X-Access-Key"] = chave; else if (tokenSite) cab["Authorization"] = "Bearer " + tokenSite;
+    const r = await fetch("perguntar", { method: "POST", headers: cab,
                                         body: JSON.stringify({ pergunta: texto }) });
     const j = await r.json().catch(() => ({}));
-    if (r.status === 401) { chave = ""; guardar.set(""); tela(); espera.remove(); return; }
+    if (r.status === 401) { if (chave) { chave = ""; guardar.set(""); } tela(); aviso();
+      espera.innerHTML = "<span class='erro'>" + esc(j.erro || "acesso negado") + "</span>"; return; }
     if (!r.ok) { espera.innerHTML = "<span class='erro'>" + esc(j.erro || ("erro " + r.status)) + "</span>"; return; }
     const tools = (j.tools || []).map(t => t.tool);
     espera.innerHTML = md(j.resposta || "(sem resposta)") +
@@ -74,12 +91,13 @@ async function perguntar(texto) {
   } catch (e) { espera.innerHTML = "<span class='erro'>falha de conexão: " + esc(String(e)) + "</span>"; }
   finally { $("#enviar").disabled = false; $("#p").focus(); }
 }
-$("#fchave").addEventListener("submit", e => { e.preventDefault(); chave = $("#k").value.trim(); guardar.set(chave); $("#k").value = ""; tela(); });
+$("#fchave").addEventListener("submit", e => { e.preventDefault(); chave = $("#k").value.trim(); guardar.set(chave);
+  $("#k").value = ""; mostrarChave = false; tela(); });
 $("#fperg").addEventListener("submit", e => { e.preventDefault(); perguntar($("#p").value); });
 $("#p").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); perguntar($("#p").value); } });
 $("#chips").addEventListener("click", e => { if (e.target.tagName === "BUTTON") perguntar(e.target.textContent); });
-$("#sair").addEventListener("click", () => { chave = ""; guardar.set(""); tela(); });
-tela();
+$("#sair").addEventListener("click", () => { mostrarChave = !mostrarChave; tela(); if (mostrarChave) $("#k").focus(); });
+tela(); aviso();
 </script>
 </body>
 </html>

@@ -1,12 +1,24 @@
 /* Ícone de chat do Hermes no canto inferior direito; abre o chat (servido pela API no Railway) num painel.
    Um arquivo só, sem dependências. Carregado pelo painel (layout.tsx) e pela página inicial (index.html).
-   A chave de acesso é digitada dentro do chat e nunca aparece neste código. */
+   Acesso: o login de membro do painel (Supabase, o mesmo da aba Revisão) é repassado ao chat por postMessage,
+   só para a origem do Hermes. Nenhuma chave fica neste código. */
 (function () {
   "use strict";
   if (window.__hermesWidget) return;
   window.__hermesWidget = true;
 
   var URL_CHAT = "https://hermes-production-5adc5d67.up.railway.app/";
+  var ORIGEM_CHAT = "https://hermes-production-5adc5d67.up.railway.app";
+
+  function tokenDoPainel() {
+    try {
+      var s = JSON.parse(localStorage.getItem("spread-painel") || "null");
+      var t = s && (s.access_token || (s.currentSession && s.currentSession.access_token));
+      var exp = s && (s.expires_at || (s.currentSession && s.currentSession.expires_at));
+      if (!t || (exp && exp * 1000 < Date.now())) return "";
+      return t;
+    } catch (e) { return ""; }
+  }
 
   var css =
     "#hermes-btn{position:fixed;right:20px;bottom:20px;z-index:2147483000;width:56px;height:56px;border-radius:50%;" +
@@ -47,17 +59,26 @@
     painel.innerHTML = '<div id="hermes-topo"><span>Hermes · assistente de risco</span>' +
       '<button type="button" aria-label="Fechar o chat">×</button></div>';
 
-    var carregado = false;
+    var carregado = false, frame = null;
+    function enviarToken() {
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({ tipo: "hermes-token", token: tokenDoPainel() }, ORIGEM_CHAT);
+      }
+    }
     function abrir(sim) {
       if (sim && !carregado) {
         var f = document.createElement("iframe");
         f.src = URL_CHAT;
         f.title = "Chat do Hermes";
         f.referrerPolicy = "no-referrer";
+        f.addEventListener("load", enviarToken);
         painel.appendChild(f);
+        frame = f;
         carregado = true;
+        setInterval(enviarToken, 60000);  // o painel renova o login sozinho; repassa o token novo
       }
       painel.classList.toggle("aberto", sim);
+      if (sim) enviarToken();
       btn.setAttribute("aria-expanded", sim ? "true" : "false");
       btn.setAttribute("aria-label", sim ? "Fechar o chat do Hermes" : "Abrir o chat do Hermes");
     }
