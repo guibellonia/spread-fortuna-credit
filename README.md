@@ -13,15 +13,30 @@ Regras do desafio: [analysis/resumo-abertura.md](analysis/resumo-abertura.md).
 | Para | Comando | Detalhe |
 |---|---|---|
 | Gerar e validar o CSV | `cd src && python gerar_decisoes.py && python validar_csv.py ../saida/spread_final.csv` | `src/README.md` |
+| Mesclar e comparar as políticas | `cd src && python politica_mescla.py --comparar` | docstring do arquivo |
 | Conversar com o agente | `cd src && python agente.py --chat` | `src/README.md` |
 | Testes | `pytest tests` | `src/README.md` |
-| Atualizar o painel | `.venv/Scripts/python site/scripts/snapshot.py`, depois commit e push | `site/README.md` |
+| Atualizar o painel (depois da mescla) | `.venv/Scripts/python site/scripts/snapshot.py`, depois commit e push | `site/README.md` |
 | Banco local | `docker compose up -d` | `docker-compose.yml` |
 | Publicar decisões para revisão | `.venv/Scripts/python supabase/publicar_decisoes.py` | `supabase/README.md` |
 | Dar acesso à revisão | `.venv/Scripts/python supabase/configurar_projeto.py --org-id qskawawwcfrqkbwcigzy --usuario <e-mail>` | `supabase/README.md` |
 
 Segredos (token do bureau, senhas e URIs do banco, chaves de LLM) ficam só no `.env` (modelo em `.env.example`) e
 nos segredos do GitHub. Nunca no Git.
+
+## O que entregar (manual do participante)
+
+| Item | Onde está | Situação |
+|---|---|---|
+| **Arquivo de decisões** `spread_final.csv` (`id_pedido,decisao,valor_aprovado`, UTF-8, vírgula, ponto com 2 casas, `0.00` no negado) | gerado por `src/gerar_decisoes.py` em `saida/spread_final.csv`; validado por `src/validar_csv.py`; também baixável na página de revisão | 14h15: mandar uma versão no canal do Teams para validação. 15h30: entregar na pasta do time, sem tolerância. Gerado à mão desclassifica |
+| **Painel, parte 1: padrões** ("Clientes com X têm inadimplência de N%, contra M% da média. Afeta K clientes") | [Visão geral do painel](https://guibellonia.github.io/spread-fortuna-credit/dashboard/), cartão "Padrões encontrados" | calculados no histórico maduro pelo `site/scripts/snapshot.py` |
+| **Painel, parte 2: política em passos** (quando aprova, quando nega, como define o valor) | cartão "Política proposta" | passos com quantos pedidos cada um nega |
+| **Pitch** (5 min): onde a IA entra, padrões, política e o que mudou depois do checkpoint, como o analista valida | painel, [revisão](https://guibellonia.github.io/spread-fortuna-credit/dashboard/revisao/) e o agente (`src/agente.py`) | a banca pode pedir a decisão de pedidos ao vivo: busca por id na revisão |
+| **Código** com README de um comando | este repositório | conta a favor em qualidade técnica |
+
+Regras que valem até o fim: a IA participa da descoberta dos padrões e da decisão; só dados do kit; valor nunca
+acima do solicitado nem de R$ 30 mil (mínimo do produto: R$ 500); não compartilhar código, consultas ou arquivos
+com outros times.
 
 ## Pastas
 
@@ -87,6 +102,8 @@ python -m venv .venv && .venv/Scripts/python -m pip install -r requirements.txt
 | 10h36 | CI de validação: segredos, lint, testes, integração com o banco e formato dos CSVs |
 | 10h45 | banco no Supabase (restauração e papel só de leitura) e `CLAUDE.md` com o contexto do projeto |
 | 11h25 | revisão do analista no painel (login, fila, bureau ao vivo, revisão registrada) sobre o Supabase |
+| 12h30 | **proposta = híbrida** (`src/politica.py`): ganha nas 4 medidas (+R$ 385 a 500 mil esperados, +R$ 398 mil fora da amostra) contra regras (+R$ 258 a 337 mil) e a variante que só aperta (+R$ 260 a 324 mil); medido em `src/politica_mescla.py --comparar` |
+| 12h50 | painel com as duas partes do manual (padrões e política em passos) e o comparativo; revisão com regras, política atual e faixa de risco do Daniel por pedido, e exportação do CSV de entrega |
 
 ## Backlog
 

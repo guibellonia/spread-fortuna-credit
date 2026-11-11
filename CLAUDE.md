@@ -22,14 +22,35 @@ Script, workflow do GitHub Actions, job agendado, hook, tool de agente ou migra�
 3. lê segredo só do ambiente;
 4. sobe na hora: commit e push seguindo `.claude/CLAUDE.md`.
 
+## O que o manual pede (PDFs em `material_8h/`, resumo em `analysis/resumo-abertura.md`)
+
+- `spread_final.csv` gerado por código (`src/gerar_decisoes.py`), validado (`src/validar_csv.py`), checkpoint no
+  Teams às 14h15 e entrega até 15h30. CSV editado à mão desclassifica. Valor entre R$ 500 e o menor entre o
+  solicitado e R$ 30 mil.
+- Painel com duas partes obrigatórias: padrões no formato "Clientes com X têm inadimplência de N%, contra M% da
+  média. Afeta K clientes." e a política em passos ordenados, incluindo como define o valor.
+- A IA sugere e o analista decide; a banca pode pedir a decisão de pedidos ao vivo.
+- Não compartilhar código, consultas ou arquivos com outros times.
+
+## Política proposta
+
+- A proposta é a híbrida de `src/politica.py`: barreiras (restrição, conta apertada, parcela acima de 28% da renda
+  real) e o modelo que escolhe o valor de maior ganho esperado com risco até 17,5%. `src/politica_mescla.py --comparar`
+  mostra que ela rende mais que as regras e que a variante que só aperta, nos três avaliadores e fora da amostra.
+- `src/politica_mescla.py` grava `saida/decisoes_mescla.csv`: a proposta (idêntica ao `saida/spread_final.csv`), as
+  decisões da atual e das regras, e a faixa de risco do Daniel. É a fonte do painel e da revisão.
+- Ordem para atualizar tudo: `gerar_decisoes.py` → `politica_mescla.py` → `supabase/publicar_decisoes.py` →
+  `site/scripts/snapshot.py` → commit e push.
+
 ## Painel (`site/`)
 
 - Next.js 16 (App Router) com export estático, no GitHub Pages em `/dashboard/`
   (https://guibellonia.github.io/spread-fortuna-credit/dashboard/). A página do time (`index.html`) fica na raiz.
 - Dados em `site/src/data/dashboard.json`, gerados por `site/scripts/snapshot.py` (banco + API do bureau).
   Atualizar: `.venv/Scripts/python site/scripts/snapshot.py`, commit do JSON e push.
-- Políticas do funil: `politicas()` em `site/scripts/snapshot.py`, cada uma é uma lista ordenada de passos.
-  A política atual é conferida contra o histórico a cada execução (hoje bate 100%).
+- Políticas do seletor: Atual (reprodução própria, conferida contra o histórico: bate 100%), Regras do time e
+  Proposta, as duas últimas lidas de `saida/decisoes_mescla.csv`. Padrões (parte 1) são calculados no histórico
+  maduro (12+ meses); a política em passos (parte 2) e o comparativo saem do mesmo snapshot.
 - Bureau: `site/scripts/bureau_client.py` (timeout 10 s, até 6 tentativas com espera crescente e jitter,
   10 em paralelo, 401 interrompe, cache em `data/cache/bureau/`, registro em `data/cache/bureau_chamadas.jsonl`).
 - Deploy: `.github/workflows/static.yml` a cada push na `main` (build, checagem de ids, raiz + `/dashboard/`).
