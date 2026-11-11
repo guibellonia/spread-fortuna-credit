@@ -52,12 +52,12 @@ def perguntar(pergunta, historico=None, fixo=None, interativo=False, log=print, 
     """Roda o loop de tool calling. Devolve (resposta, historico, chamadas, provedor/modelo)."""
     msgs = historico or [{"role": "system", "content": SISTEMA}]
     msgs.append({"role": "user", "content": pergunta})
-    chamadas, quem = [], None
+    chamadas, quem, preferido = [], None, None
     for _ in range(MAX_RODADAS):
-        msg, prov, modelo = llm.chamar(msgs, tools=TOOLS, fixo=fixo, log=log)
+        msg, prov, modelo = llm.chamar(msgs, tools=TOOLS, fixo=fixo, preferido=preferido, log=log)
         quem = f"{prov}/{modelo}"
-        if fixo is None:  # depois que um provedor respondeu, a conversa segue nele (mantém o contexto coerente)
-            fixo = next(((c, m) for c, m in llm.candidatos() if c["nome"] == prov and m == modelo), None)
+        if fixo is None:  # a conversa prefere o provedor que respondeu, mas cai para os outros se ele falhar
+            preferido = next(((c, m) for c, m in llm.candidatos() if c["nome"] == prov and m == modelo), None)
         tcs = msg.get("tool_calls") or []
         msgs.append({"role": "assistant", "content": msg.get("content") or "", **({"tool_calls": tcs} if tcs else {})})
         if not tcs:
@@ -75,7 +75,7 @@ def perguntar(pergunta, historico=None, fixo=None, interativo=False, log=print, 
                         "resultado": json.dumps(res, ensure_ascii=False)[:2000]})
             log(f"[tool] {nome}({json.dumps(args, ensure_ascii=False)[:120]})")
             msgs.append({"role": "tool", "tool_call_id": tc.get("id", nome), "name": nome,
-                         "content": json.dumps(res, ensure_ascii=False)[:12000]})
+                         "content": json.dumps(res, ensure_ascii=False)[:6000]})
     return "Limite de rodadas atingido sem resposta final.", msgs, chamadas, quem
 
 

@@ -227,3 +227,10 @@ def test_llm_sem_provedor(monkeypatch):
     monkeypatch.setenv("LLM_ORDEM", "zai")
     with pytest.raises(llm.SemProvedor):
         llm.chamar([{"role": "user", "content": "oi"}], log=lambda *a: None)
+
+
+@pytest.mark.parametrize("bruto", ['gsk_abc123', ' gsk_abc123\n', '"gsk_abc123"', "'gsk_abc123'", 'groq gsk_abc123',
+                                   'Bearer gsk_abc123', 'z ai gsk_abc123'])
+def test_limpar_chave_tolera_erros_de_colagem(bruto):
+    import llm
+    assert llm.limpar_chave(bruto) == "gsk_abc123"

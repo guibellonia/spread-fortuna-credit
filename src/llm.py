@@ -5,7 +5,7 @@ Duas camadas de fallback:
   2. Este módulo (rede de segurança): se o próprio OmniRoute cair, chama os provedores direto, na ordem abaixo.
 
 Ordem padrão (o primeiro com chave configurada e respondendo vence):
-  omniroute (Hermes) -> zai (GLM) -> nvidia (NIM) -> google (Gemini) -> openrouter (modelos :free) -> groq -> ollama (local)
+  omniroute (Hermes) -> groq -> google (Gemini) -> openrouter (free) -> nvidia (NIM) -> zai (GLM) -> ollama (local)
 
 Configuração só por variável de ambiente (nunca no código, nunca no git):
   <PROVEDOR>_API_KEY      chave (ollama não precisa)
@@ -22,20 +22,34 @@ import time
 
 import requests
 
-PROVEDORES = {
+try:  # lê o .env da raiz do repositório (fora do Git), sem sobrescrever variáveis já definidas
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"), override=False)
+except ImportError:
+    pass
+
+PROVEDORES = {  # ids testados em 11/11/2026 com chamada de ferramenta; a ordem é a de preferência
     "omniroute": {"base_url": "", "models": ["hermes"], "precisa_chave": True},
-    "zai": {"base_url": "https://api.z.ai/api/paas/v4", "models": ["glm-4.5-flash", "glm-4.6"], "precisa_chave": True},
-    "nvidia": {"base_url": "https://integrate.api.nvidia.com/v1",
-               "models": ["nvidia/llama-3.3-nemotron-super-49b-v1", "meta/llama-3.3-70b-instruct"], "precisa_chave": True},
+    "groq": {"base_url": "https://api.groq.com/openai/v1", "models": ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"],
+             "precisa_chave": True},
     "google": {"base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
-               "models": ["gemini-2.5-flash", "gemini-2.0-flash"], "precisa_chave": True},
-    "openrouter": {"base_url": "https://openrouter.ai/api/v1",
-                   "models": ["nousresearch/hermes-3-llama-3.1-405b:free", "meta-llama/llama-3.3-70b-instruct:free",
-                              "deepseek/deepseek-chat-v3-0324:free"], "precisa_chave": True},
-    "groq": {"base_url": "https://api.groq.com/openai/v1", "models": ["llama-3.3-70b-versatile"], "precisa_chave": True},
+               "models": ["gemini-3.5-flash", "gemini-3.5-flash-lite"], "precisa_chave": True},
+    "openrouter": {"base_url": "https://openrouter.ai/api/v1", "models": ["openrouter/free"], "precisa_chave": True},
+    "nvidia": {"base_url": "https://integrate.api.nvidia.com/v1", "models": ["minimaxai/minimax-m3.1-flash"],
+               "precisa_chave": True},
+    "zai": {"base_url": "https://api.z.ai/api/paas/v4", "models": ["glm-4.5-flash"], "precisa_chave": True},
     "ollama": {"base_url": "http://localhost:11434/v1", "models": ["llama3.1"], "precisa_chave": False},
 }
 ORDEM_PADRAO = list(PROVEDORES)
+
+
+def limpar_chave(v: str) -> str:
+    """Tolera os erros comuns ao colar chave: aspas, espaços, quebra de linha, 'Bearer ' e rótulo antes da chave
+    (ex.: "groq gsk_..."). Fica com o último pedaço sem espaço."""
+    v = (v or "").strip().strip('"').strip("'").strip()
+    if v.lower().startswith("bearer "):
+        v = v[7:]
+    return v.split()[-1] if v.split() else ""
 
 
 class SemProvedor(Exception):
@@ -48,7 +62,7 @@ def _cfg(nome):
     return {
         "nome": nome,
         "base_url": (os.environ.get(f"{pre}_BASE_URL") or base["base_url"]).rstrip("/"),
-        "chave": os.environ.get(f"{pre}_API_KEY", ""),
+        "chave": limpar_chave(os.environ.get(f"{pre}_API_KEY", "")),
         "models": [m.strip() for m in os.environ.get(f"{pre}_MODELS", "").split(",") if m.strip()] or base["models"],
         "precisa_chave": base["precisa_chave"],
     }
@@ -90,10 +104,15 @@ def chamar_um(cfg, modelo, mensagens, tools=None, temperatura=0.2, timeout=None)
     return msg
 
 
-def chamar(mensagens, tools=None, ordem=None, fixo=None, log=print, **kw):
-    """Tenta cada (provedor, modelo) até um responder. `fixo` = (cfg, modelo) para não fazer fallback.
-    Devolve (mensagem, provedor, modelo)."""
-    lista = [fixo] if fixo else candidatos(ordem)
+def chamar(mensagens, tools=None, ordem=None, fixo=None, preferido=None, log=print, **kw):
+    """Tenta cada (provedor, modelo) até um responder. `fixo` = (cfg, modelo) sem fallback (usado no conselho);
+    `preferido` = tenta primeiro esse e, se falhar, segue a ordem normal. Devolve (mensagem, provedor, modelo)."""
+    if fixo:
+        lista = [fixo]
+    else:
+        lista = candidatos(ordem)
+        if preferido:
+            lista = [preferido] + [c for c in lista if (c[0]["nome"], c[1]) != (preferido[0]["nome"], preferido[1])]
     if not lista:
         raise SemProvedor("nenhum provedor configurado: defina ao menos uma <PROVEDOR>_API_KEY (ver src/llm.py)")
     erros = []
