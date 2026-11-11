@@ -16,6 +16,8 @@ Hackathon GOW 2026 · 11/11/2026 · entrega do `spread_final.csv` até **15h30**
 
 | Pasta | O que tem |
 |---|---|
+| `src/` | **o pipeline de decisão** (Juliano): features, padrões, modelo corrigido para censura, política G, bureau com retry, gerador e validador do CSV, painel. Comando em `src/README.md` |
+| `validacao/` | validação independente com modelo de sobrevivência e `tool_risco` para o agente (Juliano) |
 | `analysis/` | análises da base (uma por autor), padrões, censura, pendências, resumo e transcrição da abertura |
 | `prompts/` | prompts de contexto do time, com autor e versão |
 | `api-baseline/` | baseline da API do bureau |
@@ -43,3 +45,5 @@ O site atualiza sozinho a cada push na `main`. Para um documento novo aparecer c
 | 08h50 | Python; repositório único; prompts versionados |
 | 09h00 | cada um roda a própria análise; depois juntamos num prompt único |
 | 09h00 | duas frentes: back-end (inteligência e automação) e front-end (painel) |
+| 09h57 | pipeline de decisão no repositório (`src/`), com política G e validação independente |
+| 10h00 | página reduzida a 3 abas: Resumo, Padrões e censura, Documentos |
