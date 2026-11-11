@@ -1,43 +1,86 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# Publica no GitHub Pages: a página do time (raiz do repositório) e o painel Next.js em /dashboard/.
+# O painel é estático. Os dados vêm de site/src/data/dashboard.json, gerado localmente por
+# site/scripts/snapshot.py (banco + API do bureau). Este workflow não usa nenhum segredo.
+name: Publica no GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Um deploy por vez; não cancela o que já está em andamento.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Pages
+        with:
+          persist-credentials: false
+
+      - name: Configura o Pages
+        id: pages
         uses: actions/configure-pages@v5
-      - name: Upload artifact
+
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Instala dependências (lockfile exato, sem scripts de instalação)
+        working-directory: site
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Barra dependência de produção com falha crítica conhecida
+        working-directory: site
+        run: npm audit --omit=dev --audit-level=critical
+
+      - name: Build do painel
+        working-directory: site
+        env:
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}/dashboard
+          NEXT_TELEMETRY_DISABLED: "1"
+        run: npm run build
+
+      - name: Confere que nenhum id de cliente ou pedido vai para o site
+        run: |
+          if grep -rIEq '\b[CP]-[0-9]{3,}\b' site/src/data/dashboard.json site/out; then
+            echo "::error::o painel contém id de cliente ou pedido; gere de novo o dashboard.json"
+            exit 1
+          fi
+
+      - name: Monta o site (arquivos versionados na raiz + painel em /dashboard)
+        run: |
+          mkdir _site
+          git archive --format=tar HEAD | tar -x -C _site
+          rm -rf _site/site _site/.github
+          cp -r site/out _site/dashboard
+
+      - name: Envia o artefato
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
-      - name: Deploy to GitHub Pages
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}dashboard/
+    steps:
+      - name: Publica no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

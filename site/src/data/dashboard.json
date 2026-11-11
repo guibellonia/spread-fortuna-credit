@@ -1,0 +1,559 @@
+{
+ "geradoEm": "2026-11-11T09:51",
+ "corte": "2026-09-30",
+ "reproducaoAtual": 1.0,
+ "pedidos": {
+  "total": 2000,
+  "periodo": [
+   "2026-10-01",
+   "2026-10-31"
+  ],
+  "porDiaSemana": [
+   {
+    "dia": "Seg",
+    "n": 272
+   },
+   {
+    "dia": "Ter",
+    "n": 264
+   },
+   {
+    "dia": "Qua",
+    "n": 269
+   },
+   {
+    "dia": "Qui",
+    "n": 318
+   },
+   {
+    "dia": "Sex",
+    "n": 293
+   },
+   {
+    "dia": "Sáb",
+    "n": 310
+   },
+   {
+    "dia": "Dom",
+    "n": 274
+   }
+  ],
+  "mediaMensalHistorico": 417,
+  "valorSolicitado": 15346800.0,
+  "valorMediano": 5700.0,
+  "comContaApertada": 126,
+  "parcelaAcima28Real": 171
+ },
+ "politicas": [
+  {
+   "id": "atual",
+   "nome": "Atual",
+   "funil": [
+    {
+     "rotulo": "Pedidos",
+     "restantes": 2000,
+     "regra": null
+    },
+    {
+     "rotulo": "Score acima de 600",
+     "restantes": 1555,
+     "regra": "Score acima de 600"
+    },
+    {
+     "rotulo": "Renda acima de R$ 2 mil",
+     "restantes": 1423,
+     "regra": "Renda acima de R$ 2 mil"
+    },
+    {
+     "rotulo": "Sem restrição ativa",
+     "restantes": 1145,
+     "regra": "Sem restrição ativa"
+    }
+   ],
+   "aprovados": 1145,
+   "volume": 8856449.87,
+   "reduzidos": 61,
+   "porVinculo": [
+    {
+     "vinculo": "assalariado",
+     "volume": 5010949.12,
+     "pedidos": 638
+    },
+    {
+     "vinculo": "autonomo",
+     "volume": 2259017.26,
+     "pedidos": 289
+    },
+    {
+     "vinculo": "aposentado",
+     "volume": 861007.64,
+     "pedidos": 116
+    },
+    {
+     "vinculo": "empresario",
+     "volume": 725475.85,
+     "pedidos": 102
+    }
+   ]
+  },
+  {
+   "id": "piso",
+   "nome": "Piso seguro",
+   "funil": [
+    {
+     "rotulo": "Pedidos",
+     "restantes": 2000,
+     "regra": null
+    },
+    {
+     "rotulo": "Score acima de 600",
+     "restantes": 1555,
+     "regra": "Score acima de 600"
+    },
+    {
+     "rotulo": "Renda acima de R$ 2 mil",
+     "restantes": 1423,
+     "regra": "Renda acima de R$ 2 mil"
+    },
+    {
+     "rotulo": "Sem restrição ativa",
+     "restantes": 1145,
+     "regra": "Sem restrição ativa"
+    },
+    {
+     "rotulo": "Conta sem aperto nos 3 meses",
+     "restantes": 1111,
+     "regra": "Conta sem aperto nos 3 meses"
+    },
+    {
+     "rotulo": "Parcela até 28% da renda real",
+     "restantes": 1035,
+     "regra": "Parcela até 28% da renda real"
+    }
+   ],
+   "aprovados": 1035,
+   "volume": 7638200.0,
+   "reduzidos": 0,
+   "porVinculo": [
+    {
+     "vinculo": "assalariado",
+     "volume": 4321100.0,
+     "pedidos": 578
+    },
+    {
+     "vinculo": "autonomo",
+     "volume": 1970400.0,
+     "pedidos": 263
+    },
+    {
+     "vinculo": "aposentado",
+     "volume": 713400.0,
+     "pedidos": 102
+    },
+    {
+     "vinculo": "empresario",
+     "volume": 633300.0,
+     "pedidos": 92
+    }
+   ],
+   "vsAtual": {
+    "aprovaAMais": 0,
+    "volumeAMais": 0.0,
+    "negaAMais": 110,
+    "volumeAMenos": 1218249.87,
+    "valorMudou": 0,
+    "iguais": 1890
+   }
+  },
+  {
+   "id": "ampliada",
+   "nome": "Ampliada",
+   "funil": [
+    {
+     "rotulo": "Pedidos",
+     "restantes": 2000,
+     "regra": null
+    },
+    {
+     "rotulo": "Score a partir de 450",
+     "restantes": 1999,
+     "regra": "Score a partir de 450"
+    },
+    {
+     "rotulo": "Renda acima de R$ 2 mil",
+     "restantes": 1831,
+     "regra": "Renda acima de R$ 2 mil"
+    },
+    {
+     "rotulo": "Até 1 restrição",
+     "restantes": 1669,
+     "regra": "Até 1 restrição"
+    },
+    {
+     "rotulo": "Conta sem aperto nos 3 meses",
+     "restantes": 1581,
+     "regra": "Conta sem aperto nos 3 meses"
+    },
+    {
+     "rotulo": "Parcela até 28% da renda real",
+     "restantes": 1465,
+     "regra": "Parcela até 28% da renda real"
+    }
+   ],
+   "aprovados": 1465,
+   "volume": 10598600.0,
+   "reduzidos": 0,
+   "porVinculo": [
+    {
+     "vinculo": "assalariado",
+     "volume": 5729700.0,
+     "pedidos": 789
+    },
+    {
+     "vinculo": "autonomo",
+     "volume": 2815700.0,
+     "pedidos": 383
+    },
+    {
+     "vinculo": "empresario",
+     "volume": 1058000.0,
+     "pedidos": 145
+    },
+    {
+     "vinculo": "aposentado",
+     "volume": 995200.0,
+     "pedidos": 148
+    }
+   ],
+   "vsAtual": {
+    "aprovaAMais": 430,
+    "volumeAMais": 2960400.0,
+    "negaAMais": 110,
+    "volumeAMenos": 1218249.87,
+    "valorMudou": 0,
+    "iguais": 1460
+   }
+  }
+ ],
+ "safras": {
+  "mediaMadura": 0.1364,
+  "contratosMaduros": 2844,
+  "meses": [
+   {
+    "mes": "2024-10",
+    "aprovados": 248,
+    "inadimplentes": 39,
+    "taxa": 0.1573,
+    "maduro": true
+   },
+   {
+    "mes": "2024-11",
+    "aprovados": 228,
+    "inadimplentes": 30,
+    "taxa": 0.1316,
+    "maduro": true
+   },
+   {
+    "mes": "2024-12",
+    "aprovados": 241,
+    "inadimplentes": 40,
+    "taxa": 0.166,
+    "maduro": true
+   },
+   {
+    "mes": "2025-01",
+    "aprovados": 256,
+    "inadimplentes": 47,
+    "taxa": 0.1836,
+    "maduro": true
+   },
+   {
+    "mes": "2025-02",
+    "aprovados": 212,
+    "inadimplentes": 27,
+    "taxa": 0.1274,
+    "maduro": true
+   },
+   {
+    "mes": "2025-03",
+    "aprovados": 240,
+    "inadimplentes": 36,
+    "taxa": 0.15,
+    "maduro": true
+   },
+   {
+    "mes": "2025-04",
+    "aprovados": 231,
+    "inadimplentes": 36,
+    "taxa": 0.1558,
+    "maduro": true
+   },
+   {
+    "mes": "2025-05",
+    "aprovados": 231,
+    "inadimplentes": 30,
+    "taxa": 0.1299,
+    "maduro": true
+   },
+   {
+    "mes": "2025-06",
+    "aprovados": 242,
+    "inadimplentes": 29,
+    "taxa": 0.1198,
+    "maduro": true
+   },
+   {
+    "mes": "2025-07",
+    "aprovados": 267,
+    "inadimplentes": 31,
+    "taxa": 0.1161,
+    "maduro": true
+   },
+   {
+    "mes": "2025-08",
+    "aprovados": 228,
+    "inadimplentes": 23,
+    "taxa": 0.1009,
+    "maduro": true
+   },
+   {
+    "mes": "2025-09",
+    "aprovados": 220,
+    "inadimplentes": 20,
+    "taxa": 0.0909,
+    "maduro": true
+   },
+   {
+    "mes": "2025-10",
+    "aprovados": 307,
+    "inadimplentes": 38,
+    "taxa": 0.1238,
+    "maduro": false
+   },
+   {
+    "mes": "2025-11",
+    "aprovados": 301,
+    "inadimplentes": 43,
+    "taxa": 0.1429,
+    "maduro": false
+   },
+   {
+    "mes": "2025-12",
+    "aprovados": 306,
+    "inadimplentes": 37,
+    "taxa": 0.1209,
+    "maduro": false
+   },
+   {
+    "mes": "2026-01",
+    "aprovados": 301,
+    "inadimplentes": 21,
+    "taxa": 0.0698,
+    "maduro": false
+   },
+   {
+    "mes": "2026-02",
+    "aprovados": 301,
+    "inadimplentes": 22,
+    "taxa": 0.0731,
+    "maduro": false
+   },
+   {
+    "mes": "2026-03",
+    "aprovados": 304,
+    "inadimplentes": 24,
+    "taxa": 0.0789,
+    "maduro": false
+   },
+   {
+    "mes": "2026-04",
+    "aprovados": 234,
+    "inadimplentes": 9,
+    "taxa": 0.0385,
+    "maduro": false
+   },
+   {
+    "mes": "2026-05",
+    "aprovados": 223,
+    "inadimplentes": 0,
+    "taxa": 0.0,
+    "maduro": false
+   },
+   {
+    "mes": "2026-06",
+    "aprovados": 219,
+    "inadimplentes": 0,
+    "taxa": 0.0,
+    "maduro": false
+   },
+   {
+    "mes": "2026-07",
+    "aprovados": 230,
+    "inadimplentes": 0,
+    "taxa": 0.0,
+    "maduro": false
+   },
+   {
+    "mes": "2026-08",
+    "aprovados": 224,
+    "inadimplentes": 0,
+    "taxa": 0.0,
+    "maduro": false
+   },
+   {
+    "mes": "2026-09",
+    "aprovados": 239,
+    "inadimplentes": 0,
+    "taxa": 0.0,
+    "maduro": false
+   }
+  ]
+ },
+ "bureau": {
+  "scoreMediano": 742,
+  "scoreFaixas": [
+   {
+    "faixa": "< 500",
+    "n": 129
+   },
+   {
+    "faixa": "500–599",
+    "n": 316
+   },
+   {
+    "faixa": "600–699",
+    "n": 319
+   },
+   {
+    "faixa": "700–799",
+    "n": 635
+   },
+   {
+    "faixa": "800–899",
+    "n": 446
+   },
+   {
+    "faixa": "900+",
+    "n": 155
+   }
+  ],
+  "comRestricao": 377,
+  "consultas4mais": 236,
+  "total": 2000
+ },
+ "api": {
+  "clientes": 2000,
+  "comBureau": 2000,
+  "chamadas": 2105,
+  "status": {
+   "200": 2000,
+   "503": 105
+  },
+  "clientesComRetry": 100,
+  "maxTentativas": 3,
+  "latencia": {
+   "p50": 0.224,
+   "p90": 0.46,
+   "p95": 0.865,
+   "p99": 4.626,
+   "max": 5.447,
+   "media": 0.406
+  },
+  "histograma": [
+   {
+    "faixa": "< 0,25 s",
+    "n": 1345
+   },
+   {
+    "faixa": "0,25–0,5 s",
+    "n": 576
+   },
+   {
+    "faixa": "0,5–1 s",
+    "n": 85
+   },
+   {
+    "faixa": "1–2 s",
+    "n": 13
+   },
+   {
+    "faixa": "2–5 s",
+    "n": 79
+   },
+   {
+    "faixa": "≥ 5 s",
+    "n": 7
+   }
+  ],
+  "desde": "2026-11-11T09:48:12",
+  "ate": "2026-11-11T09:49:44",
+  "config": {
+   "timeoutSeg": 10,
+   "tentativas": 6,
+   "esperaBaseSeg": 0.5,
+   "paralelo": 10
+  }
+ },
+ "padroes": {
+  "media": 0.1589,
+  "itens": [
+   {
+    "grupo": "saídas maiores que as entradas no ano antes do pedido",
+    "taxa": 1.0,
+    "aprox": true,
+    "clientes": 102,
+    "vsMedia": 6.66
+   },
+   {
+    "grupo": "3 a 5 meses de cheque especial no ano antes do pedido",
+    "taxa": 1.0,
+    "aprox": true,
+    "clientes": 76,
+    "vsMedia": 6.49
+   },
+   {
+    "grupo": "renda na conta abaixo de 60% da declarada",
+    "taxa": 0.9205,
+    "aprox": false,
+    "clientes": 55,
+    "vsMedia": 5.79
+   },
+   {
+    "grupo": "parcela acima de 30% da renda declarada",
+    "taxa": 0.6467,
+    "aprox": false,
+    "clientes": 363,
+    "vsMedia": 4.07
+   },
+   {
+    "grupo": "1 restrição ativa no bureau",
+    "taxa": 0.3941,
+    "aprox": false,
+    "clientes": 127,
+    "vsMedia": 2.48
+   },
+   {
+    "grupo": "4 ou mais consultas ao CPF em 90 dias",
+    "taxa": 0.2957,
+    "aprox": false,
+    "clientes": 591,
+    "vsMedia": 1.86
+   },
+   {
+    "grupo": "prazo de 6 meses",
+    "taxa": 0.2564,
+    "aprox": false,
+    "clientes": 308,
+    "vsMedia": 1.61
+   },
+   {
+    "grupo": "vínculo de aposentado",
+    "taxa": 0.1117,
+    "aprox": false,
+    "clientes": 612,
+    "vsMedia": 0.7
+   }
+  ],
+  "fonte": "analysis/out/patterns.csv"
+ }
+}
