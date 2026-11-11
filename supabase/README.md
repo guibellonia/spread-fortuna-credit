@@ -1,45 +1,61 @@
-# Banco no Supabase
+# Banco e API no Supabase
 
-Um Postgres compartilhado com o dump do hackathon: o time todo usa o mesmo banco, sem restaurar nada na própria
-máquina, e o CI (`.github/workflows/ci.yml`) roda o teste de integração contra ele. É também a base para uma API.
+Projeto `spread-fortuna` (organização Spread, região São Paulo):
+https://supabase.com/dashboard/project/vjxwagiqgecsscoogxln
 
-## 1. Criar o projeto (uma vez)
+- **Banco compartilhado:** o dump do hackathon no schema `hackathon`, para o time todo usar o mesmo banco e para o
+  teste de integração do CI (`.github/workflows/ci.yml`).
+- **Painel de revisão:** a IA sugere, o analista decide. As decisões do pipeline ficam em `painel.decisoes`; o
+  analista confirma, aprova com valor ou nega em
+  [/dashboard/revisao/](https://guibellonia.github.io/spread-fortuna-credit/dashboard/revisao/), e cada revisão
+  fica registrada (quem, quando, por quê, e qual era a decisão da IA).
+- **Bureau ao vivo:** a Edge Function `bureau` consulta a API com o token guardado como segredo dela; o navegador
+  nunca vê o token.
 
-1. Em supabase.com, crie um projeto na região São Paulo, com senha forte para o banco.
-2. Botão **Connect** → **Session pooler** → copie a URI (funciona em IPv4; a conexão direta é só IPv6).
-3. No `.env` da raiz (fora do Git), troque `[YOUR-PASSWORD]` pela senha e defina a senha do papel de leitura:
-
-```
-SUPABASE_DB_URL=postgresql://postgres.<ref>:<senha>@<host>.pooler.supabase.com:5432/postgres
-SUPABASE_LEITOR_SENHA=<16+ caracteres>
-```
-
-## 2. Restaurar o dump
-
-Da raiz do repositório, com `data/fortuna_hackathon.dump` no lugar e o `pg_restore` 16+ no PATH:
+## Atualizar as decisões no painel
 
 ```
-.venv/Scripts/python supabase/restaurar_banco.py --leitor     # restaura e cria o papel fortuna_leitura
-.venv/Scripts/python supabase/restaurar_banco.py --recriar    # apaga o schema hackathon e restaura de novo
+cd src && python gerar_decisoes.py                 # gera saida/decisoes_detalhadas.csv
+cd .. && .venv/Scripts/python supabase/publicar_decisoes.py
 ```
 
-- Restaura numa transação só (entra tudo ou nada) e confere 10.000 históricos e 2.000 novos.
-- Fecha o schema `hackathon` para os papéis da Data API (`anon` e `authenticated`) e liga o RLS.
-- `--leitor` cria ou atualiza `fortuna_leitura`: só `SELECT` e sessão somente leitura.
-- Sem `--recriar`, nunca apaga nada. Rodar de novo com `--leitor` só refaz o papel.
+Confere os 2.000 pedidos novos e os limites de valor numa transação só. As revisões já feitas continuam valendo.
 
-## 3. Conectar
+## Dar acesso a alguém
 
-| Quem | Conexão |
+```
+.venv/Scripts/python supabase/configurar_projeto.py --org-id qskawawwcfrqkbwcigzy --usuario nova@pessoa.com
+```
+
+Cria o usuário no Auth (senha inicial em `../spread-acessos-painel.txt`, fora do repositório) e inclui o e-mail
+em `painel.membros`. O cadastro público está fechado: só entra quem foi incluído assim.
+
+## Conexões (todas no `.env`, fora do Git)
+
+| Variável | Para quê |
 |---|---|
-| CI (segredo `FORTUNA_DSN` no GitHub) e quem só consulta | `postgresql://fortuna_leitura.<ref>:<senha do leitor>@<host>:5432/postgres?sslmode=require` (o script imprime o modelo) |
-| `src/` e `validacao/` | `FORTUNA_DSN=<URI>`; a do leitor basta para ler |
-| `analysis/`, `site/scripts/`, `api-baseline/` | `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE` com os dados da URI e `PGSSLMODE=require` |
-| psql | `psql "$SUPABASE_DB_URL"` |
+| `SUPABASE_DB_URL` | conexão de escrita (Session pooler). `src/` usa como `FORTUNA_DSN` |
+| `SUPABASE_LEITOR_SENHA` | senha do papel `fortuna_leitura` (só `SELECT`). Use este papel no segredo `FORTUNA_DSN` do CI |
+| `SUPABASE_DB_SENHA` | senha do banco, usada para montar a `SUPABASE_DB_URL` |
+| `SUPABASE_ACCESS_TOKEN` | token da API de gerenciamento, com escopo só na organização Spread; expira em 7 dias |
+
+URL do papel de leitura: `postgresql://fortuna_leitura.vjxwagiqgecsscoogxln:<SUPABASE_LEITOR_SENHA>@aws-0-sa-east-1.pooler.supabase.com:5432/postgres?sslmode=require`
+
+## Scripts
+
+| Script | O que faz |
+|---|---|
+| `configurar_projeto.py` | ponta a ponta e idempotente: projeto, conexão, restauração, migrações, membros, schema `painel` na Data API, cadastro público fechado, segredos e publicação da função, usuários, `site/site.config.json` |
+| `restaurar_banco.py` | restaura o dump numa transação, fecha `hackathon` para a API e liga o RLS; `--recriar`, `--leitor` |
+| `aplicar_migracoes.py` | aplica `migrations/` e cadastra membros (`--membro`) |
+| `publicar_decisoes.py` | publica o CSV de decisões em `painel.decisoes` |
+| `functions/bureau/` | Edge Function do bureau ao vivo (retry, cache em `painel.bureau_consultas`, CORS só do Pages e do localhost) |
 
 ## Segurança
 
-- As URIs têm senha: só no `.env` e nos segredos do GitHub, nunca em commit, chat ou código.
-- O CI usa o papel de leitura, não o `postgres`.
-- **Não adicione `hackathon` aos "Exposed schemas" da Data API.** Os dados crus ficam fora da API; o que for
-  exposto depois entra num schema próprio, com RLS e login.
+- **Dados crus fora da API:** o schema `hackathon` não é exposto; `anon` e `authenticated` não têm acesso e o RLS está ligado.
+- **`painel` só para membros:** só leitura para quem está logado e na lista de membros. A revisão é só acréscimo: não
+  dá para alterar nem apagar, e quem/quando/decisão da IA são preenchidos pelo banco, não pelo navegador.
+- **A chave `anon` em `site/site.config.json` é pública por desenho;** quem protege os dados é o RLS.
+- Segredos nunca em commit, chat ou código. O CI usa o papel de leitura.
+- Sem `--recriar`, nada é apagado.
