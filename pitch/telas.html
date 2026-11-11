@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spread · 3 telas do pitch</title>
+<style>
+:root{--tx:#16171b;--mu:#5d5f66;--bg:#fcfcfb;--bd:#e3e3e8;--ganho:#0f8a5f;--custo:#d9480f;--az:#2c5fa8;--est:#8a8d96}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+nav{position:fixed;top:0;left:0;right:0;display:flex;gap:6px;justify-content:center;padding:10px;background:rgba(252,252,251,.92);border-bottom:1px solid var(--bd);z-index:2}
+nav button{border:1px solid var(--bd);background:#fff;border-radius:999px;padding:6px 14px;font:600 14px system-ui;cursor:pointer;color:var(--mu)}
+nav button[aria-selected="true"]{background:var(--tx);color:#fff;border-color:var(--tx)}
+section{display:none;min-height:100vh;padding:78px 5vw 40px}section.on{display:block}
+h1{font-size:clamp(26px,3.4vw,46px);margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--mu);font-size:clamp(15px,1.4vw,20px);margin:0 0 28px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.tile{border:1px solid var(--bd);border-radius:14px;padding:22px;background:#fff}
+.tile .k{color:var(--mu);font-size:15px}
+.tile .v{font-size:clamp(34px,4.6vw,64px);font-weight:750;line-height:1.1;margin:8px 0;font-variant-numeric:tabular-nums}
+.tile .v .de{color:var(--mu);font-weight:600}.tile .v .para{color:var(--tx)}
+.tile .por{font-size:16px;color:var(--tx)}
+.seta{color:var(--mu);font-weight:400;margin:0 .15em}
+.why{margin-top:26px;font-size:clamp(17px,1.6vw,22px);border-left:5px solid var(--az);padding:10px 16px;background:#fff}
+.fonte{color:var(--mu);font-size:13px;margin-top:18px}
+.bars{display:grid;gap:14px;margin-top:8px}
+.row{display:grid;grid-template-columns:minmax(220px,34%) 1fr;gap:14px;align-items:center}
+.row .rot{font-size:clamp(15px,1.3vw,19px)}.row .rot small{display:block;color:var(--mu);font-size:13px}
+.trilho{position:relative;height:38px}
+.b{position:absolute;top:4px;height:30px;border-radius:0 4px 4px 0}
+.b.neg{border-radius:4px 0 0 4px}
+.val{position:absolute;top:7px;font-weight:700;font-size:18px;white-space:nowrap;color:var(--tx);font-variant-numeric:tabular-nums}
+.zero{position:absolute;top:0;bottom:0;width:1px;background:#b9bac2}
+.leg{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;color:var(--mu);font-size:14px}.leg i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.hatch{background:repeating-linear-gradient(45deg,var(--est) 0 3px,#e9eaee 3px 7px)}
+.duas{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.cmp{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin:10px 0;font-size:17px}
+.cmp .t{height:22px;border-radius:0 4px 4px 0}
+.lista{font-size:clamp(16px,1.4vw,20px);line-height:1.6;padding-left:1.1em}
+@media (max-width:640px){.row{grid-template-columns:1fr}}
+</style></head><body>
+<nav role="tablist" aria-label="Telas">
+<button role="tab" aria-selected="true" data-t="1">1 · O resultado</button>
+<button role="tab" aria-selected="false" data-t="2">2 · De onde vem</button>
+<button role="tab" aria-selected="false" data-t="3">3 · Por que confiar</button>
+</nav>
+
+<section id="t1" class="on" role="tabpanel">
+<h1>A mesma carteira, com menos calote e mais resultado</h1>
+<p class="sub">5.001 pedidos que a Fortuna já decidiu, com desfecho conhecido · política atual <span class="seta">→</span> nossa proposta</p>
+<div class="tiles">
+ <div class="tile"><div class="k">Resultado da carteira</div><div class="v"><span class="de">R$ 251 mil</span><span class="seta">→</span><span class="para">R$ 1,27 mi</span></div><div class="por">cerca de <b>5 vezes</b>, só com pedidos que já aconteceram</div></div>
+ <div class="tile"><div class="k">Calote</div><div class="v"><span class="de">13,6%</span><span class="seta">→</span><span class="para">8,0%</span></div><div class="por">menos 5,6 pontos nos mesmos clientes</div></div>
+ <div class="tile"><div class="k">Pedidos que deixaríamos de aprovar</div><div class="v"><span class="para">334</span></div><div class="por"><b>56% deles</b> não pagaram</div></div>
+</div>
+<div class="why"><b>Por quê:</b> olhamos a conta do cliente, e não só a nota do birô.</div>
+<div class="fonte">Fonte: painel do time, página Histórico (base de pedidos maduros: resultado, calote e matriz). Cada trimestre foi decidido por um modelo que não viu aquele trimestre.</div>
+</section>
+
+<section id="t2" role="tabpanel">
+<h1>De onde vem a melhora</h1>
+<p class="sub">Efeito de cada passo da política no resultado, nos mesmos 5.001 pedidos</p>
+<div class="bars" id="barras"></div>
+<div class="leg"><span><i style="background:var(--ganho)"></i>ganho observado</span><span><i style="background:var(--custo)"></i>custo observado (mostramos também)</span><span><i class="hatch"></i>estimado: sem desfecho, nunca somado ao observado</span></div>
+<div class="why"><b>Os dois passos que mais rendem são regras simples:</b> renda real e conta apertada. Juntos, <b>+R$ 1,04 mi</b>.</div>
+<div class="fonte">Fonte: painel do time, página Histórico (efeito de cada ajuste, base maduros).</div>
+</section>
+
+<section id="t3" role="tabpanel">
+<h1>Por que confiar, e quem decide</h1>
+<p class="sub">Métodos que o mercado de crédito já valida, com o analista no comando</p>
+<div class="duas">
+ <div class="tile"><div class="k">Separar bom e mau pagador (AUC, de 0,5 a 1)</div>
+  <div class="cmp"><span>Score do birô</span><span class="t" style="width:0%;background:var(--est)"></span><b>0,50</b></div>
+  <div class="cmp"><span>Nosso modelo</span><span class="t" style="width:48%;background:var(--az)"></span><b>0,74</b></div>
+  <div class="por">0,50 é o mesmo que jogar uma moeda.</div></div>
+ <div class="tile"><div class="k">Clientes aprovados fora da regra no piloto</div>
+  <div class="cmp"><span>Que aprovaríamos (257)</span><span class="t" style="width:18%;background:var(--ganho)"></span><b>5,1% calote</b></div>
+  <div class="cmp"><span>Que negaríamos (170)</span><span class="t" style="width:100%;background:var(--custo)"></span><b>27,7%</b></div>
+  <div class="por">Onde a proposta discorda da regra, ela acerta.</div></div>
+</div>
+<ul class="lista">
+ <li><b>Corte por lucro:</b> só aprova abaixo de 17,5% de chance de calote, o ponto em que a conta +15 / +5 / −60 empata.</li>
+ <li><b>Teste fora do tempo</b> e <b>sinal coerente</b>: mais renda nunca aumenta o risco.</li>
+ <li><b>Ética:</b> idade, gênero, estado civil e CEP fora do modelo; tirar a idade custou o mesmo que o ruído.</li>
+ <li><b>A IA sugere, o analista decide</b>, com o motivo de cada pedido; o cliente pode pedir revisão (LGPD, art. 20).</li>
+</ul>
+<div class="fonte">Fontes: página Histórico (AUC e piloto); pesquisa de 11/11 (LGPD e Cadastro Positivo, texto do Planalto); medição do motor v2 (custo de tirar a idade). Ganho dos 2.000 pedidos novos é estimativa: o desfecho deles vem de regras que não conhecemos.</div>
+</section>
+
+<script>
+const passos=[
+ {r:"Parcela maior que 28% do que entra na conta",s:"223 pedidos · 51% de calote",v:742223,t:"g"},
+ {r:"Gastou mais do que ganhou num dos 3 meses antes",s:"67 pedidos · 91% de calote",v:302258,t:"g"},
+ {r:"Chance de calote acima de 17,5%",s:"44 pedidos · 32% de calote",v:17590,t:"g"},
+ {r:"Emprestar menos que o pedido",s:"632 pedidos · 8% de calote",v:-44775,t:"c"},
+ {r:"Aprovar quem a Fortuna negou",s:"999 pedidos · sem desfecho",v:533529,t:"e"}];
+const max=742223, neg=44775, escala=v=>v/(max+neg)*80, z=escala(neg);
+const fmt=v=>(v<0?"−":"+")+"R$ "+(Math.abs(v)>=1e6?(Math.abs(v)/1e6).toFixed(2).replace(".",",")+" mi":Math.round(Math.abs(v)/1000)+" mil");
+document.getElementById("barras").innerHTML=passos.map(p=>{
+ const w=escala(Math.abs(p.v)), cor=p.t==="g"?"background:var(--ganho)":p.t==="c"?"background:var(--custo)":"";
+ const cls=p.t==="e"?"b hatch":p.v<0?"b neg":"b";
+ const pos=p.v<0?`left:${z-w}%;width:${w}%`:`left:${z}%;width:${Math.max(w,.6)}%`;
+ const lab=p.v<0?`right:${100-(z-w)+1}%`:`left:calc(${z+Math.max(w,.6)}% + 8px)`;
+ return `<div class="row" title="${p.r}: ${fmt(p.v)} (${p.s})"><div class="rot">${p.r}<small>${p.s}</small></div><div class="trilho"><span class="zero" style="left:${z}%"></span><span class="${cls}" style="${pos};${cor}"></span><span class="val" style="${lab}">${fmt(p.v)}${p.t==="e"?" (estimado)":""}</span></div></div>`}).join("");
+const abas=[...document.querySelectorAll("nav button")];
+function ir(n){abas.forEach(b=>b.setAttribute("aria-selected",b.dataset.t==n));document.querySelectorAll("section").forEach((s,i)=>s.classList.toggle("on",i+1==n));history.replaceState(null,"","#"+n)}
+abas.forEach(b=>b.onclick=()=>ir(b.dataset.t));
+addEventListener("keydown",e=>{const a=+abas.find(b=>b.getAttribute("aria-selected")==="true").dataset.t;if(e.key==="ArrowRight")ir(Math.min(3,a+1));if(e.key==="ArrowLeft")ir(Math.max(1,a-1));if(["1","2","3"].includes(e.key))ir(e.key)});
+const h=location.hash.slice(1);if(["1","2","3"].includes(h))ir(h);
+</script>
+</body></html>
