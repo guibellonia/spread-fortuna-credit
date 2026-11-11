@@ -196,7 +196,7 @@
 <section class="card"><div class="card-head"><h2>Padrões mais fortes (calote projetado)</h2><span class="autor">Enio Rocha · censura: Guilherme Bellonia</span></div><ul>
 <li>Saídas &gt; entradas em algum dos 3 meses antes: <span class="destaque">91%</span> · 97 dos novos</li>
 <li>Cheque especial nos 2 meses antes, sem o sinal acima: <span class="destaque">30%</span></li>
-<li>Parcela &gt; 28% da renda real: <span class="destaque">50%</span> · 159 dos novos</li>
+<li>Parcela &gt; 28% da renda real: <span class="destaque">50%</span> · 159 a 171 dos novos (contagens diferentes do time, em conferência)</li>
 <li>1 restrição ativa: <span class="destaque">39,4%</span> (metade dos que pagam atrasa) · score 500–599: <span class="destaque">26,6%</span> · abaixo de 500: 20,6%</li>
 <li>Score ≥ 600: 15,0% a 16,0% · aposentados pagam melhor</li></ul></section>
 <section class="card"><div class="card-head"><h2>Roteiro</h2><span class="autor">Enio Rocha</span></div><ul>
@@ -361,100 +361,6 @@ Depois, em cima do piso, decidir o que afrouxar (score, 1 restrição) com teste
 - Reduzir valor em vez de negar: o manual sugere que funciona; a base não tem caso que prove.
 </pre>
 </details></section>
-<div class="painel" id="p-situacao" hidden><div class="grade">
-
-  <section>
-    <h2>Já temos</h2>
-    <ul>
-      <li class="ok">Base restaurada: <span class="n">10.000</span> históricos + <span class="n">2.000</span> novos</li>
-      <li class="ok">Política atual reproduzida: <span class="n">100%</span> das <span class="n">8.737</span> decisões</li>
-      <li class="ok">Birô: <span class="n">2.000</span> de <span class="n">2.000</span> clientes consultados e guardados</li>
-      <li class="ok">Duas análises independentes da base, que batem no essencial</li>
-      <li class="ok">Dois padrões fortes conferidos em duas metades da base</li>
-      <li class="ok">CSV gerado por código e validador das regras do manual</li>
-      <li class="ok">Repositório do time no ar, com prompts e análises</li>
-      <li class="falta">Decidir a política final (5 testes de 15 minutos)</li>
-      <li class="falta">Painel de experimentação e pitch</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>A política atual, exata</h2>
-    <ul>
-      <li>1 · Score do birô <span class="destaque">acima de 600</span></li>
-      <li>2 · Renda declarada <span class="destaque">acima de R$ 2.000</span></li>
-      <li>3 · <span class="destaque">Zero</span> restrição ativa</li>
-      <li>4 · Valor = o menor entre o pedido, R$ 30 mil e o valor cuja parcela cabe em <span class="destaque">30% da renda</span> <span class="pequeno">(reduz o valor, não nega)</span></li>
-    </ul>
-    <h2 style="margin-top:10px">A conta do jogo</h2>
-    <div class="tres">
-      <div><b class="pos">+15%</b>paga em dia</div>
-      <div><b class="pos">+5%</b>paga com atraso</div>
-      <div><b class="neg">−60%</b>não paga</div>
-    </div>
-    <ul style="margin-top:6px">
-      <li>1 calote apaga <span class="destaque">4 bons pagadores</span></li>
-      <li>Nota = nosso resultado <span class="destaque">menos</span> o da política atual</li>
-      <li>Valor alto demais <span class="destaque">aumenta</span> o calote (manual, pág. 12)</li>
-      <li>Pontos: resultado 40 · padrões 25 · pitch 15 · painel 10 · código 10</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Roteiro do dia</h2>
-    <ul>
-      <li><span class="hora">09h00</span>Token no lugar · buscar os 2.000 no birô</li>
-      <li><span class="hora">09h15</span>1º CSV real · pedir validação no canal</li>
-      <li><span class="hora">09h30</span>1ª leva de padrões na mesa</li>
-      <li><span class="hora">10h30</span>Política v1: filtros novos + regra de valor</li>
-      <li><span class="hora">11h00</span>Sessão com a cliente (3 perguntas)</li>
-      <li><span class="hora">12h00</span>Almoço · v1 congelada como reserva</li>
-      <li><span class="hora">13h00</span>Política v2 · painel com as frases do manual</li>
-      <li><span class="hora">14h15</span>Checkpoint: arquivo enviado + mentor</li>
-      <li><span class="hora">14h30</span>Ensaio do pitch, rodando do zero</li>
-      <li><span class="hora">15h00</span>Envio final (30 min de folga)</li>
-      <li><span class="hora">15h45</span>Pitch: 5 min + 2 de perguntas</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Padrões mais fortes</h2>
-    <ul>
-      <li><span class="destaque">Conta apertada:</span> saídas maiores que as entradas em algum dos 3 meses antes → <span class="n">91%</span> não pagam <span class="pequeno">(média 14% · 97 dos novos)</span></li>
-      <li><span class="destaque">Parcela pesada:</span> acima de 28% da renda real → <span class="n">50%</span> <span class="pequeno">(até 28% fica em 8% · 159 dos novos)</span></li>
-      <li><span class="destaque">Saldo negativo em 2+ meses:</span> <span class="n">64%</span> <span class="pequeno">(análise do Juliano)</span></li>
-      <li><span class="destaque">Score não separa</span> bom de mau pagador <span class="pequeno">(nas duas análises)</span></li>
-      <li><span class="destaque">Aposentados</span> pagam melhor: <span class="n">7%</span></li>
-      <li class="pequeno">Dos 1.145 que a política atual aprova nos novos: 34 têm conta apertada e 76 pedem parcela acima de 28% da renda real</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Documentos</h2>
-    <ul>
-      <li><a href="dashboard/">Painel</a> <span class="pequeno">funil das políticas, padrões e API do bureau</span></li>
-      <li><a href="#abertura">Resumo da abertura</a> <span class="pequeno">regras, nota, prazos</span></li>
-      <li><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-banco.md">Análise do banco</a> <span class="pequeno">Juliano</span></li>
-      <li><a href="#complementos">Complementos e divergências</a> <span class="pequeno">Enio</span></li>
-      <li><a href="#complementos">Para discussão</a> <span class="pequeno">como não tirar zero · 5 testes</span></li>
-      <li><a href="https://github.com/guibellonia/spread-fortuna-credit/tree/main/analysis">Prompts de contexto e scripts</a></li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Perguntas para a cliente</h2>
-    <ul>
-      <li>1 · Por que o piloto parou, e o que a Fortuna aprendeu com ele?</li>
-      <li>2 · O que ela faz hoje quando o birô não responde?</li>
-      <li>3 · A renda declarada é conferida contra o salário que entra na conta?</li>
-    </ul>
-    <p class="pequeno" style="margin:8px 0 0">Formato do padrão no painel: "Clientes com [característica] têm inadimplência de N%, contra N% da média. Afeta N clientes."</p>
-  </section>
-
-</div>
-
-
-</div>
 <section class="painel" id="p-simulador" hidden>
 <div class="sim">
 <section class="card" aria-label="Controles"><div class="card-head"><h2>Mesa de som da política</h2><span class="autor">Autoria: Enio Rocha (motor v2)</span></div>
@@ -468,10 +374,10 @@ Depois, em cima do piso, decidir o que afrouxar (score, 1 restrição) com teste
 </div></div>
 <p class="pequeno rodape">Fonte: <code>simulador/grade.json</code>, gerado por <code>analysis/scripts-enio/gerar_grade_simulador.py</code> a partir de <code>varredura.csv</code> (só resultados agregados por regra). Linha de base: política atual, 1.145 aprovados e R$ 8.856.449,87 nos 2.000 novos.</p>
 </section>
-<section class="painel" id="p-abertura" data-src="analysis/resumo-abertura.md" data-autor="Enio · regras, nota e prazos do manual" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-banco" data-src="analysis/analise-banco.md" data-autor="Juliano" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-censura" data-src="analysis/censura-agregado.md|analysis/padroes-agregado.md" data-autor="análise agregada do time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-complementos" data-src="analysis/analise-enio.md" data-autor="Enio · onde confirma e onde diverge" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-pendencias" data-src="analysis/PENDENCIAS.md|analysis/pendencias-agregado.md" data-autor="time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-prompts" data-src="prompts/README.md|prompts/enio-rocha_head-de-credito_v1.md|analysis/contexto-claude.md|analysis/contexto-gpt.md" data-autor="prompts do time, com autor e versão" hidden><p class="pequeno">Carregando…</p></section>
+<section class="painel" id="p-abertura" data-src="analysis/resumo-abertura.md" data-autor="Enio · regras, nota e prazos do manual" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-banco" data-src="analysis/analise-banco.md" data-autor="Juliano" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-censura" data-src="analysis/censura-agregado.md|analysis/padroes-agregado.md" data-autor="análise agregada do time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-complementos" data-src="analysis/analise-enio.md" data-autor="Enio · onde confirma e onde diverge" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-pendencias" data-src="analysis/pendencias-agregado.md" data-autor="time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-prompts" data-src="prompts/README.md|prompts/enio-rocha_head-de-credito_v1.md|analysis/contexto-claude.md|analysis/contexto-gpt.md" data-autor="prompts do time, com autor e versão" hidden><p class="pequeno">Carregando…</p></section>
 <section class="painel" id="p-documentos" hidden><article class="doc"><div class="card-head"><h2>Documentos do repositório</h2><a class="pilula baixar-tudo" href="https://github.com/guibellonia/spread-fortuna-credit/archive/refs/heads/main.zip">Baixar tudo (.zip)</a></div>
 <div class="promptbox"><label for="prompt-base"><b>Prompt</b> <span class="pequeno">um só, vale para todos os botões "com prompt", ChatGPT, Claude, Perplexity e terminal</span></label><textarea id="prompt-base" rows="3"></textarea></div>
-<div class="tabela"><table class="docs"><tr><th>Documento</th><th>Atualizado</th><th>Autor</th><th>Levar para</th></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/src/README.md">Pipeline de decisão: como rodar</a><div class="pequeno">src/README.md</div></td><td data-f="src/README.md" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td><td><div class="fileira" data-f="src/README.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/validacao/politicas.log">Validação das políticas</a><div class="pequeno">validacao/politicas.log</div></td><td data-f="validacao/politicas.log" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td><td><div class="fileira" data-f="validacao/politicas.log"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/padroes-agregado.md">Padrões por grupo (tabelas completas)</a><div class="pequeno">analysis/padroes-agregado.md</div></td><td data-f="analysis/padroes-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="analysis/padroes-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/censura-agregado.md">Censura e inadimplência projetada</a><div class="pequeno">analysis/censura-agregado.md</div></td><td data-f="analysis/censura-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="analysis/censura-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-banco.md">Análise do banco</a><div class="pequeno">analysis/analise-banco.md</div></td><td data-f="analysis/analise-banco.md" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td><td><div class="fileira" data-f="analysis/analise-banco.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-enio.md">Complementos e discussão</a><div class="pequeno">analysis/analise-enio.md</div></td><td data-f="analysis/analise-enio.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="analysis/analise-enio.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/resumo-abertura.md">Regras do desafio</a><div class="pequeno">analysis/resumo-abertura.md</div></td><td data-f="analysis/resumo-abertura.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="analysis/resumo-abertura.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/transcricao-abertura.md">Transcrição da abertura</a><div class="pequeno">analysis/transcricao-abertura.md</div></td><td data-f="analysis/transcricao-abertura.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="analysis/transcricao-abertura.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/PENDENCIAS.md">Pendências</a><div class="pequeno">analysis/PENDENCIAS.md</div></td><td data-f="analysis/PENDENCIAS.md" class="pequeno">…</td><td class="pequeno">time (chatbot-ia-gow)</td><td><div class="fileira" data-f="analysis/PENDENCIAS.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/pendencias-agregado.md">Pendências técnicas</a><div class="pequeno">analysis/pendencias-agregado.md</div></td><td data-f="analysis/pendencias-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="analysis/pendencias-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/api-baseline/baseline-agregado.md">Baseline da API do bureau</a><div class="pequeno">api-baseline/baseline-agregado.md</div></td><td data-f="api-baseline/baseline-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="api-baseline/baseline-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/prompts/README.md">Prompts do time</a><div class="pequeno">prompts/README.md</div></td><td data-f="prompts/README.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="prompts/README.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/README.md">README e como contribuir</a><div class="pequeno">README.md</div></td><td data-f="README.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="README.md"></div></td></tr></table></div>
+<div class="tabela"><table class="docs"><tr><th>Documento</th><th>Atualizado</th><th>Autor</th><th>Levar para</th></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/src/README.md">Pipeline de decisão: como rodar</a><div class="pequeno">src/README.md</div></td><td data-f="src/README.md" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td><td><div class="fileira" data-f="src/README.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/validacao/politicas.log">Validação das políticas</a><div class="pequeno">validacao/politicas.log</div></td><td data-f="validacao/politicas.log" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td><td><div class="fileira" data-f="validacao/politicas.log"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/padroes-agregado.md">Padrões por grupo (tabelas completas)</a><div class="pequeno">analysis/padroes-agregado.md</div></td><td data-f="analysis/padroes-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="analysis/padroes-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/censura-agregado.md">Censura e inadimplência projetada</a><div class="pequeno">analysis/censura-agregado.md</div></td><td data-f="analysis/censura-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="analysis/censura-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-banco.md">Análise do banco</a><div class="pequeno">analysis/analise-banco.md</div></td><td data-f="analysis/analise-banco.md" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td><td><div class="fileira" data-f="analysis/analise-banco.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-enio.md">Complementos e discussão</a><div class="pequeno">analysis/analise-enio.md</div></td><td data-f="analysis/analise-enio.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="analysis/analise-enio.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/resumo-abertura.md">Regras do desafio</a><div class="pequeno">analysis/resumo-abertura.md</div></td><td data-f="analysis/resumo-abertura.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="analysis/resumo-abertura.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-guilherme.md">Análise de crédito e política de aprovação</a><div class="pequeno">analysis/analise-guilherme.md</div></td><td data-f="analysis/analise-guilherme.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="analysis/analise-guilherme.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/pontuacao-risco.md">Cruzamento das tabelas e pontuação de risco</a><div class="pequeno">analysis/pontuacao-risco.md</div></td><td data-f="analysis/pontuacao-risco.md" class="pequeno">…</td><td class="pequeno">Daniel Avelar</td><td><div class="fileira" data-f="analysis/pontuacao-risco.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/pendencias-agregado.md">Pendências técnicas</a><div class="pequeno">analysis/pendencias-agregado.md</div></td><td data-f="analysis/pendencias-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="analysis/pendencias-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/api-baseline/baseline-agregado.md">Baseline da API do bureau</a><div class="pequeno">api-baseline/baseline-agregado.md</div></td><td data-f="api-baseline/baseline-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="api-baseline/baseline-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/prompts/README.md">Prompts do time</a><div class="pequeno">prompts/README.md</div></td><td data-f="prompts/README.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="prompts/README.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/README.md">README e como contribuir</a><div class="pequeno">README.md</div></td><td data-f="README.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="README.md"></div></td></tr></table></div>
 <p class="pequeno">A data vem do último commit de cada arquivo. Os links do ChatGPT, Claude e Perplexity levam o prompt e o link do arquivo (não o conteúdo, por causa do tamanho do endereço); para mandar o conteúdo, use "Copiar com prompt". Rodar tudo: veja o README.</p></article></section>
 </main>
 <script>
@@ -567,7 +473,8 @@ function montar(){
    'Reduzir o valor baixa o risco no modelo (relação parcela/renda extrapolada do histórico), mas talvez não nas regras escondidas.',
    'Prazos de 24 e 36 meses são extrapolados: nenhum contrato desses prazos terminou.',
    'O intervalo de 90% mede a incerteza do modelo e do sorteio do desfecho, mas não corrige o efeito de escolher o máximo entre 9.000 regras: o melhor ponto tende a parecer melhor do que é.',
-   'Aprovar quem a atual nega depende de extrapolar o modelo para esses perfis.'].map(t=>'<li>'+t+'</li>').join('');
+   'Aprovar quem a atual nega depende de extrapolar o modelo para esses perfis.',
+   'A política oficial do time é a híbrida (modelo G + filtros); esta grade é do motor v2 do Enio, para comparação.'].map(t=>'<li>'+t+'</li>').join('');
 }
 function barra(rot,a,b,max,fmt){
   return '<div class="linha"><span>'+rot+'</span><div class="trilho"><i style="width:'+(100*a/max)+'%;background:var(--md-muted)"></i></div><span class="n">'+fmt(a)+'</span></div>'
@@ -630,7 +537,7 @@ function leitura(r){
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script>
 const carregados={};
-const AUTORES={'analysis/resumo-abertura.md':'Enio Rocha','analysis/analise-banco.md':'Juliano Ferreira','analysis/censura-agregado.md':'Guilherme Bellonia','analysis/padroes-agregado.md':'Guilherme Bellonia','analysis/analise-enio.md':'Enio Rocha','analysis/PENDENCIAS.md':'time (chatbot-ia-gow)','analysis/pendencias-agregado.md':'Guilherme Bellonia'};
+const AUTORES={'analysis/resumo-abertura.md':'Enio Rocha','analysis/analise-banco.md':'Juliano Ferreira','analysis/censura-agregado.md':'Guilherme Bellonia','analysis/padroes-agregado.md':'Guilherme Bellonia','analysis/analise-enio.md':'Enio Rocha','analysis/analise-guilherme.md':'Guilherme Bellonia','analysis/pontuacao-risco.md':'Daniel Avelar','analysis/pendencias-agregado.md':'Guilherme Bellonia'};
 async function mostrar(aba){
   document.querySelectorAll('.painel').forEach(p=>p.hidden=(p.id!=='p-'+aba));
   document.querySelectorAll('nav.abas button').forEach(b=>b.classList.toggle('ativa',b.dataset.aba===aba));
