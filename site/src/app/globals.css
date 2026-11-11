@@ -111,9 +111,11 @@ code { font-size: 12px; }
   display: grid; gap: 16px; grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-template-areas:
     "funil funil funil funil funil funil funil funil vol vol vol vol"
+    "prop prop prop prop prop pad pad pad pad pad pad pad"
+    "cmp cmp cmp cmp cmp cmp cmp cmp cmp cmp cmp cmp"
     "saf saf saf ped ped ped ped ped ins ins ins ins"
     "saf saf saf sco sco sco sco sco ins ins ins ins"
-    "api api api api api api api cmp cmp cmp cmp cmp";
+    "api api api api api api api api api api api api";
 }
 .card {
   position: relative; min-width: 0; display: flex; flex-direction: column; gap: 16px;
@@ -277,6 +279,28 @@ code { font-size: 12px; }
 .cmp .up { color: var(--good-text); }
 .cmp .down { color: var(--critical-text); }
 
+/* ---------- política proposta e padrões (partes 2 e 1 do painel) ---------- */
+.passos { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.passos li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start; }
+.passos .chip { margin-top: 6px; }
+.passo-n {
+  display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px;
+  background: var(--md-primary-container); color: var(--md-primary); font: 600 13px/1 var(--font-display);
+}
+.passo-titulo { font-weight: 500; }
+.passo-texto { font-size: 13px; color: var(--md-on-surface-variant); margin-top: 2px; }
+.padroes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.padroes li { display: grid; grid-template-columns: minmax(0, 1fr) 120px auto; gap: 6px 16px; align-items: center; }
+.pad-frase { font-size: 13px; line-height: 1.45; }
+.pad-frase b { font-family: var(--font-display); font-weight: 600; }
+.pad-barra { position: relative; height: 8px; border-radius: 999px; background: var(--data-track); }
+.pad-barra > div { height: 100%; width: calc(var(--p) * 100%); border-radius: 999px; background: var(--data-soft); }
+.padroes .is-alto .pad-barra > div { background: var(--data-1); }
+.pad-barra i { position: absolute; top: -4px; bottom: -4px; left: calc(var(--media) * 100%); border-left: 2px solid var(--md-on-surface); }
+.pad-novos { font-size: 12px; white-space: nowrap; }
+.cmp tr.is-alt > * { color: var(--md-muted); cursor: default; }
+.cmp tr.is-alt:hover > * { background: transparent; }
+
 .page-foot { margin-top: 24px; color: var(--md-muted); font-size: 12px; text-align: center; }
 
 /* ---------- revisão ---------- */
@@ -333,6 +357,14 @@ code { font-size: 12px; }
 .linha { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .stats-5 { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
 .dtable td.just { text-align: left; white-space: normal; min-width: 200px; }
+.det-faixa { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0; }
+.faixa { display: inline-flex; align-items: center; height: 26px; padding: 0 12px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+.faixa.is-verde { background: #d6f5dc; color: #0b5a1c; }
+.faixa.is-amarela { background: #fff0c2; color: #5c4300; }
+.faixa.is-laranja { background: #ffe0cc; color: #7a3300; }
+.faixa.is-barreira { background: #ffdad6; color: #8c1d18; }
+.rev-arquivo { grid-column: 1 / -1; }
+.linha-botoes { display: flex; flex-wrap: wrap; gap: 8px; }
 
 @media (max-width: 1000px) {
   .rev-grid { grid-template-columns: minmax(0, 1fr); }
@@ -345,10 +377,12 @@ code { font-size: 12px; }
     grid-template-areas:
       "funil funil funil funil funil funil"
       "vol vol vol ins ins ins"
+      "prop prop prop prop prop prop"
+      "pad pad pad pad pad pad"
+      "cmp cmp cmp cmp cmp cmp"
       "saf saf saf ped ped ped"
       "saf saf saf sco sco sco"
-      "api api api api api api"
-      "cmp cmp cmp cmp cmp cmp";
+      "api api api api api api";
   }
   .topbar { grid-template-columns: 1fr auto; }
   .topbar .stamp { display: none; }
@@ -363,7 +397,7 @@ code { font-size: 12px; }
   .page { padding: 0 16px 32px; }
   .display { font-size: 32px; }
   .filters { margin-left: 0; }
-  .grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "funil" "vol" "ins" "ped" "sco" "saf" "api" "cmp"; }
+  .grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "funil" "prop" "pad" "cmp" "vol" "ins" "ped" "sco" "saf" "api"; }
   .card { padding: 14px 16px 20px; }
   .hero { font-size: 40px; }
 

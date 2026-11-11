@@ -42,7 +42,7 @@ export function InsightsCard({ padroes }: { padroes: Dados["padroes"] }) {
           </button>
         ))}
       </div>
-      <p className="insight-foot">Inadimplência projetada no histórico · {padroes.fonte}</p>
+      <p className="insight-foot">Inadimplência observada no {padroes.fonte}</p>
     </section>
   );
 }

@@ -9,12 +9,14 @@ import { CompareCard } from "./CompareCard";
 import { DotsCard } from "./DotsCard";
 import { FunnelCard } from "./FunnelCard";
 import { InsightsCard } from "./InsightsCard";
+import { PadroesCard } from "./PadroesCard";
+import { PropostaCard } from "./PropostaCard";
 import { TopBar } from "./TopBar";
 import { IconCheck } from "./ui";
 import { VolumeCard } from "./VolumeCard";
 
 export function Dashboard({ dados }: { dados: Dados }) {
-  const [polId, setPolId] = useState(dados.politicas[0].id);
+  const [polId, setPolId] = useState(dados.politicas.some((p) => p.id === "proposta") ? "proposta" : dados.politicas[0].id);
   const atual = dados.politicas[0];
   const pol = dados.politicas.find((p) => p.id === polId) ?? atual;
   const { pedidos, bureau } = dados;
@@ -65,8 +67,10 @@ export function Dashboard({ dados }: { dados: Dados }) {
             lado={{ rotulo: "Com restrição", valor: int(bureau.comRestricao), detalhe: pct(bureau.comRestricao / bureau.total) }}
           />
           <InsightsCard padroes={dados.padroes} />
+          <PropostaCard proposta={dados.proposta} />
+          <PadroesCard padroes={dados.padroes} />
           <ApiCard api={dados.api} />
-          <CompareCard politicas={dados.politicas} sel={pol.id} onSel={setPolId} />
+          <CompareCard politicas={dados.politicas} comparacao={dados.comparacao} sel={pol.id} onSel={setPolId} />
         </div>
 
         <footer className="page-foot">

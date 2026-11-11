@@ -27,6 +27,12 @@ export type Decisao = {
   ganho_esperado: number | null;
   atual_decisao: "APROVADO" | "NEGADO" | null;
   atual_valor: number | null;
+  regras_decisao: "APROVADO" | "NEGADO" | null;
+  regras_valor: number | null;
+  pontos: number | null;
+  faixa: "verde" | "amarela" | "laranja" | "barreira" | null;
+  pontos_detalhe: string | null;
+  politica: string | null;
   fonte: string;
   publicado_em: string;
   revisao_acao: "confirmar" | "aprovar" | "negar" | null;
@@ -37,6 +43,7 @@ export type Decisao = {
   decisao_final: "APROVADO" | "NEGADO";
   valor_final: number;
   diverge_atual: boolean;
+  diverge_politicas: boolean;
 };
 
 export type Revisao = {

@@ -1,7 +1,9 @@
 # Painel do time Spread
 
-Painel web dos 2.000 pedidos novos da Fortuna: funil de cada política, volume aprovado, inadimplência por safra,
-perfil do bureau, padrões no formato do manual e a saúde da integração com a API do bureau.
+Painel de experimentação dos 2.000 pedidos novos da Fortuna, com as duas partes que o manual exige: os padrões no
+formato "Clientes com X têm inadimplência de N%, contra M% da média. Afeta K clientes." e a política proposta em
+passos. Também o funil e o volume de cada política, o comparativo de ganho, a inadimplência por safra, o perfil do
+bureau e a saúde da integração com a API do bureau.
 
 Next.js 16 (App Router) com export estático, publicado pelo GitHub Actions em
 `https://guibellonia.github.io/spread-fortuna-credit/dashboard/`. A página do time continua na raiz.
@@ -9,14 +11,17 @@ Next.js 16 (App Router) com export estático, publicado pelo GitHub Actions em
 ## Como os dados chegam ao painel
 
 ```
-banco (localhost) ─┐
-                   ├─► scripts/snapshot.py ─► src/data/dashboard.json ─► git push ─► Actions ─► Pages
-API do bureau ─────┘     (token só aqui)          (só agregados)
+banco ──────────────┐
+API do bureau ──────┼─► scripts/snapshot.py ─► src/data/dashboard.json ─► git push ─► Actions ─► Pages
+saida/decisoes_     │     (token só aqui)          (só agregados)
+  mescla.csv ───────┘
 ```
 
-1. `scripts/snapshot.py` lê o banco, consulta o bureau para os 2.000 clientes novos e grava
-   `src/data/dashboard.json`.
-2. O JSON é versionado. O push na `main` dispara o build e a publicação.
+1. `src/gerar_decisoes.py` e `src/politica_mescla.py` gravam `saida/decisoes_mescla.csv` (proposta, regras, atual
+   e faixa de risco), a mesma fonte da revisão.
+2. `scripts/snapshot.py` lê o banco, o bureau e esse CSV e grava `src/data/dashboard.json`. Se existir
+   `saida/comparacao_mescla_*.csv` (de `politica_mescla.py --comparar`), entra no comparativo.
+3. O JSON é versionado. O push na `main` dispara o build e a publicação.
 
 ### Atualizar os dados
 
@@ -28,9 +33,9 @@ Da raiz do repositório, com o `.env` preenchido (modelo em `.env.example`):
 git add site/src/data/dashboard.json && git commit -m "painel: atualiza dados" && git push
 ```
 
-O script confere a política atual contra o histórico (hoje: 100% das decisões e valores) e imprime o resumo de
-cada política. Para mudar ou incluir uma política, edite `politicas()` em `scripts/snapshot.py`: cada uma é uma
-lista de passos em ordem, e o funil do painel segue essa ordem.
+O script confere a política atual contra o histórico (hoje: 100% das decisões e valores), confere o funil das
+regras contra o CSV e imprime o resumo de cada política. A proposta é definida em `src/politica.py`; o painel só
+a mostra.
 
 ## Integração com o bureau
 

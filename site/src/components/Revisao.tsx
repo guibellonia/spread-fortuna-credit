@@ -7,13 +7,17 @@ import { supabase, supabaseConfigurado, type Bureau, type Decisao, type Revisao 
 import { TopBar } from "./TopBar";
 import { IconCheck } from "./ui";
 
-type Filtro = "pendentes" | "divergentes" | "revisadas" | "todas";
+type Filtro = "pendentes" | "divergentes" | "laranja" | "revisadas" | "todas";
 const FILTROS: [Filtro, string][] = [
   ["pendentes", "Sem revisão"],
   ["divergentes", "Diferente da atual"],
+  ["laranja", "Faixa laranja"],
   ["revisadas", "Revisadas"],
   ["todas", "Todas"],
 ];
+const FAIXA_TEXTO: Record<string, string> = {
+  verde: "Verde", amarela: "Amarela", laranja: "Laranja", barreira: "Barreira",
+};
 const ACOES: [Rev["acao"], string][] = [["confirmar", "Confirmar IA"], ["aprovar", "Aprovar com valor"], ["negar", "Negar"]];
 const ACAO_TEXTO: Record<Rev["acao"], string> = { confirmar: "confirmou a IA", aprovar: "aprovou", negar: "negou" };
 const BUREAU_CAMPOS: [string, string, (v: number) => string][] = [
@@ -144,6 +148,7 @@ function Area({ onResumo }: { onResumo: (s: string) => void }) {
     if (filtro === "pendentes") q = q.is("revisao_acao", null);
     if (filtro === "revisadas") q = q.not("revisao_acao", "is", null);
     if (filtro === "divergentes") q = q.eq("diverge_atual", true);
+    if (filtro === "laranja") q = q.eq("faixa", "laranja");
     if (termo) q = q.ilike("id_pedido", `%${termo}%`);
     q.then(({ data, count, error }) => {
       if (error) return setErro("Não consegui carregar a fila.");
@@ -220,6 +225,8 @@ function Area({ onResumo }: { onResumo: (s: string) => void }) {
           <p className="muted">Escolha um pedido na fila para ver a decisão da IA, consultar o bureau e registrar a revisão.</p>
         </section>
       )}
+
+      <ArquivoEntrega />
 
       <section className="card rev-hist" aria-label="Revisões recentes">
         <header className="card-head"><h2 className="card-title">Revisões recentes</h2></header>
@@ -324,13 +331,20 @@ function Detalhe({ id, onSalvo }: { id: string; onSalvo: () => void }) {
       </header>
 
       <div className="det-grid">
-        <Info rotulo="Decisão da IA" valor={d.decisao === "APROVADO" ? moeda(d.valor_aprovado) : "Negado"} />
+        <Info rotulo={`Decisão da IA${d.politica ? ` (${d.politica})` : ""}`} valor={dec(d.decisao, d.valor_aprovado)} />
+        <Info rotulo="Política atual" valor={dec(d.atual_decisao, d.atual_valor)} />
+        <Info rotulo="Regras do time" valor={dec(d.regras_decisao, d.regras_valor)} />
         <Info rotulo="Solicitado" valor={`${moeda(d.valor_solicitado)} · ${d.prazo_meses}x`} />
-        <Info rotulo="Política atual" valor={d.atual_decisao ? (d.atual_decisao === "APROVADO" ? moeda(d.atual_valor ?? 0) : "Negado") : "—"} />
         <Info rotulo="Chance de não pagar" valor={d.p_nao_paga != null ? pct(d.p_nao_paga) : "—"} />
         <Info rotulo="Ganho esperado" valor={d.ganho_esperado != null ? moeda(d.ganho_esperado) : "—"} />
       </div>
       {d.motivo && <p className="det-motivo">{d.motivo}</p>}
+      {d.faixa && (
+        <p className="det-faixa">
+          <span className={`faixa is-${d.faixa}`}>Faixa {FAIXA_TEXTO[d.faixa]}{d.faixa !== "barreira" ? ` · ${d.pontos} ponto(s)` : ""}</span>
+          <span className="muted">{d.pontos_detalhe}</span>
+        </p>
+      )}
       {d.revisao_acao && (
         <p className="muted">
           Última revisão: {d.revisao_por} {ACAO_TEXTO[d.revisao_acao]}
@@ -383,6 +397,74 @@ function Detalhe({ id, onSalvo }: { id: string; onSalvo: () => void }) {
         {msg && <p className={msg.ok ? "ok" : "erro"} role="status">{msg.texto}</p>}
         <button type="submit" className="btn sl" disabled={salvando}>{salvando ? "Registrando…" : "Registrar revisão"}</button>
       </form>
+    </section>
+  );
+}
+
+function dec(decisao: string | null, valor: number | null) {
+  if (!decisao) return "—";
+  return decisao === "APROVADO" ? moeda(valor ?? 0) : "Negado";
+}
+
+/** CSV no formato do manual (5.2): cabeçalho exato, UTF-8 sem BOM, vírgula, ponto decimal com 2 casas, LF. */
+function ArquivoEntrega() {
+  const sb = supabase()!;
+  const [msg, setMsg] = useState<{ ok: boolean; texto: string } | null>(null);
+  const [andando, setAndando] = useState(false);
+
+  async function baixar(comRevisoes: boolean) {
+    setAndando(true);
+    setMsg(null);
+    const linhas: Decisao[] = [];
+    for (let de = 0; ; de += 1000) {
+      const { data, error } = await sb.from("decisoes_revisadas").select("*").order("id_pedido").range(de, de + 999);
+      if (error) {
+        setAndando(false);
+        return setMsg({ ok: false, texto: "Não consegui ler as decisões." });
+      }
+      linhas.push(...((data ?? []) as Decisao[]));
+      if (!data || data.length < 1000) break;
+    }
+    setAndando(false);
+    const ids = new Set(linhas.map((l) => l.id_pedido));
+    if (linhas.length !== 2000 || ids.size !== 2000) {
+      return setMsg({ ok: false, texto: `Esperava 2.000 pedidos únicos e vieram ${linhas.length}. Nada foi baixado.` });
+    }
+    const corpo = linhas.map((l) => {
+      const decisao = comRevisoes ? l.decisao_final : l.decisao;
+      const valor = decisao === "APROVADO" ? Number(comRevisoes ? l.valor_final : l.valor_aprovado) : 0;
+      return `${l.id_pedido},${decisao},${valor.toFixed(2)}`;
+    });
+    const csv = ["id_pedido,decisao,valor_aprovado", ...corpo].join("\n") + "\n";
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    a.download = comRevisoes ? "spread_final_com_revisoes.csv" : "spread_final.csv";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    const aprovados = linhas.filter((l) => (comRevisoes ? l.decisao_final : l.decisao) === "APROVADO").length;
+    setMsg({ ok: true, texto: `${a.download}: 2.000 pedidos, ${int(aprovados)} aprovados.` });
+  }
+
+  return (
+    <section className="card rev-arquivo" aria-label="Arquivo de entrega">
+      <header className="card-head"><h2 className="card-title">Arquivo de entrega</h2></header>
+      <p className="muted">
+        CSV no formato do manual, com as decisões publicadas: iguais ao <code>saida/spread_final.csv</code> que o pipeline gera.
+        Valide no Teams (checkpoint 14h15) e entregue como <code>spread_final.csv</code> até 15h30.
+      </p>
+      <div className="linha-botoes">
+        <button type="button" className="btn sl" onClick={() => baixar(false)} disabled={andando}>
+          {andando ? "Gerando…" : "Baixar CSV da IA"}
+        </button>
+        <button type="button" className="btn-tonal sl" onClick={() => baixar(true)} disabled={andando}>
+          Com as revisões do analista
+        </button>
+      </div>
+      <p className="foot">
+        A versão com revisões troca a decisão da IA pela do analista onde houve revisão. Antes de entregar assim,
+        confirme com a organização: arquivo que a solução não gerou desclassifica.
+      </p>
+      {msg && <p className={msg.ok ? "ok" : "erro"} role="status">{msg.texto}</p>}
     </section>
   );
 }

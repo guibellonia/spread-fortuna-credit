@@ -10,7 +10,7 @@ O bureau é consultado com retry e cache em disco (data/cache/bureau/); rodar de
 """
 from __future__ import annotations
 
-import csv
+
 import json
 import re
 import statistics
@@ -28,23 +28,14 @@ sys.path.insert(0, str(AQUI))
 from bureau_client import LOG, ROOT, Bureau  # noqa: E402
 
 SAIDA = AQUI.parent / "src" / "data" / "dashboard.json"
-PADROES = ROOT / "analysis" / "out" / "patterns.csv"
+DECISOES = ROOT / "saida" / "decisoes_mescla.csv"          # src/politica_mescla.py: proposta, regras e faixa
+COMPARACAO = ROOT / "saida" / "comparacao_mescla_{}.csv"   # src/politica_mescla.py --comparar
 MADURO_ATE = pd.Timestamp("2025-09-30")  # 12+ meses de contrato na data de corte (30/09/2026)
 JUROS = 0.03
 TETO = 30000.0
 DIAS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
-
-# Padrões em destaque no painel, no formato do manual. Os números vêm de analysis/out/patterns.csv.
-DESTAQUES = [
-    ("Saídas / entradas", "100%+", "saídas maiores que as entradas no ano antes do pedido"),
-    ("Meses com cheque especial (12m)", "3-5", "3 a 5 meses de cheque especial no ano antes do pedido"),
-    ("Renda real / declarada", "<60%", "renda na conta abaixo de 60% da declarada"),
-    ("Parcela / renda declarada", "30%+", "parcela acima de 30% da renda declarada"),
-    ("Restrições ativas", "1", "1 restrição ativa no bureau"),
-    ("Consultas ao CPF em 90 dias", "4+", "4 ou mais consultas ao CPF em 90 dias"),
-    ("Prazo (meses)", "6", "prazo de 6 meses"),
-    ("Tipo de vínculo", "aposentado", "vínculo de aposentado"),
-]
+NOMES = {"atual": "Atual", "regras_bilosca": "Regras do time", "hibrida": "Proposta (híbrida)",
+         "so_aperta": "Híbrida que só aperta", "mescla": "Híbrida que só aperta"}
 
 
 def q(sql: str) -> pd.DataFrame:
@@ -84,6 +75,7 @@ def carrega() -> tuple[pd.DataFrame, pd.DataFrame]:
     mov = mov[(mov.lag >= 1) & (mov.lag <= 12)]
     f = pd.DataFrame({
         "ent_media": mov.groupby("id_cliente").ent.mean(),
+        "ent_cv": mov.groupby("id_cliente").ent.std() / mov.groupby("id_cliente").ent.mean().replace(0, np.nan),
         "saida_maior_3m": mov[(mov.lag <= 3) & (mov.sai > mov.ent)].groupby("id_cliente").size() > 0,
         "cheque_2m": mov[(mov.lag <= 2) & (mov.cheq > 0)].groupby("id_cliente").size() > 0,
     })
@@ -94,7 +86,8 @@ def carrega() -> tuple[pd.DataFrame, pd.DataFrame]:
     ped["parcela_sol"] = ped.valor_solicitado / fator(ped.prazo_meses)
     ped["parc_real"] = ped.parcela_sol / ped.renda_real
 
-    hist_bureau = q("""select id_pedido, score, restricoes_ativas as restr, consultas_90_dias as consultas
+    hist_bureau = q("""select id_pedido, score, restricoes_ativas as restr, consultas_90_dias as consultas,
+                              parcelas_outras_instituicoes::float as outras
                        from hackathon.bureau""")
     return ped, hist_bureau
 
@@ -105,8 +98,9 @@ def bureau_novos(novos: pd.DataFrame) -> pd.DataFrame:
     if falhas:
         print(f"atenção: {len(falhas)} clientes sem bureau (ficam fora das políticas e aparecem no painel)", file=sys.stderr)
     b = pd.DataFrame([{**r.dados} for r in res if r.dados])
-    b = b.rename(columns={"restricoes_ativas": "restr", "consultas_90_dias": "consultas"})
-    return novos.merge(b[["id_cliente", "score", "restr", "consultas"]], on="id_cliente", how="left")
+    b = b.rename(columns={"restricoes_ativas": "restr", "consultas_90_dias": "consultas",
+                          "parcelas_outras_instituicoes": "outras"})
+    return novos.merge(b[["id_cliente", "score", "restr", "consultas", "outras"]], on="id_cliente", how="left")
 
 
 def confere_politica_atual(hist: pd.DataFrame) -> float:
@@ -119,35 +113,113 @@ def confere_politica_atual(hist: pd.DataFrame) -> float:
     return float((bate_dec & bate_val).mean())
 
 
-def politicas(n: pd.DataFrame) -> tuple[list[dict], pd.Series]:
-    valor_atual = np.minimum.reduce([n.valor_solicitado, np.full(len(n), TETO), valor_cabe(0.30 * n.renda, n.prazo_meses)])
-    tem_bureau = n.score.notna()
-    conta = ("Conta sem aperto nos 3 meses", ~n.apertada)
-    parcela = ("Parcela até 28% da renda real", n.parc_real <= 0.28)
+def valor_atual(n: pd.DataFrame) -> np.ndarray:
+    return np.minimum.reduce([n.valor_solicitado, np.full(len(n), TETO), valor_cabe(0.30 * n.renda, n.prazo_meses)])
+
+
+def funil(n: pd.DataFrame, passos: list) -> tuple[list[dict], pd.Series]:
+    vivo = n.score.notna()
+    out = [{"rotulo": "Pedidos", "restantes": int(len(n))}]
+    for rotulo, cond in passos:
+        vivo = vivo & cond.fillna(False)
+        out.append({"rotulo": rotulo, "restantes": int(vivo.sum())})
+    return out, vivo
+
+
+# ordem em que src/politica.py decide: o motivo que fica é o do passo mais forte
+PASSOS_PROPOSTA = [
+    ("Sem restrição ativa", "restrição ativa no bureau"),
+    ("Conta sem aperto nos 3 meses", "conta apertada"),
+    ("Parcela até 28% da renda real", "parcela acima de 28% da renda real"),
+]
+
+
+def politicas(n: pd.DataFrame) -> list[dict]:
+    """Atual: reprodução própria (bate 100% com o histórico). Regras e proposta: o CSV do src/politica_mescla.py,
+    o mesmo que vai para o Teams (a proposta é idêntica ao saida/spread_final.csv)."""
+    va = valor_atual(n)
+    f_atual, ap_atual = funil(n, [("Score acima de 600", n.score > 600), ("Renda acima de R$ 2 mil", n.renda > 2000),
+                                  ("Sem restrição ativa", n.restr == 0)])
+    atual = pd.DataFrame({"aprovado": ap_atual, "valor": np.where(ap_atual, va, 0.0)}, index=n.index)
+
+    parc_ref_real = (va / fator(n.prazo_meses)) / n.renda_real  # parcela do valor que a atual concederia
+    f_regras, ap_regras = funil(n, [("Score acima de 600", n.score > 600), ("Renda acima de R$ 2 mil", n.renda > 2000),
+                                    ("Sem restrição ativa", n.restr == 0),
+                                    ("Conta sem aperto nos 3 meses", ~n.saida_maior_3m),
+                                    ("Parcela até 28% da renda real", parc_ref_real <= 0.28)])
+    csv_regras = n.regras_decisao.eq("APROVADO")
+    if (csv_regras != ap_regras).any():
+        print(f"atenção: o funil das regras difere do CSV em {(csv_regras != ap_regras).sum()} pedidos", file=sys.stderr)
+    regras = pd.DataFrame({"aprovado": csv_regras, "valor": n.regras_valor.astype(float)}, index=n.index)
+
+    motivo = n.motivo.fillna("")
+    f_prop = [{"rotulo": "Pedidos", "restantes": int(len(n))}]
+    restantes = len(n)
+    for rotulo, inicio in PASSOS_PROPOSTA:
+        restantes -= int(motivo.str.startswith(inicio).sum())
+        f_prop.append({"rotulo": rotulo, "restantes": restantes})
+    ap_prop = n.decisao.eq("APROVADO")
+    f_prop.append({"rotulo": "Risco até 17,5% e ganho positivo", "restantes": int(ap_prop.sum())})
+    prop = pd.DataFrame({"aprovado": ap_prop, "valor": n.valor_aprovado_ia.astype(float)}, index=n.index)
+
     return [
-        dict(id="atual", nome="Atual", valor=valor_atual, passos=[
-            ("Score acima de 600", n.score > 600),
-            ("Renda acima de R$ 2 mil", n.renda > 2000),
-            ("Sem restrição ativa", n.restr == 0)]),
-        dict(id="piso", nome="Piso seguro", valor=valor_atual, passos=[
-            ("Score acima de 600", n.score > 600),
-            ("Renda acima de R$ 2 mil", n.renda > 2000),
-            ("Sem restrição ativa", n.restr == 0), conta, parcela]),
-        dict(id="ampliada", nome="Ampliada", valor=valor_atual, passos=[
-            ("Score a partir de 450", n.score >= 450),
-            ("Renda acima de R$ 2 mil", n.renda > 2000),
-            ("Até 1 restrição", n.restr <= 1), conta, parcela]),
-    ], tem_bureau
+        resumo_politica(n, {"id": "atual", "nome": "Atual", "funil": f_atual}, atual, None),
+        resumo_politica(n, {"id": "regras", "nome": "Regras do time", "funil": f_regras}, regras, atual),
+        resumo_politica(n, {"id": "proposta", "nome": "Proposta", "funil": f_prop}, prop, atual),
+    ]
 
 
-def aplica(n: pd.DataFrame, pol: dict, tem_bureau) -> pd.DataFrame:
-    vivo = tem_bureau.copy()
-    funil = [{"rotulo": "Pedidos", "restantes": int(len(n))}]
-    for rotulo, cond in pol["passos"]:
-        vivo &= cond.fillna(False)
-        funil.append({"rotulo": rotulo, "restantes": int(vivo.sum())})
-    pol["funil"] = funil
-    return pd.DataFrame({"aprovado": vivo, "valor": np.where(vivo, pol["valor"], 0.0)}, index=n.index)
+def proposta_passos(n: pd.DataFrame) -> dict:
+    """Parte 2 do painel (manual 5.1): a política proposta em passos, na ordem em que são aplicados."""
+    motivo = n.motivo.fillna("")
+    neg = lambda inicio: int(motivo.str.startswith(inicio).sum())  # noqa: E731
+    risco = int((n.decisao.eq("NEGADO") & ~motivo.str.startswith(tuple(m for _, m in PASSOS_PROPOSTA))).sum())
+    ap = n.decisao.eq("APROVADO")
+    passos = [
+        {"titulo": "Barreira · restrição", "texto": "Nega quem tem restrição ativa no bureau.",
+         "negados": neg("restrição ativa no bureau")},
+        {"titulo": "Barreira · conta apertada",
+         "texto": "Nega quem teve saídas maiores que as entradas em algum dos 3 meses antes do pedido.",
+         "negados": neg("conta apertada")},
+        {"titulo": "Barreira · parcela pesada",
+         "texto": "Nega quando a parcela do valor que a política atual concederia passa de 28% da renda real "
+                  "(a menor entre a renda declarada e a média de entradas da conta).",
+         "negados": neg("parcela acima de 28% da renda real")},
+        {"titulo": "Risco e valor · modelo",
+         "texto": "Um modelo treinado no histórico (corrigido para contratos ainda abertos) estima, para cada valor de "
+                  "100% a 10% do solicitado, a chance de pagar em dia, com atraso ou não pagar. Aprova o valor de "
+                  "maior ganho esperado (+15% em dia, +5% com atraso, −60% sem pagar) entre os que têm até 17,5% de "
+                  "chance de não pagar. Se nenhum valor serve, nega.",
+         "negados": risco},
+        {"titulo": "Limites do valor",
+         "texto": "Parcela até 28% da renda declarada, valor em múltiplos de R$ 100, entre R$ 500 e R$ 30 mil e "
+                  "nunca acima do solicitado.",
+         "reduzidos": int((ap & (n.valor_aprovado_ia < n.valor_solicitado - 0.005)).sum())},
+        {"titulo": "Analista decide",
+         "texto": "O score não é filtro: depois das barreiras ele não separa quem paga. A faixa de risco "
+                  "(pontuação do Daniel) e a divergência com a política atual montam a fila de revisão; o analista "
+                  "confirma, aprova com outro valor ou nega, com justificativa registrada.",
+         "divergentes": int((n.decisao != n.atual_decisao).sum()), "laranja": int(n.faixa.eq("laranja").sum())},
+    ]
+    return {"passos": passos, "aprovados": int(ap.sum()), "volume": round(float(n.valor_aprovado_ia.sum()), 2),
+            "faixas": {k: int(v) for k, v in n.faixa.value_counts().items()}}
+
+
+def comparacao() -> list[dict]:
+    """Resultado de cada política pelos três avaliadores e fora da amostra (src/politica_mescla.py --comparar)."""
+    arq_nov, arq_obs = Path(str(COMPARACAO).format("novos")), Path(str(COMPARACAO).format("observado"))
+    if not (arq_nov.exists() and arq_obs.exists()):
+        print("atenção: sem saida/comparacao_mescla_*.csv; rode src/politica_mescla.py --comparar", file=sys.stderr)
+        return []
+    nov, obs = pd.read_csv(arq_nov, index_col=0), pd.read_csv(arq_obs, index_col=0)
+    out = []
+    for nome, r in nov.iterrows():
+        ganhos = [r[f"ganho_{c}"] for c in ("gbm_corrigido", "sobrevivencia", "logistico")]
+        out.append({"id": nome, "nome": NOMES.get(nome, nome), "aprovados": int(r.aprovados), "volume": float(r.volume),
+                    "ganhoMin": round(float(min(ganhos))), "ganhoMax": round(float(max(ganhos))),
+                    "foraAmostra": round(float(obs.loc[nome, "ganho_vs_atual"])) if nome in obs.index else None,
+                    "calotesForaAmostra": int(obs.loc[nome, "nao_pagaram"]) if nome in obs.index else None})
+    return out
 
 
 def resumo_politica(n: pd.DataFrame, pol: dict, dec: pd.DataFrame, base: pd.DataFrame | None) -> dict:
@@ -253,21 +325,49 @@ def pedidos_novos(n: pd.DataFrame, hist: pd.DataFrame) -> dict:
     }
 
 
-def padroes() -> dict:
-    with PADROES.open(encoding="utf-8") as f:
-        linhas = {(r["variavel"], r["grupo"]): r for r in csv.DictReader(f)}
-    itens, medias = [], []
-    for var, grupo, texto in DESTAQUES:
-        r = linhas.get((var, grupo))
-        if not r:
-            print(f"atenção: padrão {var} / {grupo} não está em {PADROES.name}", file=sys.stderr)
+def sinais(d: pd.DataFrame, valor: pd.Series) -> dict[str, pd.Series]:
+    """Os sinais que a análise do time encontrou, medidos do mesmo jeito no histórico e nos novos.
+    `valor` é o valor aprovado (histórico) ou o que a política atual concederia (novos)."""
+    parcela = valor / fator(d.prazo_meses)
+    real = parcela / d.renda_real
+    comprom = (parcela + d.outras.fillna(0)) / d.renda_real
+    vinc = d.tipo_vinculo
+    return {
+        "saídas maiores que as entradas em algum dos 3 meses antes do pedido": d.saida_maior_3m,
+        "parcela acima de 28% da renda real": real > 0.28,
+        "parcela mais dívidas em outras instituições acima de 35% da renda real": comprom >= 0.35,
+        "entradas da conta instáveis (variação de 16% ou mais)": d.ent_cv >= 0.16,
+        "prazo de 6 ou 12 meses": d.prazo_meses.isin([6, 12]),
+        "prazo de 36 meses": d.prazo_meses == 36,
+        "vínculo de autônomo ou empresário": vinc.isin(["autonomo", "empresario"]),
+        "vínculo de aposentado": vinc == "aposentado",
+        "1 restrição ativa no bureau": d.restr >= 1,
+        "score até 600": d.score <= 600,
+        "score de 601 a 700": d.score.between(601, 700),
+        "score acima de 800": d.score > 800,
+        "nenhuma das duas barreiras (conta folgada e parcela até 28% da renda real)": ~d.saida_maior_3m & (real <= 0.28),
+    }
+
+
+def padroes(hist: pd.DataFrame, n: pd.DataFrame) -> dict:
+    """Parte 1 do painel (manual 5.1): padrões no formato do manual, medidos nos contratos maduros (12+ meses)."""
+    m = hist[(hist.decisao == "aprovado") & (hist.data_pedido <= MADURO_ATE)].copy()
+    m["inad"] = m.situacao_final == "inadimplente"
+    media = float(m.inad.mean())
+    s_hist, s_novos = sinais(m, m.valor_aprovado), sinais(n, pd.Series(valor_atual(n), index=n.index))
+    itens = []
+    for grupo, mascara in s_hist.items():
+        mascara = mascara.fillna(False).astype(bool)
+        k = int(mascara.sum())
+        if k < 30:
             continue
-        taxa, vs = float(r["inad_proj"]), float(r["vs_media"])
-        medias.append(taxa / vs)
-        itens.append({"grupo": texto, "taxa": round(min(taxa, 1.0), 4), "aprox": taxa >= 0.995,
-                      "clientes": int(r["clientes"]), "vsMedia": round(vs, 2)})
-    return {"media": round(statistics.mean(medias), 4) if medias else None, "itens": itens,
-            "fonte": "analysis/out/patterns.csv"}
+        taxa = float(m.inad[mascara].mean())
+        itens.append({"grupo": grupo, "taxa": round(taxa, 4), "aprox": False, "clientes": k,
+                      "vsMedia": round(taxa / media, 2),
+                      "novos": int(s_novos[grupo].fillna(False).astype(bool).sum())})
+    itens.sort(key=lambda i: -i["vsMedia"])
+    return {"media": round(media, 4), "itens": itens, "base": int(len(m)),
+            "fonte": f"histórico maduro: {len(m):,} contratos aprovados com 12+ meses".replace(",", ".")}
 
 
 def sem_ids(texto: str) -> None:
@@ -285,9 +385,13 @@ def main() -> None:
     print(f"política atual reproduzida em {conf:.2%} das decisões do histórico", file=sys.stderr)
 
     n = bureau_novos(ped[ped.tipo_base == "novo"].reset_index(drop=True))
-    pols, tem_bureau = politicas(n)
-    decs = [aplica(n, p, tem_bureau) for p in pols]
-    resumo = [resumo_politica(n, p, d, None if i == 0 else decs[0]) for i, (p, d) in enumerate(zip(pols, decs))]
+    if not DECISOES.exists():
+        raise SystemExit("falta saida/decisoes_mescla.csv: cd src && python gerar_decisoes.py && python politica_mescla.py")
+    dec = pd.read_csv(DECISOES, dtype={"id_pedido": str}).rename(columns={"valor_aprovado": "valor_aprovado_ia"})
+    n = n.drop(columns=["decisao", "valor_aprovado"]).merge(dec, on="id_pedido", how="left")
+    if n.decisao.isna().any():
+        raise SystemExit("decisoes_mescla.csv não cobre os 2.000 pedidos novos")
+    resumo = politicas(n)
     for r in resumo:
         print(f"  {r['nome']}: {r['aprovados']} aprovados · R$ {r['volume']:,.2f}", file=sys.stderr)
 
@@ -300,7 +404,9 @@ def main() -> None:
         "safras": safras(hist),
         "bureau": bureau_perfil(n),
         "api": api_bureau(n),
-        "padroes": padroes(),
+        "padroes": padroes(hist, n),
+        "proposta": proposta_passos(n),
+        "comparacao": comparacao(),
     }
     texto = json.dumps(dados, ensure_ascii=False, indent=1)
     sem_ids(texto)

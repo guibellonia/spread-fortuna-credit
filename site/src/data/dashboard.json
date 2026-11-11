@@ -1,5 +1,5 @@
 {
- "geradoEm": "2026-11-11T09:51",
+ "geradoEm": "2026-11-11T11:53",
  "corte": "2026-09-30",
  "reproducaoAtual": 1.0,
  "pedidos": {
@@ -51,23 +51,19 @@
    "funil": [
     {
      "rotulo": "Pedidos",
-     "restantes": 2000,
-     "regra": null
+     "restantes": 2000
     },
     {
      "rotulo": "Score acima de 600",
-     "restantes": 1555,
-     "regra": "Score acima de 600"
+     "restantes": 1555
     },
     {
      "rotulo": "Renda acima de R$ 2 mil",
-     "restantes": 1423,
-     "regra": "Renda acima de R$ 2 mil"
+     "restantes": 1423
     },
     {
      "rotulo": "Sem restrição ativa",
-     "restantes": 1145,
-     "regra": "Sem restrição ativa"
+     "restantes": 1145
     }
    ],
    "aprovados": 1145,
@@ -97,58 +93,52 @@
    ]
   },
   {
-   "id": "piso",
-   "nome": "Piso seguro",
+   "id": "regras",
+   "nome": "Regras do time",
    "funil": [
     {
      "rotulo": "Pedidos",
-     "restantes": 2000,
-     "regra": null
+     "restantes": 2000
     },
     {
      "rotulo": "Score acima de 600",
-     "restantes": 1555,
-     "regra": "Score acima de 600"
+     "restantes": 1555
     },
     {
      "rotulo": "Renda acima de R$ 2 mil",
-     "restantes": 1423,
-     "regra": "Renda acima de R$ 2 mil"
+     "restantes": 1423
     },
     {
      "rotulo": "Sem restrição ativa",
-     "restantes": 1145,
-     "regra": "Sem restrição ativa"
+     "restantes": 1145
     },
     {
      "rotulo": "Conta sem aperto nos 3 meses",
-     "restantes": 1111,
-     "regra": "Conta sem aperto nos 3 meses"
+     "restantes": 1121
     },
     {
      "rotulo": "Parcela até 28% da renda real",
-     "restantes": 1035,
-     "regra": "Parcela até 28% da renda real"
+     "restantes": 1043
     }
    ],
-   "aprovados": 1035,
-   "volume": 7638200.0,
+   "aprovados": 1043,
+   "volume": 7688900.0,
    "reduzidos": 0,
    "porVinculo": [
     {
      "vinculo": "assalariado",
-     "volume": 4321100.0,
-     "pedidos": 578
+     "volume": 4355200.0,
+     "pedidos": 582
     },
     {
      "vinculo": "autonomo",
-     "volume": 1970400.0,
-     "pedidos": 263
+     "volume": 1979700.0,
+     "pedidos": 265
     },
     {
      "vinculo": "aposentado",
-     "volume": 713400.0,
-     "pedidos": 102
+     "volume": 720700.0,
+     "pedidos": 104
     },
     {
      "vinculo": "empresario",
@@ -159,79 +149,69 @@
    "vsAtual": {
     "aprovaAMais": 0,
     "volumeAMais": 0.0,
-    "negaAMais": 110,
-    "volumeAMenos": 1218249.87,
+    "negaAMais": 102,
+    "volumeAMenos": 1167549.87,
     "valorMudou": 0,
-    "iguais": 1890
+    "iguais": 1898
    }
   },
   {
-   "id": "ampliada",
-   "nome": "Ampliada",
+   "id": "proposta",
+   "nome": "Proposta",
    "funil": [
     {
      "rotulo": "Pedidos",
-     "restantes": 2000,
-     "regra": null
+     "restantes": 2000
     },
     {
-     "rotulo": "Score a partir de 450",
-     "restantes": 1999,
-     "regra": "Score a partir de 450"
-    },
-    {
-     "rotulo": "Renda acima de R$ 2 mil",
-     "restantes": 1831,
-     "regra": "Renda acima de R$ 2 mil"
-    },
-    {
-     "rotulo": "Até 1 restrição",
-     "restantes": 1669,
-     "regra": "Até 1 restrição"
+     "rotulo": "Sem restrição ativa",
+     "restantes": 1623
     },
     {
      "rotulo": "Conta sem aperto nos 3 meses",
-     "restantes": 1581,
-     "regra": "Conta sem aperto nos 3 meses"
+     "restantes": 1588
     },
     {
      "rotulo": "Parcela até 28% da renda real",
-     "restantes": 1465,
-     "regra": "Parcela até 28% da renda real"
+     "restantes": 1457
+    },
+    {
+     "rotulo": "Risco até 17,5% e ganho positivo",
+     "restantes": 1411
     }
    ],
-   "aprovados": 1465,
-   "volume": 10598600.0,
-   "reduzidos": 0,
+   "aprovados": 1411,
+   "volume": 9400700.0,
+   "reduzidos": 340,
    "porVinculo": [
     {
      "vinculo": "assalariado",
-     "volume": 5729700.0,
-     "pedidos": 789
+     "volume": 5436700.0,
+     "pedidos": 803
     },
     {
      "vinculo": "autonomo",
-     "volume": 2815700.0,
-     "pedidos": 383
-    },
-    {
-     "vinculo": "empresario",
-     "volume": 1058000.0,
-     "pedidos": 145
+     "volume": 2229100.0,
+     "pedidos": 338
     },
     {
      "vinculo": "aposentado",
-     "volume": 995200.0,
-     "pedidos": 148
+     "volume": 899300.0,
+     "pedidos": 140
+    },
+    {
+     "vinculo": "empresario",
+     "volume": 835600.0,
+     "pedidos": 130
     }
    ],
    "vsAtual": {
-    "aprovaAMais": 430,
-    "volumeAMais": 2960400.0,
-    "negaAMais": 110,
-    "volumeAMenos": 1218249.87,
-    "valorMudou": 0,
-    "iguais": 1460
+    "aprovaAMais": 384,
+    "volumeAMais": 2097400.0,
+    "negaAMais": 118,
+    "volumeAMenos": 1278549.87,
+    "valorMudou": 215,
+    "iguais": 1283
    }
   }
  ],
@@ -495,65 +475,183 @@
   }
  },
  "padroes": {
-  "media": 0.1589,
+  "media": 0.1364,
   "itens": [
    {
-    "grupo": "saídas maiores que as entradas no ano antes do pedido",
-    "taxa": 1.0,
-    "aprox": true,
-    "clientes": 102,
-    "vsMedia": 6.66
-   },
-   {
-    "grupo": "3 a 5 meses de cheque especial no ano antes do pedido",
-    "taxa": 1.0,
-    "aprox": true,
-    "clientes": 76,
-    "vsMedia": 6.49
-   },
-   {
-    "grupo": "renda na conta abaixo de 60% da declarada",
-    "taxa": 0.9205,
+    "grupo": "saídas maiores que as entradas em algum dos 3 meses antes do pedido",
+    "taxa": 0.9104,
     "aprox": false,
-    "clientes": 55,
-    "vsMedia": 5.79
+    "clientes": 67,
+    "vsMedia": 6.67,
+    "novos": 97
    },
    {
-    "grupo": "parcela acima de 30% da renda declarada",
-    "taxa": 0.6467,
+    "grupo": "parcela acima de 28% da renda real",
+    "taxa": 0.5133,
     "aprox": false,
-    "clientes": 363,
-    "vsMedia": 4.07
+    "clientes": 226,
+    "vsMedia": 3.76,
+    "novos": 171
    },
    {
-    "grupo": "1 restrição ativa no bureau",
-    "taxa": 0.3941,
+    "grupo": "parcela mais dívidas em outras instituições acima de 35% da renda real",
+    "taxa": 0.2308,
     "aprox": false,
-    "clientes": 127,
-    "vsMedia": 2.48
+    "clientes": 676,
+    "vsMedia": 1.69,
+    "novos": 510
    },
    {
-    "grupo": "4 ou mais consultas ao CPF em 90 dias",
-    "taxa": 0.2957,
+    "grupo": "prazo de 6 ou 12 meses",
+    "taxa": 0.1849,
     "aprox": false,
-    "clientes": 591,
-    "vsMedia": 1.86
+    "clientes": 779,
+    "vsMedia": 1.35,
+    "novos": 515
    },
    {
-    "grupo": "prazo de 6 meses",
-    "taxa": 0.2564,
+    "grupo": "entradas da conta instáveis (variação de 16% ou mais)",
+    "taxa": 0.1823,
     "aprox": false,
-    "clientes": 308,
-    "vsMedia": 1.61
+    "clientes": 565,
+    "vsMedia": 1.34,
+    "novos": 440
+   },
+   {
+    "grupo": "vínculo de autônomo ou empresário",
+    "taxa": 0.1679,
+    "aprox": false,
+    "clientes": 941,
+    "vsMedia": 1.23,
+    "novos": 735
+   },
+   {
+    "grupo": "score acima de 800",
+    "taxa": 0.1402,
+    "aprox": false,
+    "clientes": 1127,
+    "vsMedia": 1.03,
+    "novos": 592
+   },
+   {
+    "grupo": "score de 601 a 700",
+    "taxa": 0.1348,
+    "aprox": false,
+    "clientes": 586,
+    "vsMedia": 0.99,
+    "novos": 321
+   },
+   {
+    "grupo": "nenhuma das duas barreiras (conta folgada e parcela até 28% da renda real)",
+    "taxa": 0.0838,
+    "aprox": false,
+    "clientes": 2554,
+    "vsMedia": 0.61,
+    "novos": 1742
+   },
+   {
+    "grupo": "prazo de 36 meses",
+    "taxa": 0.0825,
+    "aprox": false,
+    "clientes": 727,
+    "vsMedia": 0.6,
+    "novos": 524
    },
    {
     "grupo": "vínculo de aposentado",
-    "taxa": 0.1117,
+    "taxa": 0.0688,
     "aprox": false,
-    "clientes": 612,
-    "vsMedia": 0.7
+    "clientes": 320,
+    "vsMedia": 0.5,
+    "novos": 196
    }
   ],
-  "fonte": "analysis/out/patterns.csv"
- }
+  "base": 2844,
+  "fonte": "histórico maduro: 2.844 contratos aprovados com 12+ meses"
+ },
+ "proposta": {
+  "passos": [
+   {
+    "titulo": "Barreira · restrição",
+    "texto": "Nega quem tem restrição ativa no bureau.",
+    "negados": 377
+   },
+   {
+    "titulo": "Barreira · conta apertada",
+    "texto": "Nega quem teve saídas maiores que as entradas em algum dos 3 meses antes do pedido.",
+    "negados": 35
+   },
+   {
+    "titulo": "Barreira · parcela pesada",
+    "texto": "Nega quando a parcela do valor que a política atual concederia passa de 28% da renda real (a menor entre a renda declarada e a média de entradas da conta).",
+    "negados": 131
+   },
+   {
+    "titulo": "Risco e valor · modelo",
+    "texto": "Um modelo treinado no histórico (corrigido para contratos ainda abertos) estima, para cada valor de 100% a 10% do solicitado, a chance de pagar em dia, com atraso ou não pagar. Aprova o valor de maior ganho esperado (+15% em dia, +5% com atraso, −60% sem pagar) entre os que têm até 17,5% de chance de não pagar. Se nenhum valor serve, nega.",
+    "negados": 46
+   },
+   {
+    "titulo": "Limites do valor",
+    "texto": "Parcela até 28% da renda declarada, valor em múltiplos de R$ 100, entre R$ 500 e R$ 30 mil e nunca acima do solicitado.",
+    "reduzidos": 340
+   },
+   {
+    "titulo": "Analista decide",
+    "texto": "O score não é filtro: depois das barreiras ele não separa quem paga. A faixa de risco (pontuação do Daniel) e a divergência com a política atual montam a fila de revisão; o analista confirma, aprova com outro valor ou nega, com justificativa registrada.",
+    "divergentes": 502,
+    "laranja": 331
+   }
+  ],
+  "aprovados": 1411,
+  "volume": 9400700.0,
+  "faixas": {
+   "verde": 726,
+   "barreira": 543,
+   "amarela": 400,
+   "laranja": 331
+  }
+ },
+ "comparacao": [
+  {
+   "id": "atual",
+   "nome": "Atual",
+   "aprovados": 1145,
+   "volume": 8856446.0,
+   "ganhoMin": 0,
+   "ganhoMax": 0,
+   "foraAmostra": 0,
+   "calotesForaAmostra": 125
+  },
+  {
+   "id": "regras_bilosca",
+   "nome": "Regras do time",
+   "aprovados": 1043,
+   "volume": 7688900.0,
+   "ganhoMin": 257976,
+   "ganhoMax": 320142,
+   "foraAmostra": 336818,
+   "calotesForaAmostra": 62
+  },
+  {
+   "id": "hibrida",
+   "nome": "Proposta (híbrida)",
+   "aprovados": 1411,
+   "volume": 9400700.0,
+   "ganhoMin": 385238,
+   "ganhoMax": 499509,
+   "foraAmostra": 398178,
+   "calotesForaAmostra": 70
+  },
+  {
+   "id": "mescla",
+   "nome": "Híbrida que só aperta",
+   "aprovados": 1027,
+   "volume": 7303300.0,
+   "ganhoMin": 260302,
+   "ganhoMax": 324001,
+   "foraAmostra": 303118,
+   "calotesForaAmostra": 56
+  }
+ ]
 }

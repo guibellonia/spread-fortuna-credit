@@ -64,7 +64,24 @@ export type Dados = {
   };
   padroes: {
     media: number | null;
-    itens: { grupo: string; taxa: number; aprox: boolean; clientes: number; vsMedia: number }[];
+    itens: { grupo: string; taxa: number; aprox: boolean; clientes: number; vsMedia: number; novos?: number }[];
     fonte: string;
+    base?: number;
   };
+  proposta: {
+    passos: { titulo: string; texto: string; negados?: number; reduzidos?: number; divergentes?: number; laranja?: number }[];
+    aprovados: number;
+    volume: number;
+    faixas: Record<string, number>;
+  };
+  comparacao: {
+    id: string;
+    nome: string;
+    aprovados: number;
+    volume: number;
+    ganhoMin: number;
+    ganhoMax: number;
+    foraAmostra: number | null;
+    calotesForaAmostra: number | null;
+  }[];
 };
