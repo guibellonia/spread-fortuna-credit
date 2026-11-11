@@ -11,6 +11,7 @@ import { FunnelCard } from "./FunnelCard";
 import { InsightsCard } from "./InsightsCard";
 import { PadroesCard } from "./PadroesCard";
 import { PropostaCard } from "./PropostaCard";
+import { ResultadoIACard } from "./ResultadoIACard";
 import { TopBar } from "./TopBar";
 import { IconCheck } from "./ui";
 import { VolumeCard } from "./VolumeCard";
@@ -45,6 +46,7 @@ export function Dashboard({ dados }: { dados: Dados }) {
         <div className="grid">
           <FunnelCard pol={pol} />
           <VolumeCard pol={pol} atual={atual} />
+          {dados.resultadoIA && <ResultadoIACard r={dados.resultadoIA} />}
           <CohortCard safras={dados.safras} />
           <DotsCard
             title="Pedidos novos"

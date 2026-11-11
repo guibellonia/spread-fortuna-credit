@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 // diferente do que o build grava e dá 404 no GitHub Pages. Com duas páginas, recarregar não pesa.
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-type Aba = "geral" | "historico" | "revisao";
+type Aba = "geral" | "historico" | "simulador" | "revisao";
 
 export function TopBar({ ativo, fim }: { ativo: Aba; fim?: ReactNode }) {
   const aba = (id: Aba, href: string, nome: string) => (
@@ -22,6 +22,7 @@ export function TopBar({ ativo, fim }: { ativo: Aba; fim?: ReactNode }) {
       <nav className="tabs" aria-label="Seções">
         {aba("geral", `${BASE}/`, "Visão geral")}
         {aba("historico", `${BASE}/historico/`, "Histórico")}
+        {aba("simulador", `${BASE}/simulador/`, "Simulador")}
         {aba("revisao", `${BASE}/revisao/`, "Revisão")}
         <a className="tab sl" href={`${BASE}/../`}>Time</a>
       </nav>

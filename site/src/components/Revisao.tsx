@@ -3,7 +3,9 @@
 import type { Session } from "@supabase/supabase-js";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { int, moeda, pct, quando } from "@/lib/format";
+import type { Entrada, Motor } from "@/lib/motor";
 import { supabase, supabaseConfigurado, type Bureau, type Decisao, type Revisao as Rev } from "@/lib/supabase";
+import { PorQue } from "./PorQue";
 import { TopBar } from "./TopBar";
 import { IconCheck } from "./ui";
 
@@ -28,6 +30,7 @@ const BUREAU_CAMPOS: [string, string, (v: number) => string][] = [
   ["meses_historico_bureau", "Meses de histórico", (v) => int(v)],
 ];
 const POR_PAGINA = 50;
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export function Revisao() {
   if (!supabaseConfigurado) {
@@ -90,7 +93,7 @@ function Conectado() {
   );
 }
 
-function Login() {
+export function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState<string | null>(null);
@@ -136,11 +139,18 @@ function Area({ onResumo }: { onResumo: (s: string) => void }) {
   const [historico, setHistorico] = useState<Rev[]>([]);
   const [erro, setErro] = useState<string | null>(null);
   const [versao, setVersao] = useState(0);
+  const [motor, setMotor] = useState<Motor | null>(null);
   const termo = busca.toUpperCase().replace(/[^A-Z0-9-]/g, "");
 
   useEffect(() => {
     sb.rpc("eh_membro").then(({ data, error }) => setMembro(!error && data === true));
   }, [sb]);
+
+  useEffect(() => {
+    if (!membro) return;
+    sb.from("modelo").select("conteudo").eq("id", "proposta").maybeSingle()
+      .then(({ data }) => setMotor(data ? (data.conteudo as Motor) : null));
+  }, [sb, membro]);
 
   useEffect(() => {
     if (!membro) return;
@@ -219,7 +229,7 @@ function Area({ onResumo }: { onResumo: (s: string) => void }) {
       </section>
 
       {sel ? (
-        <Detalhe key={sel} id={sel} onSalvo={() => setVersao((v) => v + 1)} />
+        <Detalhe key={sel} id={sel} motor={motor} onSalvo={() => setVersao((v) => v + 1)} />
       ) : (
         <section className="card vazio">
           <p className="muted">Escolha um pedido na fila para ver a decisão da IA, consultar o bureau e registrar a revisão.</p>
@@ -266,9 +276,10 @@ function Selo({ d }: { d: Decisao }) {
   );
 }
 
-function Detalhe({ id, onSalvo }: { id: string; onSalvo: () => void }) {
+function Detalhe({ id, motor, onSalvo }: { id: string; motor: Motor | null; onSalvo: () => void }) {
   const sb = supabase()!;
   const [d, setD] = useState<Decisao | null>(null);
+  const [entrada, setEntrada] = useState<Entrada | null>(null);
   const [recarga, setRecarga] = useState(0);
   const [bureau, setBureau] = useState<Bureau | null>(null);
   const [bErro, setBErro] = useState<string | null>(null);
@@ -283,6 +294,11 @@ function Detalhe({ id, onSalvo }: { id: string; onSalvo: () => void }) {
     sb.from("decisoes_revisadas").select("*").eq("id_pedido", id).maybeSingle()
       .then(({ data }) => setD(data as Decisao | null));
   }, [sb, id, recarga]);
+
+  useEffect(() => {
+    sb.from("decisoes").select("entrada").eq("id_pedido", id).maybeSingle()
+      .then(({ data }) => setEntrada((data?.entrada as Entrada | null) ?? null));
+  }, [sb, id]);
 
   async function consultarBureau() {
     setBAndando(true);
@@ -344,6 +360,15 @@ function Detalhe({ id, onSalvo }: { id: string; onSalvo: () => void }) {
           <span className={`faixa is-${d.faixa}`}>Faixa {FAIXA_TEXTO[d.faixa]}{d.faixa !== "barreira" ? ` · ${d.pontos} ponto(s)` : ""}</span>
           <span className="muted">{d.pontos_detalhe}</span>
         </p>
+      )}
+      {motor && entrada && (
+        <div className="bureau-box">
+          <div className="linha">
+            <h3>Por que a IA decidiu assim</h3>
+            <a className="btn-tonal sl link-sim" href={`${BASE}/simulador/#${encodeURIComponent(id)}`}>Simular variações</a>
+          </div>
+          <PorQue motor={motor} entrada={entrada} publicada={{ aprova: d.decisao === "APROVADO", valor: Number(d.valor_aprovado) }} />
+        </div>
       )}
       {d.revisao_acao && (
         <p className="muted">

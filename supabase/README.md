@@ -17,7 +17,13 @@ https://supabase.com/dashboard/project/vjxwagiqgecsscoogxln
 ```
 cd src && python gerar_decisoes.py && python politica_mescla.py   # proposta, regras, atual e faixa de risco
 cd .. && .venv/Scripts/python supabase/publicar_decisoes.py         # saida/decisoes_mescla.csv -> painel.decisoes
+.venv/Scripts/python supabase/publicar_motor.py --publicar          # modelo e entradas -> "por que" e simulador
 ```
+
+`publicar_motor.py` retreina o modelo da Proposta (o mesmo do `gerar_decisoes.py`), confere que ele refaz as decisões
+do CSV, roda `site/scripts/paridade-motor.mjs` (o motor TS precisa dar as mesmas 2.000 decisões, valores e motivos
+do Python) e só então grava `painel.modelo` e `painel.decisoes.entrada`. Sem `--publicar`, só confere. Precisa do
+banco local (`PG*`, para os pesos de censura) e do Node 22+.
 
 Confere os 2.000 pedidos novos e os limites de valor numa transação só. As revisões já feitas continuam valendo.
 As migrações rodam uma vez cada (registro em `painel.migracoes`).
@@ -54,6 +60,7 @@ URL do papel de leitura: `postgresql://fortuna_leitura.vjxwagiqgecsscoogxln:<SUP
 | `restaurar_banco.py` | restaura o dump numa transação, fecha `hackathon` para a API e liga o RLS; `--recriar`, `--leitor` |
 | `aplicar_migracoes.py` | aplica `migrations/` e cadastra membros (`--membro`) |
 | `publicar_decisoes.py` | publica o CSV de decisões em `painel.decisoes` |
+| `publicar_motor.py` | publica o modelo da Proposta (`painel.modelo`) e a entrada de cada pedido (`painel.decisoes.entrada`), depois de conferir a paridade do motor TS |
 | `functions/bureau/` | Edge Function do bureau ao vivo (retry, cache em `painel.bureau_consultas`, CORS só do Pages e do localhost) |
 
 O segredo `FORTUNA_DSN` do GitHub Actions já está cadastrado com a URL do papel de leitura. Em repositório de conta

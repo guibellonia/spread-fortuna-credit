@@ -43,7 +43,7 @@ Script, workflow do GitHub Actions, job agendado, hook, tool de agente ou migra�
 - `src/politica_mescla.py` grava `saida/decisoes_mescla.csv`: a proposta (idêntica ao `saida/spread_final.csv`), as
   decisões da atual e das regras, e a faixa de risco do Daniel. É a fonte do painel e da revisão.
 - Ordem para atualizar tudo: `gerar_decisoes.py` → `politica_mescla.py` → `supabase/publicar_decisoes.py` →
-  `site/scripts/snapshot.py` → commit e push.
+  `supabase/publicar_motor.py --publicar` → `site/scripts/snapshot.py` → commit e push.
 
 ## Painel (`site/`)
 
@@ -82,7 +82,8 @@ a alternância para tabela.
 - Supabase (projeto `vjxwagiqgecsscoogxln`, São Paulo): mesmo dump no schema `hackathon`, fechado para a Data
   API (sem acesso para `anon`/`authenticated`, RLS ligado). Nunca exponha `hackathon` na API.
 - Schema `painel` (exposto, só para membros logados): `decisoes` (publicadas por `supabase/publicar_decisoes.py`),
-  `revisoes` (só acréscimo, carimbadas pelo banco), `bureau_consultas` (cache da Edge Function), `membros`.
+  `revisoes` (só acréscimo, carimbadas pelo banco), `bureau_consultas` (cache da Edge Function), `membros`,
+  `modelo` (motor da Proposta, de `supabase/publicar_motor.py`).
   Mudança de schema = arquivo novo em `supabase/migrations/` aplicado por `supabase/aplicar_migracoes.py`.
 - Edge Function `supabase/functions/bureau`: token do bureau só como segredo da função; CORS só do Pages e do
   localhost. Publicar de novo: `supabase/configurar_projeto.py` (idempotente).
@@ -92,6 +93,9 @@ a alternância para tabela.
 ## Revisão (`site/src/app/revisao/`)
 
 Página do painel com login (Supabase Auth, e-mail e senha; cadastro público fechado): fila de pedidos com
-filtros, decisão da IA, bureau ao vivo e registro da revisão. Usa `supabaseUrl` e a chave anon de
+filtros, decisão da IA com o "por que" visual (passos contra os limites e ganho de cada valor), bureau ao vivo e
+registro da revisão. O Simulador (`/simulador/`, mesmo login) testa clientes novos, um a um ou em lote por CSV.
+Os dois usam `site/src/lib/motor.ts`, a Proposta em TypeScript com o modelo de `painel.modelo`
+(`supabase/publicar_motor.py`, que só publica se o motor der as mesmas 2.000 decisões do Python). Usa `supabaseUrl` e a chave anon de
 `site/site.config.json` (pública por desenho; o RLS protege). Navegação entre páginas com `<a>` comum: o
 prefetch do `next/link` dá 404 no export estático do Next 16.

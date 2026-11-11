@@ -222,6 +222,50 @@ def comparacao() -> list[dict]:
     return out
 
 
+FAIXAS_RISCO = ([0, 0.05, 0.10, 0.175], ["até 5%", "5% a 10%", "10% a 17,5%"])
+HISTORICO = AQUI.parent / "src" / "data" / "historico.json"  # site/scripts/historico.py
+
+
+def resultado_ia(n: pd.DataFrame) -> dict:
+    """Lucro e prejuízo esperados das decisões da IA (Proposta) nos 2.000 novos, pelo modelo que decidiu.
+    Prejuízo = 60% do valor vezes a chance de não pagar; lucro = o resto do ganho esperado (+15% em dia, +5% atraso)."""
+    a = n[n.decisao.eq("APROVADO")].copy()
+    a["v"] = a.valor_aprovado_ia.astype(float)
+    a["p"] = a.p_nao_paga.astype(float)
+    a["prejuizo"] = 0.60 * a.v * a.p
+    a["lucro"] = a.ganho_esperado.astype(float) + a.prejuizo
+
+    def soma(s: pd.DataFrame) -> dict:
+        return {"aprovados": int(len(s)), "volume": round(float(s.v.sum())), "lucro": round(float(s.lucro.sum())),
+                "prejuizo": round(float(s.prejuizo.sum())), "resultado": round(float(s.ganho_esperado.sum())),
+                "calotes": round(float(s.p.sum()), 1)}
+
+    cortes, rotulos = FAIXAS_RISCO
+    risco = pd.cut(a.p, cortes, labels=rotulos, include_lowest=True)
+    if risco.isna().any():
+        print(f"atenção: {int(risco.isna().sum())} aprovados com risco acima de 17,5%", file=sys.stderr)
+    out = {**soma(a),
+           "porRisco": [{"faixa": f, **soma(a[risco == f])} for f in rotulos],
+           "porFaixa": [{"faixa": f, **soma(a[a.faixa == f])} for f in ("verde", "amarela", "laranja") if (a.faixa == f).any()],
+           "calibracao": None, "atual": None}
+
+    if HISTORICO.exists():  # no histórico, o ganho observado ficou abaixo do que o modelo estimou
+        e = json.loads(HISTORICO.read_text(encoding="utf-8"))["estimativa"]
+        fator = e["ganhoObservado"] / e["ganhoEstimado"]
+        out["calibracao"] = {"fator": round(fator, 4), "resultado": round(out["resultado"] * fator)}
+    arq = Path(str(COMPARACAO).format("novos"))
+    if arq.exists():
+        nov = pd.read_csv(arq, index_col=0)
+        if "hibrida" in nov.index and abs(nov.loc["hibrida", "gbm_corrigido"] - out["resultado"]) > 1:
+            print(f"atenção: resultado da IA ({out['resultado']:,}) difere do comparativo "
+                  f"({nov.loc['hibrida', 'gbm_corrigido']:,.0f})", file=sys.stderr)
+        if "atual" in nov.index:
+            r = nov.loc["atual"]
+            out["atual"] = {"aprovados": int(r.aprovados), "volume": round(float(r.volume)),
+                            "resultado": round(float(r.gbm_corrigido))}
+    return out
+
+
 def resumo_politica(n: pd.DataFrame, pol: dict, dec: pd.DataFrame, base: pd.DataFrame | None) -> dict:
     ap = dec.aprovado
     vol = n.assign(v=dec.valor)[ap].groupby("tipo_vinculo").agg(volume=("v", "sum"), pedidos=("v", "size"))
@@ -406,6 +450,7 @@ def main() -> None:
         "api": api_bureau(n),
         "padroes": padroes(hist, n),
         "proposta": proposta_passos(n),
+        "resultadoIA": resultado_ia(n),
         "comparacao": comparacao(),
     }
     texto = json.dumps(dados, ensure_ascii=False, indent=1)

@@ -22,6 +22,17 @@ export type Politica = {
 
 export type Faixa = { faixa: string; n: number };
 
+/** Lucro e prejuízo esperados das decisões da IA nos 2.000 novos (scripts/snapshot.py). */
+export type SomaIA = {
+  aprovados: number; volume: number; lucro: number; prejuizo: number; resultado: number; calotes: number;
+};
+export type ResultadoIA = SomaIA & {
+  porRisco: (SomaIA & { faixa: string })[];
+  porFaixa: (SomaIA & { faixa: string })[];
+  calibracao: { fator: number; resultado: number } | null;
+  atual: { aprovados: number; volume: number; resultado: number } | null;
+};
+
 // Formato de src/data/historico.json, gerado por scripts/historico.py (só agregados).
 export type BaseHist = {
   pedidos: number;
@@ -112,6 +123,7 @@ export type Dados = {
     volume: number;
     faixas: Record<string, number>;
   };
+  resultadoIA?: ResultadoIA;
   comparacao: {
     id: string;
     nome: string;

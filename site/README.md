@@ -71,6 +71,28 @@ O script confere que os ajustes somam a diferença observada e para se o JSON ti
 O cartão "API do bureau" mostra os números desse registro e faz, do navegador, um teste ao vivo do `GET /health`
 (aberto, sem token).
 
+## Por que a IA decidiu, simulador e lote (`/revisao/` e `/simulador/`)
+
+`src/lib/motor.ts` refaz no navegador a decisão da Proposta (`src/politica.py` com o modelo de `src/cenarios.py`):
+barreiras, risco, escolha do valor e o ganho esperado de cada valor testado. O modelo e a entrada de cada pedido
+ficam no Supabase, só para membros (`supabase/publicar_motor.py`); nada disso vai no build. Antes de publicar, o
+script roda `scripts/paridade-motor.mjs`, que exige as mesmas 2.000 decisões, valores e motivos do Python.
+
+- **Revisão:** cada pedido mostra "Por que a IA decidiu assim": os passos da política com o valor medido contra o
+  limite (passou, barrou ou não conta) e o gráfico do ganho esperado de cada valor, com o escolhido.
+- **Simulador (`/simulador/`, com login):** formulário de cliente e pedido com perfis prontos (típico, com restrição,
+  conta apertada, renda real baixa, pedido alto, score baixo) ou a partir de um pedido real; responde na hora.
+  "Simular variações" na Revisão abre o simulador com aquele pedido.
+- **Lote:** um CSV de clientes novos (modelo no botão "Baixar modelo de CSV") devolve aprovados, volume, lucro e
+  prejuízo esperados, motivos de negação e o CSV das decisões. Roda só no navegador.
+
+## Lucro e prejuízo esperados (Visão geral)
+
+O card "Lucro e prejuízo esperados das decisões da IA" (`resultadoIA` no `dashboard.json`, de `scripts/snapshot.py`)
+soma, nos aprovados da Proposta, prejuízo = 60% do valor × chance de não pagar e lucro = o que se espera de quem paga,
+por faixa de risco e por faixa do Daniel, com o ajuste pelo histórico (`historico.json`) e a política atual como
+referência.
+
 ## Revisão do analista (`/revisao/`)
 
 Login com e-mail e senha (Supabase Auth, cadastro público fechado), fila de pedidos com filtros (sem revisão,
@@ -113,6 +135,8 @@ Para simular o caminho do Pages: `PAGES_BASE_PATH=/spread-fortuna-credit/dashboa
 |---|---|
 | `scripts/snapshot.py` | banco + bureau → `src/data/dashboard.json` |
 | `scripts/historico.py` | Proposta nos 10.000 pedidos do histórico → `src/data/historico.json` |
+| `scripts/paridade-motor.mjs` | confere o motor TS contra o Python nos 2.000 novos (`node --experimental-strip-types`) |
+| `src/lib/motor.ts` | política e modelo da Proposta no navegador (Revisão e Simulador) |
 | `scripts/bureau_client.py` | cliente da API com retry, cache e registro |
 | `scripts/csp.mjs` | grava a CSP em cada HTML depois do build |
 | `src/components/` | cartões do painel (funil, volume, safras, pontos, padrões, API, comparativo) |
