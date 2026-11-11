@@ -59,3 +59,21 @@ python tools.py medir_grupo '{"condicoes": [{"campo": "r_saidas", "op": ">=", "v
 ```
 
 Pré-requisito: rodar `gerar_decisoes.py` uma vez (monta `saida/hist.pkl`, `saida/novos.pkl` e o cache do bureau).
+
+## Agente LLM e conselho de LLMs (`llm.py`, `agente.py`)
+
+- **Fallback em duas camadas:** o OmniRoute é o principal e faz o fallback entre os modelos configurados nele;
+  se o próprio OmniRoute cair, `llm.py` chama direto Z.ai (GLM), NVIDIA, Google (Gemini), OpenRouter (`:free`), Groq e Ollama.
+- **Configuração:** só por variável de ambiente. Modelo em `src/llm.env.example`. Os ids de modelo padrão são
+  palpites: confira no painel de cada provedor.
+- **Regras do agente:** todo número vem de uma tool; `gerar_csv` com `confirmar=true` exige o analista digitar
+  "aprovo"; cada chamada de tool fica em `saida/agente_log.jsonl` (auditoria).
+- **Conselho de LLMs:** cada modelo de `CONSELHO_MODELOS` responde sozinho, com as tools; um presidente lista
+  consenso, divergências, confere os números divergentes nas tools e dá a recomendação com o grau de concordância.
+
+```bash
+python llm.py                                   # provedores configurados
+python agente.py "o score importa depois dos filtros?"
+python agente.py --chat
+python agente.py --conselho "vale subir o teto de parcela para 30%?"
+```
