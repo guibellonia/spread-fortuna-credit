@@ -142,7 +142,10 @@ def main():
 
     print("\n== Conselho nos 2.000 pedidos novos (valor = proposto pela política do agente; negados = solicitado) ==")
     c = Conselho().treinar(hist)
-    prop = pd.read_csv(Path(__file__).resolve().parents[1] / "validacao" / "decisoes_PROPRIA.csv")
+    arq = Path(__file__).resolve().parents[1] / "validacao" / "decisoes_PROPRIA.csv"
+    if not arq.exists():
+        raise SystemExit(f"{arq} não está versionado (tem ids de pedido). Gere com: cd validacao && python final.py")
+    prop = pd.read_csv(arq)
     v = novos[["id_pedido", "valor_solicitado"]].merge(prop, on="id_pedido")
     valor = np.where(v.valor_aprovado > 0, v.valor_aprovado, np.minimum(v.valor_solicitado, 30000))
     op = c.opinar(novos, valor, tool_risco.carregar_pedidos("novo"))

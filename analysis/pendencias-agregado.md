@@ -1,6 +1,6 @@
 # Pendências técnicas e testes · agregado
 
-Complementa `PENDENCIAS.md` e `para-discussao.md`. Registrado em 11/11/2026.
+Complementa `PENDENCIAS.md` (arquivado em `_arquivo/2026-11-11/analysis/`) e `para-discussao.md`. Registrado em 11/11/2026.
 
 ## Testes que decidem a política
 

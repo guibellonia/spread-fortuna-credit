@@ -60,12 +60,44 @@ jobs:
             exit 1
           fi
 
-      - name: Monta o site (arquivos versionados na raiz + painel em /dashboard)
+      - name: Monta o site (lista fechada + painel em /dashboard)
         run: |
-          mkdir _site
-          git archive --format=tar HEAD | tar -x -C _site
-          rm -rf _site/site _site/.github
+          # Publica SÓ o que está nesta lista. Arquivo novo no repositório não vai para o site
+          # sem ser acrescentado aqui, de propósito.
+          mkdir -p _site/analysis _site/api-baseline _site/prompts _site/src _site/simulador
+          cp index.html README.md _site/
+          cp simulador/grade.json _site/simulador/
+          cp src/README.md _site/src/
+          cp prompts/README.md prompts/enio-rocha_head-de-credito_v1.md _site/prompts/
+          cp api-baseline/baseline-agregado.md _site/api-baseline/
+          cp analysis/resumo-abertura.md analysis/analise-banco.md analysis/analise-enio.md \
+             analysis/analise-guilherme.md analysis/censura-agregado.md analysis/padroes-agregado.md \
+             analysis/pendencias-agregado.md analysis/pontuacao-risco.md _site/analysis/
+          # slides do pitch (entram por outro PR): publica se existirem
+          if [ -f slides/index.html ]; then
+            mkdir -p _site/slides
+            cp slides/index.html _site/slides/
+            if [ -d slides/capturas ]; then cp -r slides/capturas _site/slides/; fi
+          fi
           cp -r site/out _site/dashboard
+
+      - name: Confere que nenhum CSV com id de pedido vai para o site
+        run: |
+          bad=0
+          while IFS= read -r f; do
+            if head -n 1 "$f" | tr -d '\r' | grep -qiE '(^|,)"?id_pedido"?(,|$)'; then
+              echo "::error file=$f::CSV com coluna id_pedido na publicação do site"
+              bad=1
+            fi
+          done < <(find _site -type f -iname '*.csv')
+          if [ "$bad" -ne 0 ]; then exit 1; fi
+
+      - name: Confere que nenhum id de cliente ou pedido está no site montado
+        run: |
+          if grep -rIEn '\b[CP]-[0-9]{5}\b' _site; then
+            echo "::error::o site montado contém id de cliente ou pedido (acima)"
+            exit 1
+          fi
 
       - name: Envia o artefato
         uses: actions/upload-pages-artifact@v3
