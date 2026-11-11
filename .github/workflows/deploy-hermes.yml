@@ -70,4 +70,19 @@ jobs:
 
       - name: Build e deploy
         if: env.RAILWAY_TOKEN != ''
-        run: railway up --service "$SERVICO" --ci
+        run: |
+          set -eu
+          # o que o token enxerga (sem segredos): projeto, ambiente e serviços
+          railway status --json > status.json || true
+          python3 - <<'PY'
+          import json
+          try:
+              s = json.load(open("status.json"))
+          except Exception as e:
+              print("status ilegível:", e); raise SystemExit(0)
+          envs = [e["node"] for e in s.get("environments", {}).get("edges", [])]
+          servs = [x["node"] for x in s.get("services", {}).get("edges", [])]
+          print("projeto:", s.get("name"), "| ambientes:", [e.get("name") for e in envs])
+          print("serviços:", [(x.get("name"), x.get("id")) for x in servs])
+          PY
+          railway up --service "$SERVICO" --ci
