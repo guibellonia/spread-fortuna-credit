@@ -1,5 +1,5 @@
 {
- "geradoEm": "2026-11-11T11:53",
+ "geradoEm": "2026-11-11T13:50",
  "corte": "2026-09-30",
  "reproducaoAtual": 1.0,
  "pedidos": {
@@ -177,41 +177,41 @@
     },
     {
      "rotulo": "Risco até 17,5% e ganho positivo",
-     "restantes": 1411
+     "restantes": 1412
     }
    ],
-   "aprovados": 1411,
-   "volume": 9400700.0,
-   "reduzidos": 340,
+   "aprovados": 1412,
+   "volume": 9338100.0,
+   "reduzidos": 334,
    "porVinculo": [
     {
      "vinculo": "assalariado",
-     "volume": 5436700.0,
-     "pedidos": 803
+     "volume": 5437900.0,
+     "pedidos": 805
     },
     {
      "vinculo": "autonomo",
-     "volume": 2229100.0,
+     "volume": 2200700.0,
      "pedidos": 338
     },
     {
      "vinculo": "aposentado",
-     "volume": 899300.0,
-     "pedidos": 140
+     "volume": 892900.0,
+     "pedidos": 141
     },
     {
      "vinculo": "empresario",
-     "volume": 835600.0,
-     "pedidos": 130
+     "volume": 806600.0,
+     "pedidos": 128
     }
    ],
    "vsAtual": {
-    "aprovaAMais": 384,
-    "volumeAMais": 2097400.0,
+    "aprovaAMais": 385,
+    "volumeAMais": 2095400.0,
     "negaAMais": 118,
-    "volumeAMenos": 1278549.87,
-    "valorMudou": 215,
-    "iguais": 1283
+    "volumeAMenos": 1300049.87,
+    "valorMudou": 228,
+    "iguais": 1269
    }
   }
  ],
@@ -424,49 +424,49 @@
  "api": {
   "clientes": 2000,
   "comBureau": 2000,
-  "chamadas": 2105,
+  "chamadas": 2110,
   "status": {
    "200": 2000,
-   "503": 105
+   "503": 110
   },
-  "clientesComRetry": 100,
+  "clientesComRetry": 104,
   "maxTentativas": 3,
   "latencia": {
-   "p50": 0.224,
-   "p90": 0.46,
-   "p95": 0.865,
-   "p99": 4.626,
-   "max": 5.447,
-   "media": 0.406
+   "p50": 0.199,
+   "p90": 0.32,
+   "p95": 1.569,
+   "p99": 4.443,
+   "max": 5.353,
+   "media": 0.375
   },
   "histograma": [
    {
     "faixa": "< 0,25 s",
-    "n": 1345
+    "n": 1687
    },
    {
     "faixa": "0,25–0,5 s",
-    "n": 576
+    "n": 306
    },
    {
     "faixa": "0,5–1 s",
-    "n": 85
+    "n": 11
    },
    {
     "faixa": "1–2 s",
-    "n": 13
+    "n": 10
    },
    {
     "faixa": "2–5 s",
-    "n": 79
+    "n": 92
    },
    {
     "faixa": "≥ 5 s",
-    "n": 7
+    "n": 4
    }
   ],
-  "desde": "2026-11-11T09:48:12",
-  "ate": "2026-11-11T09:49:44",
+  "desde": "2026-11-11T13:49:05",
+  "ate": "2026-11-11T13:50:30",
   "config": {
    "timeoutSeg": 10,
    "tentativas": 6,
@@ -589,27 +589,27 @@
    {
     "titulo": "Risco e valor · modelo",
     "texto": "Um modelo treinado no histórico (corrigido para contratos ainda abertos) estima, para cada valor de 100% a 10% do solicitado, a chance de pagar em dia, com atraso ou não pagar. Aprova o valor de maior ganho esperado (+15% em dia, +5% com atraso, −60% sem pagar) entre os que têm até 17,5% de chance de não pagar. Se nenhum valor serve, nega.",
-    "negados": 46
+    "negados": 45
    },
    {
     "titulo": "Limites do valor",
     "texto": "Parcela até 28% da renda declarada, valor em múltiplos de R$ 100, entre R$ 500 e R$ 30 mil e nunca acima do solicitado.",
-    "reduzidos": 340
+    "reduzidos": 334
    },
    {
     "titulo": "Analista decide",
     "texto": "O score não é filtro: depois das barreiras ele não separa quem paga. A faixa de risco (pontuação do Daniel) e a divergência com a política atual montam a fila de revisão; o analista confirma, aprova com outro valor ou nega, com justificativa registrada.",
-    "divergentes": 502,
-    "laranja": 331
+    "divergentes": 503,
+    "laranja": 329
    }
   ],
-  "aprovados": 1411,
-  "volume": 9400700.0,
+  "aprovados": 1412,
+  "volume": 9338100.0,
   "faixas": {
-   "verde": 726,
+   "verde": 727,
    "barreira": 543,
-   "amarela": 400,
-   "laranja": 331
+   "amarela": 401,
+   "laranja": 329
   }
  },
  "comparacao": [
@@ -636,22 +636,22 @@
   {
    "id": "hibrida",
    "nome": "Proposta (híbrida)",
-   "aprovados": 1411,
-   "volume": 9400700.0,
-   "ganhoMin": 385238,
-   "ganhoMax": 499509,
-   "foraAmostra": 398178,
-   "calotesForaAmostra": 70
+   "aprovados": 1412,
+   "volume": 9338100.0,
+   "ganhoMin": 383255,
+   "ganhoMax": 504666,
+   "foraAmostra": 392138,
+   "calotesForaAmostra": 73
   },
   {
-   "id": "mescla",
+   "id": "so_aperta",
    "nome": "Híbrida que só aperta",
    "aprovados": 1027,
-   "volume": 7303300.0,
-   "ganhoMin": 260302,
-   "ganhoMax": 324001,
-   "foraAmostra": 303118,
-   "calotesForaAmostra": 56
+   "volume": 7242700.0,
+   "ganhoMin": 262236,
+   "ganhoMax": 324566,
+   "foraAmostra": 290593,
+   "calotesForaAmostra": 59
   }
  ]
 }
