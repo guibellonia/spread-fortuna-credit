@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="30">
 <title>Spread · situação</title>
 <style>
   :root { --fundo:#1e1c1d; --cartao:#2a2728; --linha:#3a3637; --texto:#f2f0ee; --apagado:#b3adaa; --amarelo:#f5d20a; --verde:#5fd08a; --laranja:#f0a23c; }
@@ -35,6 +34,14 @@
   details.ia summary { cursor:pointer; color:var(--amarelo); font-weight:700; font-size:13px; }
   details.ia button { margin-left:8px; background:var(--fundo); color:var(--texto); border:1px solid var(--linha); border-radius:4px; padding:2px 8px; cursor:pointer; }
   details.ia pre { white-space:pre-wrap; font:12px/1.45 ui-monospace, Menlo, Consolas, monospace; margin:8px 0 0; max-height:60vh; overflow:auto; }
+
+  nav.abas { display:flex; gap:6px; overflow-x:auto; margin:0 0 10px; padding-bottom:4px; }
+  nav.abas button { background:var(--cartao); color:var(--texto); border:1px solid var(--linha); border-radius:6px; padding:6px 12px; font:inherit; cursor:pointer; white-space:nowrap; }
+  nav.abas button.ativa { background:var(--amarelo); color:#1e1c1d; font-weight:700; border-color:var(--amarelo); }
+  .painel article.doc { background:var(--cartao); border-radius:6px; padding:12px 18px; margin-bottom:12px; max-width:1100px; }
+  .painel article.doc table { border-collapse:collapse; margin:8px 0; } .painel article.doc td,.painel article.doc th { border:1px solid var(--linha); padding:4px 8px; }
+  .painel article.doc pre, .painel article.doc code { background:var(--fundo); white-space:pre-wrap; }
+  .painel article.doc h1,.painel article.doc h2 { color:var(--amarelo); }
 </style>
 </head>
 <body>
@@ -43,7 +50,8 @@
   <span class="sub">situação às 09h15 · entrega até <b>15h30</b> · arquivo <b>spread_final.csv</b> · decisão final do time</span>
 </header>
 
-<div class="grade">
+<nav class="abas"><button data-aba="situacao">Situação</button><button data-aba="abertura">Abertura</button><button data-aba="banco">Análise do banco</button><button data-aba="censura">Censura e padrões</button><button data-aba="complementos">Complementos</button><button data-aba="discussao">Para discussão</button><button data-aba="pendencias">Pendências</button><button data-aba="prompts">Prompts</button></nav>
+<div class="painel" id="p-situacao"><div class="grade">
 
   <section>
     <h2>Já temos</h2>
@@ -286,5 +294,28 @@ Depois, em cima do piso, decidir o que afrouxar (score, 1 restrição) com teste
 - Reduzir valor em vez de negar: o manual sugere que funciona; a base não tem caso que prove.
 </pre>
 </details>
+</div>
+<section class="painel" id="p-abertura" data-src="analysis/resumo-abertura.md" data-autor="Enio · regras, nota e prazos do manual" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-banco" data-src="analysis/analise-banco.md" data-autor="Juliano" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-censura" data-src="analysis/censura-agregado.md|analysis/padroes-agregado.md" data-autor="análise agregada do time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-complementos" data-src="analysis/analise-enio.md" data-autor="Enio · onde confirma e onde diverge" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-discussao" data-src="analysis/para-discussao.md" data-autor="Enio · como não tirar zero, 5 testes" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-pendencias" data-src="analysis/PENDENCIAS.md|analysis/pendencias-agregado.md" data-autor="time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-prompts" data-src="prompts/README.md|prompts/enio-rocha_head-de-credito_v1.md|analysis/contexto-claude.md|analysis/contexto-gpt.md" data-autor="prompts do time, com autor e versão" hidden><p class="pequeno">Carregando…</p></section>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script>
+const carregados={};
+async function mostrar(aba){
+  document.querySelectorAll('.painel').forEach(p=>p.hidden=(p.id!=='p-'+aba));
+  document.querySelectorAll('nav.abas button').forEach(b=>b.classList.toggle('ativa',b.dataset.aba===aba));
+  history.replaceState(null,'','#'+aba);
+  const p=document.getElementById('p-'+aba);
+  if(!p.dataset.src||carregados[aba]) return;
+  let html='<p class="pequeno">Fonte: '+p.dataset.autor+'</p>';
+  for(const f of p.dataset.src.split('|')){
+    try{ const r=await fetch(f,{cache:'no-store'}); if(!r.ok) throw new Error(r.status);
+      const md=await r.text();
+      html+='<article class="doc"><p class="pequeno"><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/'+f+'">'+f+'</a></p>'+(window.marked?marked.parse(md):'<pre>'+md.replace(/</g,'&lt;')+'</pre>')+'</article>';
+    }catch(e){ html+='<p class="pequeno">Não consegui carregar '+f+' ('+e.message+').</p>'; }
+  }
+  p.innerHTML=html; carregados[aba]=true;
+}
+document.querySelectorAll('nav.abas button').forEach(b=>b.onclick=()=>mostrar(b.dataset.aba));
+mostrar((location.hash||'#situacao').slice(1).replace('aba=','')||'situacao');
+</script>
 </body>
 </html>
