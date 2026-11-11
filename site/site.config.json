@@ -1,3 +1,5 @@
 {
-  "bureauOrigin": "https://gowlab-fortuna-bureau.azurewebsites.net"
+  "bureauOrigin": "https://gowlab-fortuna-bureau.azurewebsites.net",
+  "supabaseUrl": "https://vjxwagiqgecsscoogxln.supabase.co",
+  "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqeHdhZ2lxZ2Vjc3Njb29neGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0MDI0NzYsImV4cCI6MjEwOTk3ODQ3Nn0.h-DifBlWRtYa3QkChzlqPN_mfCVhOo_EMcGDOsVNoOw"
 }

@@ -46,6 +46,14 @@ lista de passos em ordem, e o funil do painel segue essa ordem.
 O cartão "API do bureau" mostra os números desse registro e faz, do navegador, um teste ao vivo do `GET /health`
 (aberto, sem token).
 
+## Revisão do analista (`/revisao/`)
+
+Login com e-mail e senha (Supabase Auth, cadastro público fechado), fila de pedidos com filtros (sem revisão,
+diferente da política atual, revisadas), decisão da IA com motivo e risco, bureau ao vivo pela Edge Function e
+registro da revisão (confirmar, aprovar com valor ou negar, com justificativa). Os dados vêm do schema `painel`
+do Supabase, só para membros; nada disso vai no build. Configuração em `site.config.json` (`supabaseUrl` e a
+chave anon, pública por desenho). Banco, função e acessos: `supabase/README.md`.
+
 ## Segurança
 
 - **O token nunca sai da máquina do time.** Ele só é lido do `.env` pelo script de snapshot. O build não recebe
@@ -53,7 +61,8 @@ O cartão "API do bureau" mostra os números desse registro e faz, do navegador,
 - **Só agregados vão para o site** (o repositório é público). O snapshot e o workflow param se encontrarem um id de
   cliente ou de pedido (`C-…`, `P-…`).
 - **Content-Security-Policy** em cada página (`scripts/csp.mjs`): scripts só do próprio site, com hash para os
-  inline do Next; conexões só para o próprio site e para o bureau; sem `object`, `frame`, `form` ou `base`.
+  inline do Next; conexões só para o próprio site, para o bureau (`/health`) e para o projeto do Supabase
+  (`supabaseUrl`); sem `object`, `frame`, `form` ou `base`.
   O GitHub Pages não deixa configurar cabeçalhos, então a política vai numa `<meta>` e `frame-ancestors` não se
   aplica.
 - Fontes (Poppins e Montserrat) são baixadas no build e servidas pelo próprio site. Sem CDN em tempo de execução.

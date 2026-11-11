@@ -17,6 +17,14 @@ export function brl(v: number) {
   return `R$ ${dec(v, 0)}`;
 }
 
+const real = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+/** R$ 12.100,00 */
+export const moeda = (v: number) => real.format(v);
+
+/** ISO com fuso -> "11/11/26 10:45" no horário de quem vê */
+export const quando = (iso: string) =>
+  new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+
 export const segundos = (s: number) => `${dec(s, s < 1 ? 2 : 1)} s`;
 
 /** "2024-10" -> "out/24" */

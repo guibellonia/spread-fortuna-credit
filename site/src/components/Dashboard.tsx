@@ -9,6 +9,7 @@ import { CompareCard } from "./CompareCard";
 import { DotsCard } from "./DotsCard";
 import { FunnelCard } from "./FunnelCard";
 import { InsightsCard } from "./InsightsCard";
+import { TopBar } from "./TopBar";
 import { IconCheck } from "./ui";
 import { VolumeCard } from "./VolumeCard";
 
@@ -20,18 +21,7 @@ export function Dashboard({ dados }: { dados: Dados }) {
 
   return (
     <>
-      <header className="topbar">
-        <a className="brand" href="..">
-          <span className="logo" aria-hidden>S</span>
-          <span className="brand-name">Spread</span>
-          <span className="brand-sub">Fortuna Crédito</span>
-        </a>
-        <nav className="tabs" aria-label="Seções">
-          <a className="tab is-active" aria-current="page" href=".">Visão geral</a>
-          <a className="tab sl" href="..">Situação do time</a>
-        </nav>
-        <span className="stamp">Dados de {dataHora(dados.geradoEm)}</span>
-      </header>
+      <TopBar ativo="geral" fim={<>Dados de {dataHora(dados.geradoEm)}</>} />
 
       <main className="page">
         <div className="page-head">

@@ -8,8 +8,11 @@ import { fileURLToPath } from "node:url";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(raiz, "out");
-const { bureauOrigin } = JSON.parse(await readFile(join(raiz, "site.config.json"), "utf8"));
+const { bureauOrigin, supabaseUrl } = JSON.parse(await readFile(join(raiz, "site.config.json"), "utf8"));
 if (!/^https:\/\/[a-z0-9.-]+$/i.test(bureauOrigin)) throw new Error("bureauOrigin inválido em site.config.json");
+if (supabaseUrl && !/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(supabaseUrl)) throw new Error("supabaseUrl inválido em site.config.json");
+// o painel de revisão fala com a Data API, o Auth e as Edge Functions do projeto (mesma origem)
+const conexoes = [bureauOrigin, supabaseUrl].filter(Boolean).join(" ");
 
 const hash = (s) => `'sha256-${createHash("sha256").update(s, "utf8").digest("base64")}'`;
 
@@ -32,7 +35,7 @@ for await (const arq of paginas(out)) {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data:",
     "font-src 'self'",
-    `connect-src 'self' ${bureauOrigin}`,
+    `connect-src 'self' ${conexoes}`,
     "object-src 'none'",
     "base-uri 'none'",
     "form-action 'none'",
