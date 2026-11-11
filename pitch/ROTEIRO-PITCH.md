@@ -9,6 +9,26 @@
 
 Por isso, o roteiro abaixo responde quatro perguntas, nesta ordem: **hoje × proposta**, **impacto em R$**, **como chegamos lá** e **escala?** (bloco das 4:15).
 
+## Para quem é: o head de crédito e o analista
+Tudo é contado do ponto de vista dele. A frase de abertura sugerida:
+> "Construímos a mesa de trabalho do analista de crédito. Ele recebe o pedido, a IA sugere a decisão com o porquê, e ele decide."
+
+O caminho do analista, para citar em uma frase cada:
+1. **Entrada:** o pedido chega (cadastro e valor pedido). O sistema puxa sozinho o birô (score, restrição, consultas, outras parcelas) e a movimentação da conta (entradas, saídas, cheque especial). O analista não digita nada disso.
+2. **Sugestão:** a IA sugere aprovar, reduzir ou negar, com o valor, a faixa de risco (verde, amarelo, laranja) e os pontos a favor e contra no topo do pedido (página Revisão).
+3. **Decisão:** o analista confirma ou troca e registra o motivo. A versão final usa a decisão dele onde houve revisão.
+4. **Teste antes de mudar a regra:** no Simulador, ele mexe num pedido e vê a sugestão mudar; no Histórico, vê quanto a regra teria rendido no passado.
+
+## O ouro: a página Histórico (a prova de venda)
+**Conceito:** a proposta aplicada aos 10.000 pedidos que a Fortuna já decidiu, comparada com o que de fato aconteceu.
+- **Nos 10.000 pedidos passados, a proposta renderia +R$ 1,27 milhão** observado (+R$ 1,55 mi estimado); só nos maduros (mais de 1 ano), cerca de +R$ 994 mil. Fonte: `site/src/data/historico.json`, campos `ganhoObservado` e `ganhoEstimado`; mensagem do commit 4a204f6.
+- **A IA separa bom e mau pagador; o score do birô quase não separa:** AUC de 0,74 do modelo contra 0,50 do score (0,50 é o mesmo que tirar no cara ou coroa). Fonte: `historico.json`, campos `aucModelo` e `aucScore`.
+- **O piloto confirma a escolha:** dos 427 clientes que a Fortuna aprovou fora da regra no piloto, a proposta aprovaria 257, que deram **5,1% de calote**, e negaria 170, que deram **27,7%**. Ela escolhe certo justamente onde a regra atual não deixaria passar. Fonte: `historico.json`, bloco `piloto`.
+- **Cada trimestre é decidido por um modelo que não viu aquele trimestre** (treino sem ele). Isso evita olhar a resposta antes.
+
+Frase de venda:
+> "Não é promessa: pegamos os 10 mil pedidos que vocês já decidiram e vimos o que teria acontecido. A proposta teria rendido 1,27 milhão a mais, e onde ela discorda da regra atual, acerta: os clientes fora da regra que ela aprovaria deram 5% de calote; os que ela negaria, 28%."
+
 ## 0:00–0:30 · Visão geral (topo)
 **Conceito:** a régua do jogo.
 > "Aprovar rende 15%, 5% com atraso, e um calote perde 60%. Um calote come o lucro de quatro bons pagadores. Pela conta, só vale aprovar abaixo de ~17,5% de chance de não pagar. Esse é o nosso teto."
@@ -38,7 +58,7 @@ Por isso, o roteiro abaixo responde quatro perguntas, nesta ordem: **hoje × pro
 
 ## 4:15–5:00 · Revisão do analista e o chat do agente
 **Conceito:** a IA sugere e o analista decide.
-> "Cada pedido sai com a decisão, o valor, a faixa de risco (verde, amarelo, laranja) e o motivo em uma linha. O analista pode buscar qualquer pedido pelo id e perguntar ao agente por que ele decidiu assim. O birô cai de propósito; tratamos com nova tentativa e cache, e o resultado é reproduzível."
+> "Cada pedido sai com a sugestão da IA, o valor, a faixa de risco (verde, amarelo, laranja) e o motivo em uma linha. O analista pode buscar qualquer pedido pelo id e perguntar ao agente por que ele decidiu assim. O birô cai de propósito; tratamos com nova tentativa e cache, e o resultado é reproduzível."
 > **Escala?** "Sim. Tudo roda por código, num comando, e é reproduzível. O birô tem cache e nova tentativa. As regras são parâmetros que o analista ajusta sem programar. O modelo retreina com cada nova safra. O que não escala sozinho é a calibração: ela precisa ser conferida a cada safra contra o calote real."
 > Fechar convidando: "escolham um pedido e a gente mostra."
 
