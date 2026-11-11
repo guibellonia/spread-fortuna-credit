@@ -123,10 +123,12 @@ def politica_vigente() -> dict:
     passos = []
     if p["min_score"]:
         passos.append(f"nega score até {p['min_score']}")
+    if p["max_meses_negativos"] < 12:
+        passos.append(f"nega com mais de {p['max_meses_negativos']} mês(es) de saldo negativo nos últimos 12")
     passos += [
         f"nega com mais de {p['max_restricoes']} restrição(ões) ativa(s) no bureau",
-        f"nega com mais de {p['max_meses_negativos']} mês(es) de saldo negativo nos últimos 12",
         f"parcela limitada a {p['max_comprometimento']:.0%} da renda declarada (reduz o valor)",
+        "nega conta apertada (saídas > entradas em algum dos 3 meses antes) e parcela > 28% da renda real",
         "modelo corrigido para censura estima P(não paga) de vida inteira para valores de 100% a 10% do solicitado",
         f"aprova o valor de maior ganho esperado com P(não paga) <= {p['risco_max']:.1%} e ganho > {p['ganho_min']}",
         "limites do produto: R$ 500 a R$ 30.000, nunca acima do solicitado",
