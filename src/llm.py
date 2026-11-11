@@ -43,6 +43,15 @@ PROVEDORES = {  # ids testados em 11/11/2026 com chamada de ferramenta; a ordem 
 ORDEM_PADRAO = list(PROVEDORES)
 
 
+def limpar_chave(v: str) -> str:
+    """Tolera os erros comuns ao colar chave: aspas, espaços, quebra de linha, 'Bearer ' e rótulo antes da chave
+    (ex.: "groq gsk_..."). Fica com o último pedaço sem espaço."""
+    v = (v or "").strip().strip('"').strip("'").strip()
+    if v.lower().startswith("bearer "):
+        v = v[7:]
+    return v.split()[-1] if v.split() else ""
+
+
 class SemProvedor(Exception):
     pass
 
@@ -53,7 +62,7 @@ def _cfg(nome):
     return {
         "nome": nome,
         "base_url": (os.environ.get(f"{pre}_BASE_URL") or base["base_url"]).rstrip("/"),
-        "chave": os.environ.get(f"{pre}_API_KEY", ""),
+        "chave": limpar_chave(os.environ.get(f"{pre}_API_KEY", "")),
         "models": [m.strip() for m in os.environ.get(f"{pre}_MODELS", "").split(",") if m.strip()] or base["models"],
         "precisa_chave": base["precisa_chave"],
     }
