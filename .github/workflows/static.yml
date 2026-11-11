@@ -79,6 +79,9 @@ jobs:
             cp slides/index.html _site/slides/
             if [ -d slides/capturas ]; then cp -r slides/capturas _site/slides/; fi
           fi
+          # pitch: telas e roteiro (só HTML e texto)
+          mkdir -p _site/pitch
+          cp pitch/telas.html pitch/PITCH.html pitch/ROTEIRO-PITCH.md _site/pitch/
           cp -r site/out _site/dashboard
 
       - name: Confere que nenhum CSV com id de pedido vai para o site
