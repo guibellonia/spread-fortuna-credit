@@ -18,7 +18,8 @@ ATRIBUTOS = [
     "score", "restricoes_ativas", "consultas_90_dias", "meses_historico_bureau", "parcelas_outras_instituicoes",
     "renda_declarada", "salario_sobre_renda", "entradas_sobre_renda", "sobra_mensal",
     "mov_dias_cheque_total", "mov_meses_cheque", "mov_entradas_cv", "mov_saldo_medio", "mov_saldo_minimo_min",
-    "meses_conta", "idade", "vinc_autonomo", "vinc_empresario", "vinc_aposentado",
+    # sem idade: analysis/padroes-agregado.md deixa idade, gênero, estado civil e CEP só como referência
+    "meses_conta", "vinc_autonomo", "vinc_empresario", "vinc_aposentado",
 ]
 GANHO = np.array([0.15, 0.05, -0.60])  # em dia, atraso, não pagou
 CLASSES = {"quitado_em_dia": 0, "em_dia": 0, "quitado_com_atraso": 1, "em_atraso": 1, "inadimplente": 2}

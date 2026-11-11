@@ -14,8 +14,15 @@ Como os números foram apurados: as linhas das abas foram cruzadas com `hackatho
 **Passa.** Nas 96 aprovações não há uma única violação das regras do manual nem das barreiras da análise, e a
 pontuação do Daniel bate em 119 de 119 pedidos, incluindo faixa e texto do detalhe.
 
-Sobram três pontos em aberto, nenhum deles uma quebra de regra: a barreira dos 28% voltou a negar em vez de
-reduzir o valor, a restrição no bureau nega mesmo com risco baixo, e a idade continua entrando no modelo.
+Sobraram três pontos em aberto, nenhum deles uma quebra de regra. Dois já foram tratados depois desta
+auditoria:
+
+- **Idade saiu do modelo** (`src/modelo.py`), e a medição mostrou que isso melhora os dois lados: o ganho
+  projetado foi de +R\$ 385 a 500 mil para +R\$ 504.666 e o observado fora da amostra ficou em +R\$ 392.138,
+  no mesmo patamar de antes.
+- **A barreira dos 28% fica como está**, negando. Medimos a alternativa de cortar o valor em vez de negar e ela
+  piora muito o resultado real: o ganho observado cai para +R\$ 183.773, abaixo até das regras do Bilosca.
+- **A restrição no bureau continua em aberto.**
 
 ## O que está condizente
 
@@ -64,7 +71,16 @@ têm risco do modelo abaixo de 7,3%:
 
 O `padroes-agregado.md`, linha 10, define que parcela e comprometimento se medem **sobre o valor aprovado**,
 não sobre o pedido. Medido assim, esses quatro caberiam dentro dos 28% com um valor menor, em vez de sair com
-zero. É a maior diferença entre o publicado e as definições e também a que mais pesa em dinheiro.
+zero.
+
+**Medido e recusado.** Troquei a barreira por um teto de valor, aprovando o máximo que faz a parcela caber em
+28% da renda real, e rodei `politica_mescla.py --comparar`. A proposta passaria de 1.412 para 1.537 aprovados
+e de R\$ 9,34 mi para R\$ 10,33 mi, e o ganho projetado subiria para +R\$ 582.938. Só que, nos pedidos reais com
+desfecho conhecido (out/25 a mar/26), o ganho cai de +R\$ 392.138 para +R\$ 183.773, abaixo das regras do
+Bilosca (+R\$ 336.818). A barreira fica. A definição de medir sobre o valor aprovado continua certa para
+descrever os padrões, mas não se sustenta como regra de decisão nesse grupo: são clientes cuja conta não
+aguenta o pedido, e dar menos não os torna bons pagadores. É exatamente a limitação que o
+`pontuacao-risco.md` registra, de que a base não mostra se reduzir o valor reduz o risco.
 
 ### 2. Restrição ativa nega mesmo quando o modelo vê risco baixo
 
@@ -73,23 +89,32 @@ e o `padroes-agregado.md` avisa que os 39,4% da tabela de restrição são efeit
 olhado sozinho, sem limpar os outros. O `pontuacao-risco.md` lista só duas barreiras, conta apertada e parcela
 pesada, e restrição não é uma delas.
 
-### 3. Idade entra no modelo
+### 3. Idade entra no modelo (corrigido)
 
 `padroes-agregado.md`, linha 13: "Gênero, estado civil, CEP e idade são só referência. Não devem entrar na
-política." Três ficaram de fora. `"idade"` continua na lista `ATRIBUTOS` de `src/modelo.py:21`.
+política." Três ficaram de fora e `"idade"` tinha ficado na lista `ATRIBUTOS` de `src/modelo.py`.
+
+Removida. O modelo foi retreinado sem ela e a política regerada: 1.412 aprovados de 2.000, R\$ 9.338.100, CSV
+validado por `src/validar_csv.py`. O ganho projetado ficou em +R\$ 504.666 pelo GBM corrigido e o observado
+fora da amostra em +R\$ 392.138, ou seja, tirar a variável sensível não custou resultado. O verificador de
+`src/explicabilidade.py`, que lista os atributos sensíveis usados direto pelo modelo, passa a fechar limpo.
 
 ## Justificativas e detalhes
 
 ### Sobre a barreira dos 28%
 
-A publicação das 14:20 reduzia o valor nesses casos, a das 14:49 nega. Antes de citar no pitch os R\$ 398 mil de
-ganho fora da amostra que o cabeçalho de `src/politica_mescla.py` registra, vale confirmar qual das duas
-versões foi medida. A variante que reduz não aparece na comparação.
+A publicação das 14:20 reduzia o valor nesses casos e a das 14:49 nega. A comparação acabou respondendo qual
+das duas vale, com as quatro políticas medidas lado a lado:
 
-Existe um contrapeso honesto do lado de quem nega: o `pontuacao-risco.md`, em "Limitações", diz que a base não
-mostra se reduzir o valor reduz o risco, porque quase ninguém no histórico recebeu menos do que pediu. Reduzir
-é extrapolação; negar é conservador. A escolha é legítima nos dois sentidos, mas precisa estar escrita, porque
-hoje o repositório documenta a definição de um jeito (`padroes-agregado.md`) e decide do outro.
+| Política | Aprovados | Ganho projetado (GBM) | Ganho observado fora da amostra |
+|---|---|---|---|
+| Atual | 1.145 | referência | referência |
+| Regras do Bilosca | 1.043 | +R\$ 285.782 | +R\$ 336.818 |
+| Proposta, barreira que nega | 1.412 | +R\$ 504.666 | **+R\$ 392.138** |
+| Proposta, teto que reduz | 1.537 | +R\$ 582.938 | +R\$ 183.773 |
+
+O projetado e o observado discordam, e vale o observado, porque são pedidos reais com desfecho conhecido. O
+modelo fica otimista justamente onde não tem evidência, que é o cliente recebendo menos do que pediu.
 
 ### Sobre a restrição no bureau
 
@@ -128,4 +153,6 @@ As faixas ficam em 17 verdes, 13 amarelas, 7 laranjas e 13 barreiras.
 - 119 pedidos dos 2.000. As abas de laranja e de divergentes são enviesadas por construção, então só os 50
   primeiros ids servem para falar de perfil.
 - Os padrões da `analysis/` entraram como dados; não refiz as tabelas de inadimplência.
-- Não rodei `politica_mescla.py --comparar`, então os R\$ 398 mil fora da amostra não foram reproduzidos aqui.
+- Os números de ganho vêm de `python politica_mescla.py --comparar`, rodado duas vezes: uma com a barreira e
+  outra com o teto, as duas já sem a idade no modelo. O painel só reflete isso depois de
+  `supabase/publicar_decisoes.py` e `site/scripts/snapshot.py`.
