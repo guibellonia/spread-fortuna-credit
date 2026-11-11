@@ -6,3 +6,5 @@ __pycache__/
 .venv/
 .ipynb_checkpoints/
 analysis/out/*.pkl
+_base_*.pkl
+spread_final.csv

@@ -32,6 +32,29 @@ Autor entre parênteses, como no [site do time](https://guibellonia.github.io/sp
 | `index.html` | a página do time, no mesmo padrão visual do painel: Resumo, Padrões e censura, Documentos e link para o Painel (Enio Rocha) |
 | `README.md` | este arquivo (Enio Rocha) |
 
+## Rodar (um comando)
+
+```bash
+cp .env.example .env          # preencha PGPASSWORD e BUREAU_TOKEN
+docker compose up -d          # banco restaurado do dump em ./data/
+python -m venv .venv && .venv/Scripts/python -m pip install -r requirements.txt
+.venv/Scripts/python src/pipeline.py      # -> spread_final.csv, já validado
+```
+
+| Script | O que faz |
+|---|---|
+| `src/pipeline.py` | do banco ao `spread_final.csv` validado |
+| `src/politica_regras.py` | a política por regras (atual + conta apertada + parcela > 28% da renda real), com `PARAMS` |
+| `src/backtest_maduro.py` | ganho sobre a política atual no histórico maduro |
+| `src/experimento.py` | o padrão que decidiu a política (ver abaixo) |
+| `src/bureau_api.py` | birô dos 2.000 novos, com retry e cache |
+| `src/validar.py` | confere o CSV contra o formato do manual |
+
+> Há duas políticas candidatas no repositório: a por regras (`src/pipeline.py`, acima) e a por modelo de risco com
+> valor ajustado (`src/gerar_decisoes.py`, cenário G; ver `src/README.md`). A escolha final sai da comparação das duas
+> com `src/tools.py comparar_politicas`. Os três arquivos acima ganharam o sufixo `_regras`, `_api` e `_maduro` na
+> integração, porque `src/politica.py`, `src/bureau.py` e `src/backtest.py` já existiam na `main`.
+
 ## Como contribuir
 
 Todo mundo pode e deve contribuir. Para não pisar no trabalho do outro:
