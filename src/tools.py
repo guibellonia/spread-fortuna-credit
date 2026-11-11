@@ -312,6 +312,29 @@ def validar_arquivo(caminho: str = "") -> dict:
     return _j({"valido": not erros, "erros": erros[:20], "avisos": avisos, "composicao": rel})
 
 
+def explicar_modelo(variavel: str = "") -> dict:
+    """O que o modelo aprendeu: importância por permutação (queda de AUC fora do tempo) e, se `variavel`
+    for informada, a dependência parcial (como o risco varia com ela)."""
+    import explicabilidade as ex
+    out = ex.importancia_permutacao(_hist())
+    if variavel:
+        out["dependencia_parcial"] = ex.dependencia_parcial(_modelo()[0], _hist(), variavel)
+    return _j(out)
+
+
+@lru_cache(maxsize=1)
+def _sanidade():
+    import explicabilidade as ex
+    dec = politica_proposta(_novos(), _politica_modelo(), _params(None))
+    return _j(ex.teste_sanidade(_hist(), _novos(), _modelo()[0], dec))
+
+
+def teste_sanidade() -> dict:
+    """Confere se o modelo aprendeu algo que não devia: atributos sensíveis usados, sonda de vazamento
+    (dá para adivinhar gênero/idade/região pelo risco?), disparidade de aprovação por grupo e monotonicidade."""
+    return _sanidade()
+
+
 # ----------------------------------------------------------------------------- schemas (function calling)
 _PARAMS_SCHEMA = {"type": "object", "description": "Sobrescreve parâmetros da política. Omitido = cenário G.",
                   "properties": {
@@ -353,6 +376,10 @@ TOOLS = [
     _f("gerar_csv", "Gera o CSV de entrega. Só grava com confirmar=true, e só depois de aprovação explícita do analista humano.",
        {"params": _PARAMS_SCHEMA, "confirmar": {"type": "boolean"}}),
     _f("validar_arquivo", "Valida um CSV de decisões nas regras do manual.", {"caminho": {"type": "string"}}),
+    _f("explicar_modelo", "O que o modelo de risco aprendeu: importância das variáveis e, opcionalmente, a curva de uma variável.",
+       {"variavel": {"type": "string", "description": "ex.: comp_aprov, mov_meses_cheque, score"}}),
+    _f("teste_sanidade", "Confere se o modelo usa ou vaza atributos sensíveis (gênero, idade, região, estado civil), "
+       "se aprova grupos de forma desigual e se o risco cresce onde deveria."),
 ]
 
 _FUNCS = {t["function"]["name"]: globals()[t["function"]["name"]] for t in TOOLS}

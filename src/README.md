@@ -47,6 +47,8 @@ Esquemas no formato de function calling (OpenAI-compatível): `from tools import
 | `pedidos_em_divergencia` | fila para o analista: onde os modelos discordam |
 | `gerar_csv` | dry-run por padrão; só grava `saida/spread_final.csv` com `confirmar=true` (aprovação humana) |
 | `validar_arquivo` | valida o CSV nas regras do manual |
+| `explicar_modelo` | importância das variáveis (queda de AUC fora do tempo) e dependência parcial |
+| `teste_sanidade` | atributos sensíveis usados, sonda de vazamento, disparidade por grupo (regra dos 80%) e monotonicidade |
 
 Teste pela linha de comando:
 
