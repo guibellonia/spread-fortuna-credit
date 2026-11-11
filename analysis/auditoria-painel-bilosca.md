@@ -20,8 +20,9 @@ auditoria:
 - **Idade saiu do modelo** (`src/modelo.py`), e a medição mostrou que isso melhora os dois lados: o ganho
   projetado foi de +R\$ 385 a 500 mil para +R\$ 504.666 e o observado fora da amostra ficou em +R\$ 392.138,
   no mesmo patamar de antes.
-- **A barreira dos 28% fica como está**, negando. Medimos a alternativa de cortar o valor em vez de negar e ela
-  piora muito o resultado real: o ganho observado cai para +R\$ 183.773, abaixo até das regras do Bilosca.
+- **A barreira dos 28% fica como está**, negando, que é o que o `pontuacao-risco.md` §4 manda. Medimos a
+  alternativa de cortar o valor em vez de negar e ela piora o resultado real: o ganho observado cai para
+  +R\$ 183.773, abaixo até das regras do Bilosca. Não é desvio das definições, é tensão entre duas delas.
 - **A restrição no bureau continua em aberto.**
 
 ## O que está condizente
@@ -55,9 +56,12 @@ Três lacunas que existiam na publicação das 14:20 foram fechadas:
 3. A aba laranja virou a fila de revisão que o documento sugeriu. Dos 47 laranjas aprovados, 18 saíram com
    valor reduzido.
 
-## O que não está condizente
+## Um ponto de tensão entre os dois documentos, resolvido pela medição
 
 ### 1. A barreira dos 28% nega em vez de reduzir o valor
+
+Negar é o que o `pontuacao-risco.md` §4 manda: lá as duas barreiras "negam direto". Nesse sentido o publicado
+está alinhado. A dúvida nasce de outro documento, e por isso este item fica fora da lista de não conformidade.
 
 São 6 negados por esse motivo, R\$ 116.100 pedidos, dos quais a política atual aprovaria R\$ 82.598. Quatro deles
 têm risco do modelo abaixo de 7,3%:
@@ -69,9 +73,15 @@ têm risco do modelo abaixo de 7,3%:
 | P-06029 | R\$ 12.200 | 6,2% | R\$ 9.588,42 |
 | P-00808 | R\$ 19.500 | 7,2% | R\$ 12.171,85 |
 
-O `padroes-agregado.md`, linha 10, define que parcela e comprometimento se medem **sobre o valor aprovado**,
-não sobre o pedido. Medido assim, esses quatro caberiam dentro dos 28% com um valor menor, em vez de sair com
-zero.
+O `padroes-agregado.md`, linha 10, diz que parcela e comprometimento se medem **sobre o valor aprovado**, não
+sobre o pedido. Essa frase está no bloco que explica como as tabelas de inadimplência foram calculadas, ou
+seja, é convenção de medição e não regra de concessão. Mesmo assim ela levanta uma pergunta legítima: medida
+sobre o valor que a política concederia, a parcela desses quatro caberia dentro dos 28% com um valor menor,
+em vez de o pedido sair com zero.
+
+Hoje a barreira é testada sobre um valor de referência, o solicitado limitado a 30% da renda declarada, que é
+o desenho de `src/politica_regras.py`. No histórico a distinção não existia, porque quase ninguém recebeu
+menos do que pediu. Ela só aparece agora que a proposta corta valor.
 
 **Medido e recusado.** Troquei a barreira por um teto de valor, aprovando o máximo que faz a parcela caber em
 28% da renda real, e rodei `politica_mescla.py --comparar`. A proposta passaria de 1.412 para 1.537 aprovados
@@ -81,6 +91,8 @@ Bilosca (+R\$ 336.818). A barreira fica. A definição de medir sobre o valor ap
 descrever os padrões, mas não se sustenta como regra de decisão nesse grupo: são clientes cuja conta não
 aguenta o pedido, e dar menos não os torna bons pagadores. É exatamente a limitação que o
 `pontuacao-risco.md` registra, de que a base não mostra se reduzir o valor reduz o risco.
+
+## O que não está condizente
 
 ### 2. Restrição ativa nega mesmo quando o modelo vê risco baixo
 
