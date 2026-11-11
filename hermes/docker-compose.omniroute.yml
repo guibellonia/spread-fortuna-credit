@@ -1,0 +1,16 @@
+# OmniRoute local: gateway compatível com OpenAI que faz o fallback entre os provedores gratuitos.
+#   docker compose -f hermes/docker-compose.omniroute.yml up -d
+# Painel e API em http://localhost:20128 (API em /v1). Provedores, combo e chave são cadastrados no painel e
+# ficam no volume omniroute-data, fora do Git. Repositório oficial: github.com/diegosouzapw/OmniRoute
+services:
+  omniroute:
+    image: diegosouzapw/omniroute:latest   # fixe a versão testada pelo time antes de usar em produção
+    container_name: omniroute
+    ports:
+      - "127.0.0.1:20128:20128"            # só na máquina local; não exponha sem autenticação
+    volumes:
+      - omniroute-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  omniroute-data:
