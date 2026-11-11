@@ -50,7 +50,7 @@
   <span class="sub">situação às 09h15 · entrega até <b>15h30</b> · arquivo <b>spread_final.csv</b> · decisão final do time</span>
 </header>
 
-<nav class="abas"><button data-aba="situacao">Situação</button><button data-aba="abertura">Abertura</button><button data-aba="banco">Análise do banco</button><button data-aba="censura">Censura e padrões</button><button data-aba="complementos">Complementos</button><button data-aba="discussao">Para discussão</button><button data-aba="pendencias">Pendências</button><button data-aba="prompts">Prompts</button></nav>
+<nav class="abas"><button data-aba="situacao">Situação</button><button data-aba="abertura">Abertura</button><button data-aba="banco">Análise do banco</button><button data-aba="censura">Censura e padrões</button><button data-aba="complementos">Complementos e discussão</button><button data-aba="pendencias">Pendências</button><button data-aba="prompts">Prompts</button></nav>
 <div class="painel" id="p-situacao"><div class="grade">
 
   <section>
@@ -122,10 +122,10 @@
   <section>
     <h2>Documentos</h2>
     <ul>
-      <li><a href="analysis/resumo-abertura.html">Resumo da abertura</a> <span class="pequeno">regras, nota, prazos</span></li>
+      <li><a href="#abertura">Resumo da abertura</a> <span class="pequeno">regras, nota, prazos</span></li>
       <li><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-banco.md">Análise do banco</a> <span class="pequeno">Juliano</span></li>
-      <li><a href="analysis/analise-enio.html">Complementos e divergências</a> <span class="pequeno">Enio</span></li>
-      <li><a href="analysis/para-discussao.html">Para discussão</a> <span class="pequeno">como não tirar zero · 5 testes</span></li>
+      <li><a href="#complementos">Complementos e divergências</a> <span class="pequeno">Enio</span></li>
+      <li><a href="#complementos">Para discussão</a> <span class="pequeno">como não tirar zero · 5 testes</span></li>
       <li><a href="https://github.com/guibellonia/spread-fortuna-credit/tree/main/analysis">Prompts de contexto e scripts</a></li>
     </ul>
   </section>
@@ -295,7 +295,7 @@ Depois, em cima do piso, decidir o que afrouxar (score, 1 restrição) com teste
 </pre>
 </details>
 </div>
-<section class="painel" id="p-abertura" data-src="analysis/resumo-abertura.md" data-autor="Enio · regras, nota e prazos do manual" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-banco" data-src="analysis/analise-banco.md" data-autor="Juliano" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-censura" data-src="analysis/censura-agregado.md|analysis/padroes-agregado.md" data-autor="análise agregada do time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-complementos" data-src="analysis/analise-enio.md" data-autor="Enio · onde confirma e onde diverge" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-discussao" data-src="analysis/para-discussao.md" data-autor="Enio · como não tirar zero, 5 testes" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-pendencias" data-src="analysis/PENDENCIAS.md|analysis/pendencias-agregado.md" data-autor="time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-prompts" data-src="prompts/README.md|prompts/enio-rocha_head-de-credito_v1.md|analysis/contexto-claude.md|analysis/contexto-gpt.md" data-autor="prompts do time, com autor e versão" hidden><p class="pequeno">Carregando…</p></section>
+<section class="painel" id="p-abertura" data-src="analysis/resumo-abertura.md" data-autor="Enio · regras, nota e prazos do manual" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-banco" data-src="analysis/analise-banco.md" data-autor="Juliano" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-censura" data-src="analysis/censura-agregado.md|analysis/padroes-agregado.md" data-autor="análise agregada do time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-complementos" data-src="analysis/analise-enio.md" data-autor="Enio · onde confirma e onde diverge" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-pendencias" data-src="analysis/PENDENCIAS.md|analysis/pendencias-agregado.md" data-autor="time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-prompts" data-src="prompts/README.md|prompts/enio-rocha_head-de-credito_v1.md|analysis/contexto-claude.md|analysis/contexto-gpt.md" data-autor="prompts do time, com autor e versão" hidden><p class="pequeno">Carregando…</p></section>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script>
 const carregados={};

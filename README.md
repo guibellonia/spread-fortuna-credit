@@ -16,7 +16,7 @@ Hackathon GOW 2026 · 11/11/2026 · entrega do `spread_final.csv` até **15h30**
 
 | Pasta | O que tem |
 |---|---|
-| `analysis/` | análises da base, padrões, censura, pendências, para discussão, transcrição da abertura |
+| `analysis/` | análises da base (uma por autor), padrões, censura, pendências, resumo e transcrição da abertura |
 | `prompts/` | prompts de contexto do time, com autor e versão |
 | `api-baseline/` | baseline da API do bureau |
 | `docker/` e `docker-compose.yml` | banco local |
