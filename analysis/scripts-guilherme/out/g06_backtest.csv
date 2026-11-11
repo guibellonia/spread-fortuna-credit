@@ -1,0 +1,5 @@
+regra (valor = aprovado histórico),aprova com desfecho,dos quais com valor reduzido,aprova sem desfecho (negados no histórico),volume (mi),paradas obs.,resultado no horizonte observado (mil),PD vida KM,resultado vida KM (mil),PD prevista (modelo em S),resultado projetado (mil),ganho vs A no horizonte observado (mil),ganho vs A vida KM (mil),ganho vs A projetado (mil)
+A (atual),1393,47,0,11.45841282,141,432.2183825,17.2%,11.878870119855096,5.9%,854.6873477015965,0.0,0.0,0.0
+"C (antigo, risco≤20%, score>600)",1362,169,51,10.4055,120,612.205,15.6%,136.4500415276116,3.2%,1067.6142084606415,179.98661750000002,124.57117140775651,212.92686075904498
+"G (corrigido, risco≤17,5%, sem score)",1601,193,264,12.0438,150,649.425,16.4%,72.40542315685113,3.1%,1246.4374353612081,217.20661749999994,60.526553036996035,391.7500876596116
+aprovados históricos (atual+piloto),1820,0,0,14.470590679999999,211,282.77704150000005,19.8%,-293.9155336134102,6.8%,929.2606713397996,-149.44134099999997,-305.7944037332653,74.57332363820308
