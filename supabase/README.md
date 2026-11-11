@@ -15,11 +15,16 @@ https://supabase.com/dashboard/project/vjxwagiqgecsscoogxln
 ## Atualizar as decisões no painel
 
 ```
-cd src && python gerar_decisoes.py                 # gera saida/decisoes_detalhadas.csv
-cd .. && .venv/Scripts/python supabase/publicar_decisoes.py
+cd src && python gerar_decisoes.py && python politica_mescla.py   # proposta, regras, atual e faixa de risco
+cd .. && .venv/Scripts/python supabase/publicar_decisoes.py         # saida/decisoes_mescla.csv -> painel.decisoes
 ```
 
 Confere os 2.000 pedidos novos e os limites de valor numa transação só. As revisões já feitas continuam valendo.
+As migrações rodam uma vez cada (registro em `painel.migracoes`).
+
+Na revisão, o botão "Baixar CSV da IA" gera o arquivo de entrega no formato do manual a partir dessas decisões.
+A opção "com as revisões do analista" troca a decisão da IA pela do analista: confirme com a organização antes de
+entregar assim.
 
 ## Dar acesso a alguém
 

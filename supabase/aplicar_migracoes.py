@@ -4,7 +4,7 @@ Uso, da raiz do repositório, com SUPABASE_DB_URL no .env:
     .venv/Scripts/python supabase/aplicar_migracoes.py
     .venv/Scripts/python supabase/aplicar_migracoes.py --membro ana@empresa.com --membro bruno@empresa.com
 
-As migrações são idempotentes: rodar de novo não duplica nada. O membro também precisa existir no
+Cada migração roda uma vez só (registro em painel.migracoes) e também é idempotente. O membro também precisa existir no
 Supabase Auth (Authentication > Users > Add user) para conseguir entrar no painel.
 """
 from __future__ import annotations
@@ -39,9 +39,19 @@ def main() -> None:
     info = conexao()
     arquivos = sorted(MIGRACOES.glob("*.sql"))
     with psycopg.connect(**info, connect_timeout=15) as c:
+        with c.transaction():  # registro das migrações aplicadas: cada uma roda uma vez só
+            c.execute("create schema if not exists painel")
+            c.execute("create table if not exists painel.migracoes (nome text primary key, "
+                      "aplicada_em timestamptz not null default now())")
+            c.execute("revoke all on painel.migracoes from public")
+            feitas = {n for (n,) in c.execute("select nome from painel.migracoes").fetchall()}
         for arq in arquivos:
+            if arq.name in feitas:
+                print(f"já aplicada: {arq.name}")
+                continue
             with c.transaction():
                 c.execute(arq.read_text(encoding="utf-8"))
+                c.execute("insert into painel.migracoes (nome) values (%s)", (arq.name,))
             print(f"aplicada: {arq.name}")
         with c.transaction():
             for e in emails:

@@ -1,13 +1,14 @@
-"""Publica as decisões do pipeline em painel.decisoes, para o analista revisar no painel.
+"""Publica as decisões em painel.decisoes, para o analista revisar no painel.
 
 Uso, da raiz do repositório, com SUPABASE_DB_URL no .env e o dump já restaurado no Supabase:
-    .venv/Scripts/python supabase/publicar_decisoes.py                                   # saida/decisoes_detalhadas.csv
-    .venv/Scripts/python supabase/publicar_decisoes.py --arquivo saida/spread_final.csv
+    .venv/Scripts/python supabase/publicar_decisoes.py            # saida/decisoes_mescla.csv (proposta + alternativas)
+    .venv/Scripts/python supabase/publicar_decisoes.py --arquivo saida/decisoes_detalhadas.csv --politica hibrida
 
-Aceita o CSV detalhado do src/gerar_decisoes.py (id_pedido, aprova, valor, p_nao_paga, ganho_esperado, motivo,
-atual_aprova, atual_valor) ou o formato de entrega (id_pedido, decisao, valor_aprovado). Tudo numa transação:
-confere 2.000 pedidos novos, valor até o solicitado e até R$ 30 mil, ou não grava nada. Revisões já feitas
-continuam valendo (cada uma guarda a decisão da IA do momento em que foi feita).
+Aceita o CSV da mescla (src/politica_mescla.py, com as decisões de cada política e a faixa de risco), o detalhado
+do src/gerar_decisoes.py (id_pedido, aprova, valor, p_nao_paga, ganho_esperado, motivo, atual_aprova, atual_valor)
+ou o formato de entrega (id_pedido, decisao, valor_aprovado). Tudo numa transação: confere 2.000 pedidos novos,
+valor até o solicitado e até R$ 30 mil, ou não grava nada. Revisões já feitas continuam valendo (cada uma guarda a
+decisão da IA do momento em que foi feita).
 """
 from __future__ import annotations
 
@@ -23,15 +24,17 @@ from dotenv import load_dotenv
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from restaurar_banco import ROOT, conexao  # noqa: E402
 
-PADRAO = ROOT / "saida" / "decisoes_detalhadas.csv"
-COLUNAS = ["id_pedido", "decisao", "valor_aprovado", "motivo", "p_nao_paga", "ganho_esperado",
-           "atual_decisao", "atual_valor"]
+PADRAO = ROOT / "saida" / "decisoes_mescla.csv"
+COLUNAS = ["id_pedido", "decisao", "valor_aprovado", "motivo", "p_nao_paga", "ganho_esperado", "atual_decisao",
+           "atual_valor", "regras_decisao", "regras_valor", "pontos", "faixa", "pontos_detalhe"]
+TIPOS = ["text", "text", "numeric", "text", "numeric", "numeric", "text", "numeric", "text", "numeric",
+         "smallint", "text", "text"]
 
 
 def le(arq: Path) -> list[tuple]:
     d = pd.read_csv(arq, dtype={"id_pedido": str})
     sim = lambda s: s.astype(str).str.lower().isin(["true", "1"])  # noqa: E731
-    if {"aprova", "valor"} <= set(d.columns):  # CSV detalhado do src/
+    if {"aprova", "valor"} <= set(d.columns):  # CSV detalhado do src/gerar_decisoes.py
         d["decisao"] = sim(d.aprova).map({True: "APROVADO", False: "NEGADO"})
         d["valor_aprovado"] = d.valor
         if {"atual_aprova", "atual_valor"} <= set(d.columns):
@@ -47,7 +50,7 @@ def le(arq: Path) -> list[tuple]:
         sys.exit(f"{arq.name}: id_pedido repetido")
     if not d.decisao.isin(["APROVADO", "NEGADO"]).all():
         sys.exit(f"{arq.name}: decisão fora de APROVADO/NEGADO")
-    colunas = [[None if pd.isna(v) else v for v in d[c].tolist()] for c in COLUNAS]  # tipos nativos do Python
+    colunas = [[None if pd.isna(v) else (int(v) if c == "pontos" else v) for v in d[c].tolist()] for c in COLUNAS]
     return list(zip(*colunas))
 
 
@@ -56,17 +59,18 @@ def main() -> None:
     sys.stderr.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--arquivo", default=str(PADRAO))
+    ap.add_argument("--politica", default="híbrida", help="nome da política publicada (aparece no painel)")
     args = ap.parse_args()
     arq = Path(args.arquivo)
     if not arq.exists():
-        sys.exit(f"não achei {arq}; gere com: cd src && python gerar_decisoes.py")
+        sys.exit(f"não achei {arq}; gere com: cd src && python gerar_decisoes.py && python politica_mescla.py")
     linhas = le(arq)
     fonte = f"{arq.name} sha256:{hashlib.sha256(arq.read_bytes()).hexdigest()[:12]}"
 
     load_dotenv(ROOT / ".env")
     with psycopg.connect(**conexao(), connect_timeout=15) as c, c.transaction():
-        c.execute("create temp table entrada (id_pedido text, decisao text, valor_aprovado numeric, motivo text, "
-                  "p_nao_paga numeric, ganho_esperado numeric, atual_decisao text, atual_valor numeric) on commit drop")
+        c.execute("create temp table entrada (" + ", ".join(f"{n} {t}" for n, t in zip(COLUNAS, TIPOS))
+                  + ") on commit drop")
         with c.cursor().copy("copy entrada from stdin") as cp:
             for linha in linhas:
                 cp.write_row(linha)
@@ -81,21 +85,21 @@ def main() -> None:
         if total != 2000 or any(ruins):
             raise SystemExit(f"nada gravado: {total} linhas (esperado 2.000); fora dos novos: {ruins[0]}; "
                              f"valor inválido: {ruins[1]}; decisão x valor: {ruins[2]}")
-        c.execute("""
+        extra = COLUNAS[3:]
+        c.execute(f"""
             insert into painel.decisoes as d (id_pedido, id_cliente, valor_solicitado, prazo_meses, decisao,
-                   valor_aprovado, motivo, p_nao_paga, ganho_esperado, atual_decisao, atual_valor, fonte, publicado_em)
+                   valor_aprovado, {", ".join(extra)}, politica, fonte, publicado_em)
             select e.id_pedido, p.id_cliente, p.valor_solicitado, p.prazo_meses, e.decisao, e.valor_aprovado,
-                   e.motivo, e.p_nao_paga, e.ganho_esperado, e.atual_decisao, e.atual_valor, %s, now()
+                   {", ".join("e." + x for x in extra)}, %s, %s, now()
             from entrada e join hackathon.pedidos p using (id_pedido)
             on conflict (id_pedido) do update set
-              decisao = excluded.decisao, valor_aprovado = excluded.valor_aprovado, motivo = excluded.motivo,
-              p_nao_paga = excluded.p_nao_paga, ganho_esperado = excluded.ganho_esperado,
-              atual_decisao = excluded.atual_decisao, atual_valor = excluded.atual_valor,
-              fonte = excluded.fonte, publicado_em = excluded.publicado_em
-        """, (fonte,))
+              decisao = excluded.decisao, valor_aprovado = excluded.valor_aprovado,
+              {", ".join(f"{x} = excluded.{x}" for x in extra)},
+              politica = excluded.politica, fonte = excluded.fonte, publicado_em = excluded.publicado_em
+        """, (args.politica, fonte))
         ap_, vol = c.execute("select count(*) filter (where decisao = 'APROVADO'), sum(valor_aprovado) "
                              "from painel.decisoes").fetchone()
-    print(f"publicado {fonte}: {ap_} aprovados de 2.000, R$ {vol:,.2f}")
+    print(f"publicado {fonte} ({args.politica}): {ap_} aprovados de 2.000, R$ {vol:,.2f}")
 
 
 if __name__ == "__main__":
