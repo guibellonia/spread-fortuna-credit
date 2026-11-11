@@ -97,7 +97,8 @@ code { font-size: 12px; }
 }
 .seg-btn:first-child { border-radius: 999px 8px 8px 999px; }
 .seg-btn:last-child { border-radius: 8px 999px 999px 8px; }
-.seg-btn[aria-pressed="true"] { background: var(--md-primary); color: var(--md-on-primary); border-radius: 999px; }
+.card .seg-btn { background: var(--md-surface-container); }
+.seg-btn[aria-pressed="true"], .card .seg-btn[aria-pressed="true"] { background: var(--md-primary); color: var(--md-on-primary); border-radius: 999px; }
 
 .chip {
   display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border-radius: 8px;
