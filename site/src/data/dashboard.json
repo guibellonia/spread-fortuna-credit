@@ -62,7 +62,7 @@
      "restantes": 1423
     },
     {
-     "rotulo": "Sem restrição ativa",
+     "rotulo": "Sem dívida negativada no birô",
      "restantes": 1145
     }
    ],
@@ -109,15 +109,15 @@
      "restantes": 1423
     },
     {
-     "rotulo": "Sem restrição ativa",
+     "rotulo": "Sem dívida negativada no birô",
      "restantes": 1145
     },
     {
-     "rotulo": "Conta sem aperto nos 3 meses",
+     "rotulo": "Não gastou mais do que ganhou nos 3 meses antes",
      "restantes": 1121
     },
     {
-     "rotulo": "Parcela até 28% da renda real",
+     "rotulo": "Parcela cabe em 28% do que entra na conta",
      "restantes": 1043
     }
    ],
@@ -164,19 +164,19 @@
      "restantes": 2000
     },
     {
-     "rotulo": "Sem restrição ativa",
+     "rotulo": "Sem dívida negativada no birô",
      "restantes": 1623
     },
     {
-     "rotulo": "Conta sem aperto nos 3 meses",
+     "rotulo": "Não gastou mais do que ganhou nos 3 meses antes",
      "restantes": 1588
     },
     {
-     "rotulo": "Parcela até 28% da renda real",
+     "rotulo": "Parcela cabe em 28% do que entra na conta",
      "restantes": 1457
     },
     {
-     "rotulo": "Risco até 17,5% e ganho positivo",
+     "rotulo": "Chance de calote até 17,5%: a conta fecha no lucro",
      "restantes": 1412
     }
    ],

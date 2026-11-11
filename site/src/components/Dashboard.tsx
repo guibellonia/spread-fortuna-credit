@@ -28,7 +28,10 @@ export function Dashboard({ dados }: { dados: Dados }) {
 
       <main className="page">
         <div className="page-head">
-          <h1 className="display">Visão geral</h1>
+          <div>
+            <h1 className="display">Visão geral</h1>
+            <p className="muted">Como a proposta decide os 2.000 pedidos novos, passo a passo, e quanto isso empresta. A IA sugere, o analista decide.</p>
+          </div>
           <div className="filters">
             <div className="seg" role="group" aria-label="Política">
               {dados.politicas.map((p) => (

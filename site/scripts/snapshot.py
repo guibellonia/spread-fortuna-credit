@@ -128,9 +128,9 @@ def funil(n: pd.DataFrame, passos: list) -> tuple[list[dict], pd.Series]:
 
 # ordem em que src/politica.py decide: o motivo que fica é o do passo mais forte
 PASSOS_PROPOSTA = [
-    ("Sem restrição ativa", "restrição ativa no bureau"),
-    ("Conta sem aperto nos 3 meses", "conta apertada"),
-    ("Parcela até 28% da renda real", "parcela acima de 28% da renda real"),
+    ("Sem dívida negativada no birô", "restrição ativa no bureau"),
+    ("Não gastou mais do que ganhou nos 3 meses antes", "conta apertada"),
+    ("Parcela cabe em 28% do que entra na conta", "parcela acima de 28% da renda real"),
 ]
 
 
@@ -139,14 +139,14 @@ def politicas(n: pd.DataFrame) -> list[dict]:
     o mesmo que vai para o Teams (a proposta é idêntica ao saida/spread_final.csv)."""
     va = valor_atual(n)
     f_atual, ap_atual = funil(n, [("Score acima de 600", n.score > 600), ("Renda acima de R$ 2 mil", n.renda > 2000),
-                                  ("Sem restrição ativa", n.restr == 0)])
+                                  ("Sem dívida negativada no birô", n.restr == 0)])
     atual = pd.DataFrame({"aprovado": ap_atual, "valor": np.where(ap_atual, va, 0.0)}, index=n.index)
 
     parc_ref_real = (va / fator(n.prazo_meses)) / n.renda_real  # parcela do valor que a atual concederia
     f_regras, ap_regras = funil(n, [("Score acima de 600", n.score > 600), ("Renda acima de R$ 2 mil", n.renda > 2000),
-                                    ("Sem restrição ativa", n.restr == 0),
-                                    ("Conta sem aperto nos 3 meses", ~n.saida_maior_3m),
-                                    ("Parcela até 28% da renda real", parc_ref_real <= 0.28)])
+                                    ("Sem dívida negativada no birô", n.restr == 0),
+                                    ("Não gastou mais do que ganhou nos 3 meses antes", ~n.saida_maior_3m),
+                                    ("Parcela cabe em 28% do que entra na conta", parc_ref_real <= 0.28)])
     csv_regras = n.regras_decisao.eq("APROVADO")
     if (csv_regras != ap_regras).any():
         print(f"atenção: o funil das regras difere do CSV em {(csv_regras != ap_regras).sum()} pedidos", file=sys.stderr)
@@ -159,7 +159,7 @@ def politicas(n: pd.DataFrame) -> list[dict]:
         restantes -= int(motivo.str.startswith(inicio).sum())
         f_prop.append({"rotulo": rotulo, "restantes": restantes})
     ap_prop = n.decisao.eq("APROVADO")
-    f_prop.append({"rotulo": "Risco até 17,5% e ganho positivo", "restantes": int(ap_prop.sum())})
+    f_prop.append({"rotulo": "Chance de calote até 17,5%: a conta fecha no lucro", "restantes": int(ap_prop.sum())})
     prop = pd.DataFrame({"aprovado": ap_prop, "valor": n.valor_aprovado_ia.astype(float)}, index=n.index)
 
     return [
