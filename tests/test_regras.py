@@ -59,14 +59,15 @@ def test_proposta_respeita_teto_de_parcela_e_solicitado(monkeypatch):
     d = _proposta(_pedidos(), monkeypatch=monkeypatch).iloc[0]
     assert d.aprova
     assert 500 <= d.valor <= 10000
-    assert parcela_price(d.valor, 12) <= 0.20 * 5000 + 0.01
+    from politica import PARAMS
+    assert parcela_price(d.valor, 12) <= PARAMS["max_comprometimento"] * 5000 + 0.01
 
 
 @pytest.mark.parametrize("campo,valor,motivo", [
     ("restricoes_ativas", 1, "restrição"), ("mov_meses_cheque", 2, "saldo negativo"),
 ])
 def test_proposta_filtros_negam(monkeypatch, campo, valor, motivo):
-    d = _proposta(_pedidos(**{campo: valor}), monkeypatch=monkeypatch).iloc[0]
+    d = _proposta(_pedidos(**{campo: valor}), params={"max_meses_negativos": 1}, monkeypatch=monkeypatch).iloc[0]
     assert not d.aprova and d.valor == 0 and motivo in d.motivo
 
 
@@ -79,6 +80,10 @@ def test_proposta_filtros_do_bilosca(monkeypatch):
     desligado = _proposta(_pedidos(mov_entradas_media=2000.0), monkeypatch=monkeypatch,
                           params={"teto_parcela_renda_real": 0}).iloc[0]
     assert desligado.aprova
+
+
+def test_saldo_negativo_desligado_por_padrao(monkeypatch):
+    assert _proposta(_pedidos(mov_meses_cheque=3), monkeypatch=monkeypatch).iloc[0].aprova
 
 
 def test_proposta_nega_risco_acima_do_limite(monkeypatch):

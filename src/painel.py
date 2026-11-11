@@ -106,7 +106,7 @@ ol.passos li{{margin-bottom:10px}} code{{background:var(--barbg);padding:1px 5px
 <ol class="passos">
 {f"<li><b>Filtro de score:</b> nega pedidos com score até {PARAMS['min_score']}.</li>" if PARAMS['min_score'] else ""}
 <li><b>Filtro de restrição:</b> nega pedidos com {PARAMS['max_restricoes'] + 1} ou mais restrições ativas no bureau.</li>
-<li><b>Filtro de conta:</b> nega quem teve {PARAMS['max_meses_negativos'] + 1} ou mais meses com saldo negativo nos últimos 12 meses.</li>
+{f"<li><b>Filtro de conta:</b> nega quem teve {PARAMS['max_meses_negativos'] + 1} ou mais meses com saldo negativo nos últimos 12 meses.</li>" if PARAMS['max_meses_negativos'] < 12 else ""}
 <li><b>Conta apertada:</b> nega quem gastou mais do que recebeu em algum dos 3 meses antes do pedido.</li>
 <li><b>Renda real:</b> nega se a parcela do valor pedido (limitado a 30% da renda declarada) passa de {pct(PARAMS['teto_parcela_renda_real'])} da renda real (a menor entre a declarada e a média de entradas na conta).</li>
 <li><b>Teto de parcela:</b> a parcela não pode passar de {pct(PARAMS['max_comprometimento'])} da renda declarada. Acima disso, o valor é reduzido até caber.</li>

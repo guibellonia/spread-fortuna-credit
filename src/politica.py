@@ -11,8 +11,8 @@ FRACOES = np.round(np.arange(1.0, 0.05, -0.05), 2)  # 100%, 95%, ... 10% do soli
 PARAMS = {
     "min_score": 0,               # sem corte de score: depois dos filtros, score <= 600 tem ~7% projetado, igual a > 600
     "max_restricoes": 0,         # filtro: restrição ativa nega
-    "max_meses_negativos": 1,     # filtro: 2+ meses com saldo negativo nega
-    "max_comprometimento": 0.20,  # teto da parcela nova sobre a renda declarada
+    "max_meses_negativos": 12,    # desligado (12 = nunca nega): conta apertada já pega esse risco e erra menos (analysis/pontuacao-risco.md)
+    "max_comprometimento": 0.28,  # teto da parcela sobre a renda declarada; até 28% o risco é plano (analysis/pontuacao-risco.md)
     "risco_max": 0.175,           # P(não pagar) máxima no valor aprovado
     "ganho_min": 0.0,             # ganho esperado mínimo por real
     # filtros de cliente do Bilosca (src/politica_regras.py), que o modelo não captava sozinho:
