@@ -1,5 +1,5 @@
 {
- "geradoEm": "2026-11-11T13:51",
+ "geradoEm": "2026-11-11T14:07",
  "maduroAte": "2025-09-30",
  "bases": {
   "todos": {
@@ -94,7 +94,7 @@
     },
     {
      "id": "risco",
-     "rotulo": "Modelo · risco acima de 17,5%",
+     "rotulo": "IA · risco acima de 17,5%",
      "pedidos": 96,
      "calotes": 17,
      "taxa": 0.1771,
@@ -103,7 +103,7 @@
     },
     {
      "id": "valor",
-     "rotulo": "Valor · parcela até 28% e melhor valor do modelo",
+     "rotulo": "Valor · emprestar menos que o pedido",
      "pedidos": 1376,
      "calotes": 75,
      "taxa": 0.0545,
@@ -456,7 +456,7 @@
     },
     {
      "id": "risco",
-     "rotulo": "Modelo · risco acima de 17,5%",
+     "rotulo": "IA · risco acima de 17,5%",
      "pedidos": 44,
      "calotes": 14,
      "taxa": 0.3182,
@@ -465,7 +465,7 @@
     },
     {
      "id": "valor",
-     "rotulo": "Valor · parcela até 28% e melhor valor do modelo",
+     "rotulo": "Valor · emprestar menos que o pedido",
      "pedidos": 632,
      "calotes": 52,
      "taxa": 0.0823,

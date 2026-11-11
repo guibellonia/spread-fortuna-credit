@@ -144,7 +144,7 @@ function Conectado() {
   if (pronto && !sessao) corpo = <Login />;
   else if (motor === "sem-acesso") corpo = <Aviso titulo="Sem acesso">Seu e-mail ainda não está na lista de membros do painel.</Aviso>;
   else if (motor === "sem-modelo") {
-    corpo = <Aviso titulo="Modelo ainda não publicado">Rode <code>supabase/publicar_motor.py --publicar</code> (ver <code>supabase/README.md</code>).</Aviso>;
+    corpo = <Aviso titulo="Simulador indisponível">O simulador ainda não está disponível. Fale com quem administra o painel.</Aviso>;
   } else if (motor) corpo = <AreaSimulador motor={motor} />;
   return <Pagina fim={fim}>{corpo}</Pagina>;
 }
@@ -228,7 +228,7 @@ export function AreaSimulador({ motor }: { motor: Motor }) {
             ))}
           </fieldset>
         ))}
-        <p className="foot">Campos da conta podem ficar vazios (cliente sem movimentação): o modelo trata como dado faltante.</p>
+        <p className="foot">Os campos da conta podem ficar vazios se o cliente não tem movimentação.</p>
       </section>
 
       <section className="card sim-res" aria-live="polite" aria-label="Decisão da IA">
@@ -237,10 +237,7 @@ export function AreaSimulador({ motor }: { motor: Motor }) {
           <span className="muted card-actions">{perfil}</span>
         </header>
         {e ? <PorQue motor={motor} entrada={e} /> : <p className="erro">Confira: {faltam.join(", ")}.</p>}
-        <p className="foot">
-          A mesma política e o mesmo modelo do <code>spread_final.csv</code>, calculados no navegador
-          (<code>site/src/lib/motor.ts</code>, conferido contra o Python nos 2.000 pedidos). {motor.fonte}
-        </p>
+        <p className="foot">A mesma IA que decidiu os 2.000 pedidos novos.</p>
       </section>
 
       <Lote motor={motor} />
@@ -311,7 +308,7 @@ function Lote({ motor }: { motor: Motor }) {
       <header className="card-head"><h2 className="card-title">Lote de clientes novos (CSV)</h2></header>
       <p className="muted">
         Um cliente por linha, com as colunas do modelo de CSV (vírgula e ponto decimal, ou ponto e vírgula e vírgula decimal).
-        Nada sai do navegador.
+        Os dados ficam só no seu computador.
       </p>
       <div className="linha-botoes">
         <label className="btn sl sim-arquivo">

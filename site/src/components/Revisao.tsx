@@ -39,8 +39,7 @@ export function Revisao() {
         <section className="card estreito">
           <h2 className="card-title">Revisão ainda não conectada</h2>
           <p className="muted">
-            A revisão usa o banco no Supabase. Depois de criar o projeto, preencha <code>supabaseUrl</code> e{" "}
-            <code>supabaseAnonKey</code> em <code>site/site.config.json</code>. Passo a passo em <code>supabase/README.md</code>.
+            A revisão ainda não está disponível. Fale com quem administra o painel.
           </p>
         </section>
       </Pagina>
@@ -186,8 +185,7 @@ function Area({ onResumo }: { onResumo: (s: string) => void }) {
       <section className="card estreito">
         <h2 className="card-title">Sem acesso ao painel</h2>
         <p className="muted">
-          Seu e-mail ainda não está na lista de membros. Peça a quem administra o Supabase para rodar{" "}
-          <code>supabase/aplicar_migracoes.py --membro &lt;seu e-mail&gt;</code>.
+          Seu e-mail ainda não está na lista de membros. Peça acesso a quem administra o painel.
         </p>
       </section>
     );
@@ -393,8 +391,7 @@ function Detalhe({ id, motor, onSalvo }: { id: string; motor: Motor | null; onSa
               ))}
             </dl>
             <p className="foot">
-              {bureau.fonte === "cache" ? "Do cache" : "Direto da API"} · {bureau.tentativas} tentativa(s) · {int(bureau.ms)} ms
-              · {quando(bureau.consultado_em)}
+              Consultado em {quando(bureau.consultado_em)}
             </p>
           </>
         )}
@@ -474,8 +471,7 @@ function ArquivoEntrega() {
     <section className="card rev-arquivo" aria-label="Arquivo de entrega">
       <header className="card-head"><h2 className="card-title">Arquivo de entrega</h2></header>
       <p className="muted">
-        CSV no formato do manual, com as decisões publicadas: iguais ao <code>saida/spread_final.csv</code> que o pipeline gera.
-        Valide no Teams (checkpoint 14h15) e entregue como <code>spread_final.csv</code> até 15h30.
+        Planilha no formato pedido pela Fortuna, com a decisão e o valor de cada pedido.
       </p>
       <div className="linha-botoes">
         <button type="button" className="btn sl" onClick={() => baixar(false)} disabled={andando}>

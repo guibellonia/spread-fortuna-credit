@@ -38,7 +38,7 @@ export function LivePing() {
   const texto = st.s === "ok" ? `Agora: respondeu em ${st.ms} ms` : st.s === "erro" ? "Agora: sem resposta" : "Testando…";
   return (
     <>
-      <span className={`live is-${st.s}`} role="status" title="GET /health do bureau, sem token, direto do seu navegador">
+      <span className={`live is-${st.s}`} role="status" title="Teste ao vivo: o bureau está respondendo agora?">
         <i aria-hidden />
         {texto}
       </span>

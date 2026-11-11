@@ -28,8 +28,8 @@ export function PorQue({ motor, entrada, publicada }: {
       </div>
       {difere && (
         <p className="erro">
-          O motor deu {d.aprova ? moeda(d.valor) : "negado"} e a decisão publicada é{" "}
-          {publicada.aprova ? moeda(publicada.valor) : "negado"}: o modelo publicado no painel é de outra rodada.
+          O cálculo de agora deu {d.aprova ? moeda(d.valor) : "negado"} e a decisão registrada é{" "}
+          {publicada.aprova ? moeda(publicada.valor) : "negado"}. Avise quem administra o painel.
         </p>
       )}
 
@@ -45,7 +45,7 @@ export function PorQue({ motor, entrada, publicada }: {
         <Passo n={4} titulo="Risco de não pagar no valor escolhido" ok={!barrado ? d.valor > 0 : null}
           medido={pct(d.risco)} limite={`até ${pct(p.risco_max)} e ganho positivo`}
           medida={{ valor: d.risco, limite: p.risco_max }}
-          detalhe={barrado ? "Não conta: uma barreira já negou o pedido." : `Modelo com ${motor.arvores.length} árvores treinado no histórico, corrigido para contratos ainda abertos.`} />
+          detalhe={barrado ? "Não conta: uma barreira já negou o pedido." : "Estimado pela IA a partir dos empréstimos passados."} />
         <Passo n={5} titulo="Valor" ok={!barrado && d.valor > 0 ? true : null}
           medido={d.valor > 0 ? `${moeda(d.valor)} de ${moeda(d.solicitado)}` : "—"}
           limite={`parcela até ${pct(p.max_comprometimento, 0)} da renda declarada: até ${moeda(d.tetoRenda)}`}

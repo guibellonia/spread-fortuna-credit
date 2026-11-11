@@ -76,8 +76,7 @@ export function Dashboard({ dados }: { dados: Dados }) {
         </div>
 
         <footer className="page-foot">
-          Política atual reproduzida em {pct(dados.reproducaoAtual, 0)} das decisões do histórico · banco Fortuna e API do bureau ·
-          gerado por <code>site/scripts/snapshot.py</code>
+          Dados da Fortuna e do bureau · a política atual foi conferida em {pct(dados.reproducaoAtual, 0)} das decisões passadas
         </footer>
       </main>
     </>

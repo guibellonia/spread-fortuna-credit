@@ -41,7 +41,7 @@ AJUSTES = [  # motivo de src/politica.py (pelo início) -> rótulo; ordem em que
     ("restrição ativa", "restricao", "Barreira · restrição ativa"),
     ("conta apertada", "apertada", "Barreira · conta apertada"),
     ("parcela acima de 28% da renda real", "parcela", "Barreira · parcela acima de 28% da renda real"),
-    ("risco acima do limite", "risco", "Modelo · risco acima de 17,5%"),
+    ("risco acima do limite", "risco", "IA · risco acima de 17,5%"),
 ]
 
 
@@ -109,7 +109,7 @@ def resumo(d: pd.DataFrame) -> dict:
                         "taxa": taxa(int(s.calote.sum()), len(s)), "efeito": round(float(-s.res_real.sum())),
                         "estimado": False})
     s = d[reduz]
-    ajustes.append({"id": "valor", "rotulo": "Valor · parcela até 28% e melhor valor do modelo", "pedidos": int(len(s)),
+    ajustes.append({"id": "valor", "rotulo": "Valor · emprestar menos que o pedido", "pedidos": int(len(s)),
                     "calotes": int(s.calote.sum()), "taxa": taxa(int(s.calote.sum()), len(s)),
                     "efeito": round(float((d.res_prop - d.res_real)[ambos].sum())), "estimado": False})
     s = d[so_p]

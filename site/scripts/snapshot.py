@@ -185,11 +185,11 @@ def proposta_passos(n: pd.DataFrame) -> dict:
          "texto": "Nega quando a parcela do valor que a política atual concederia passa de 28% da renda real "
                   "(a menor entre a renda declarada e a média de entradas da conta).",
          "negados": neg("parcela acima de 28% da renda real")},
-        {"titulo": "Risco e valor · modelo",
-         "texto": "Um modelo treinado no histórico (corrigido para contratos ainda abertos) estima, para cada valor de "
-                  "100% a 10% do solicitado, a chance de pagar em dia, com atraso ou não pagar. Aprova o valor de "
-                  "maior ganho esperado (+15% em dia, +5% com atraso, −60% sem pagar) entre os que têm até 17,5% de "
-                  "chance de não pagar. Se nenhum valor serve, nega.",
+        {"titulo": "Risco e valor · IA",
+         "texto": "A IA, treinada com os empréstimos passados, estima para cada valor de 100% a 10% do solicitado a "
+                  "chance de pagar em dia, com atraso ou não pagar. Aprova o valor que mais rende (ganha 15% de quem "
+                  "paga em dia e 5% de quem atrasa, perde 60% de quem não paga) entre os que têm até 17,5% de chance "
+                  "de não pagar. Se nenhum valor serve, nega.",
          "negados": risco},
         {"titulo": "Limites do valor",
          "texto": "Parcela até 28% da renda declarada, valor em múltiplos de R$ 100, entre R$ 500 e R$ 30 mil e "
@@ -197,7 +197,7 @@ def proposta_passos(n: pd.DataFrame) -> dict:
          "reduzidos": int((ap & (n.valor_aprovado_ia < n.valor_solicitado - 0.005)).sum())},
         {"titulo": "Analista decide",
          "texto": "O score não é filtro: depois das barreiras ele não separa quem paga. A faixa de risco "
-                  "(pontuação do Daniel) e a divergência com a política atual montam a fila de revisão; o analista "
+                  "(verde, amarela ou laranja) e a divergência com a política atual montam a fila de revisão; o analista "
                   "confirma, aprova com outro valor ou nega, com justificativa registrada.",
          "divergentes": int((n.decisao != n.atual_decisao).sum()), "laranja": int(n.faixa.eq("laranja").sum())},
     ]
@@ -411,7 +411,7 @@ def padroes(hist: pd.DataFrame, n: pd.DataFrame) -> dict:
                       "novos": int(s_novos[grupo].fillna(False).astype(bool).sum())})
     itens.sort(key=lambda i: -i["vsMedia"])
     return {"media": round(media, 4), "itens": itens, "base": int(len(m)),
-            "fonte": f"histórico maduro: {len(m):,} contratos aprovados com 12+ meses".replace(",", ".")}
+            "fonte": f"histórico: {len(m):,} empréstimos com mais de um ano".replace(",", ".")}
 
 
 def sem_ids(texto: str) -> None:

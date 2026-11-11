@@ -14,7 +14,7 @@ Regras de Git (pull antes do push, conflitos): `.claude/CLAUDE.md`, importado ab
 - O repositório é de conta pessoal (`guibellonia`): colaborador só tem escrita, não existe papel de admin, e só o
   dono cadastra segredos do Actions. Hoje o único segredo é `FORTUNA_DSN` (papel `fortuna_leitura`, só leitura),
   usado pelo job de integração do `ci.yml`. Chaves do Hermes ficam no `~/.hermes/.env` de quem roda.
-- Todo número com a fonte: o script ou a consulta que o produz.
+- Todo número com a fonte (o script ou a consulta que o produz) nas análises e nos READMEs; no site, não.
 
 ## Toda automação nova vai para o repositório
 
@@ -70,6 +70,9 @@ Segurança do painel (não quebrar):
 - CSP por página em `site/scripts/csp.mjs` (hash dos scripts inline). Origem externa nova entra em
   `connect-src` via `site/site.config.json`.
 - Sem CDN em tempo de execução: fontes via `next/font`, baixadas no build.
+
+Textos do painel são para o cliente, que não é técnico: nada de caminho de arquivo, nome de script, fórmula,
+nome de modelo (GBM, AUC, árvores) ou nome de pessoa do time. A fonte de cada número fica nos READMEs, não no site.
 
 Visual do painel: Material Design 3, tema claro, Poppins no texto e Montserrat nos números e destaques.
 Sem box-shadow, poucas bordas, hover só com camada de estado (opacidade), nunca translate. Todo gráfico tem

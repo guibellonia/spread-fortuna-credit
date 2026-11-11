@@ -1,5 +1,5 @@
 {
- "geradoEm": "2026-11-11T13:56",
+ "geradoEm": "2026-11-11T14:06",
  "corte": "2026-09-30",
  "reproducaoAtual": 1.0,
  "pedidos": {
@@ -567,7 +567,7 @@
    }
   ],
   "base": 2844,
-  "fonte": "histórico maduro: 2.844 contratos aprovados com 12+ meses"
+  "fonte": "histórico: 2.844 empréstimos com mais de um ano"
  },
  "proposta": {
   "passos": [
@@ -587,8 +587,8 @@
     "negados": 131
    },
    {
-    "titulo": "Risco e valor · modelo",
-    "texto": "Um modelo treinado no histórico (corrigido para contratos ainda abertos) estima, para cada valor de 100% a 10% do solicitado, a chance de pagar em dia, com atraso ou não pagar. Aprova o valor de maior ganho esperado (+15% em dia, +5% com atraso, −60% sem pagar) entre os que têm até 17,5% de chance de não pagar. Se nenhum valor serve, nega.",
+    "titulo": "Risco e valor · IA",
+    "texto": "A IA, treinada com os empréstimos passados, estima para cada valor de 100% a 10% do solicitado a chance de pagar em dia, com atraso ou não pagar. Aprova o valor que mais rende (ganha 15% de quem paga em dia e 5% de quem atrasa, perde 60% de quem não paga) entre os que têm até 17,5% de chance de não pagar. Se nenhum valor serve, nega.",
     "negados": 45
    },
    {
@@ -598,7 +598,7 @@
    },
    {
     "titulo": "Analista decide",
-    "texto": "O score não é filtro: depois das barreiras ele não separa quem paga. A faixa de risco (pontuação do Daniel) e a divergência com a política atual montam a fila de revisão; o analista confirma, aprova com outro valor ou nega, com justificativa registrada.",
+    "texto": "O score não é filtro: depois das barreiras ele não separa quem paga. A faixa de risco (verde, amarela ou laranja) e a divergência com a política atual montam a fila de revisão; o analista confirma, aprova com outro valor ou nega, com justificativa registrada.",
     "divergentes": 503,
     "laranja": 329
    }

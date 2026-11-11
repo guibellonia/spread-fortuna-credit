@@ -78,10 +78,10 @@ export function ResultadoIACard({ r }: { r: ResultadoIA }) {
               {r.calibracao && (
                 <>
                   Ajustado pelo histórico (× {dec2(r.calibracao.fator)}): <b>{brlSinal(r.calibracao.resultado)}</b>. Nos
-                  pedidos passados, o ganho observado ficou {pct(1 - r.calibracao.fator)} abaixo do que o modelo estimava.
+                  pedidos passados, o ganho real ficou {pct(1 - r.calibracao.fator)} abaixo do que a IA estimava.
                 </>
               )}
-              {r.atual && <> Política atual nos mesmos pedidos, pelo mesmo modelo: {brlSinal(r.atual.resultado)}.</>}
+              {r.atual && <> Política atual nos mesmos pedidos: {brlSinal(r.atual.resultado)}.</>}
             </p>
           )}
         </div>
@@ -120,9 +120,7 @@ export function ResultadoIACard({ r }: { r: ResultadoIA }) {
         </div>
       </div>
       <p className="foot">
-        Para cada pedido aprovado, no valor aprovado: prejuízo = 60% do valor × chance de não pagar; lucro = +15% de quem
-        paga em dia e +5% de quem paga com atraso. É o que o modelo espera, não desfecho. Fonte: <code>saida/decisoes_mescla.csv</code>{" "}
-        via <code>site/scripts/snapshot.py</code>; ajuste pelo histórico em <code>site/scripts/historico.py</code>.
+        Valores que a IA espera para os pedidos que ela aprovou; o resultado real só aparece com o tempo.
       </p>
     </ChartCard>
   );

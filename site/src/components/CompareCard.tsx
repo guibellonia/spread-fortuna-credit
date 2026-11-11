@@ -24,7 +24,7 @@ export function CompareCard({ politicas, comparacao, sel, onSel }: {
           <thead>
             <tr>
               <th>Política</th><th>Aprovados</th><th>Volume</th>
-              <th>Ganho esperado vs atual</th><th>Fora da amostra</th>
+              <th>Ganho esperado vs atual</th><th>Testado no passado</th>
             </tr>
           </thead>
           <tbody>
@@ -56,10 +56,8 @@ export function CompareCard({ politicas, comparacao, sel, onSel }: {
         </table>
       </div>
       <p className="foot">
-        Ganho esperado: resultado da política menos o da atual nos 2.000 novos, pela regra da nota (+15% em dia, +5% com
-        atraso, −60% sem pagar), estimado por três modelos (GBM corrigido, sobrevivência e logístico; os dois últimos não
-        participam da decisão). Fora da amostra: pedidos de out/25 a mar/26 com desfecho observado, modelo treinado só até
-        set/25. Fonte: <code>src/politica_mescla.py --comparar</code>.
+        Ganho esperado: quanto cada política rende a mais que a atual nos 2.000 pedidos novos. Testado no passado: o mesmo
+        nos pedidos de out/25 a mar/26, cujo resultado já se conhece.
       </p>
     </Card>
   );

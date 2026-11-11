@@ -27,13 +27,13 @@ export function CohortCard({ safras }: { safras: Dados["safras"] }) {
               </tr>
             ))}
           </tbody>
-          <caption>* menos de 12 meses de contrato na data de corte</caption>
+          <caption>* empréstimos com menos de um ano: os calotes ainda podem aparecer</caption>
         </table>
       }
     >
       <div>
         <span className="hero">{pct(mediaMadura)}</span>
-        <p className="muted">média nos {int(safras.contratosMaduros)} contratos maduros</p>
+        <p className="muted">média nos {int(safras.contratosMaduros)} empréstimos com mais de um ano</p>
       </div>
 
       <div className="cohort" ref={box}>
@@ -44,7 +44,7 @@ export function CohortCard({ safras }: { safras: Dados["safras"] }) {
               key={m.mes}
               className="cohort-col sl"
               {...bind(
-                <><b>{mes(m.mes)}</b> · {pct(m.taxa)} · {int(m.inadimplentes)} de {int(m.aprovados)}{m.maduro ? "" : " · em maturação"}</>,
+                <><b>{mes(m.mes)}</b> · {pct(m.taxa)} · {int(m.inadimplentes)} de {int(m.aprovados)}{m.maduro ? "" : " · menos de um ano"}</>,
                 `${mes(m.mes)}: ${pct(m.taxa)} de inadimplência`,
               )}
             >
@@ -61,8 +61,8 @@ export function CohortCard({ safras }: { safras: Dados["safras"] }) {
 
       <ul className="legend">
         <li><i className="sw is-mature" />12+ meses</li>
-        <li><i className="sw" />em maturação</li>
-        <li><i className="sw-line" />média madura</li>
+        <li><i className="sw" />menos de um ano</li>
+        <li><i className="sw-line" />média (mais de um ano)</li>
       </ul>
     </ChartCard>
   );

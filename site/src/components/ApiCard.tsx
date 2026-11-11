@@ -60,9 +60,8 @@ export function ApiCard({ api }: { api: Dados["api"] }) {
       </div>
 
       <p className="foot">
-        Timeout {c.timeoutSeg} s · até {c.tentativas} tentativas com espera crescente a partir de {c.esperaBaseSeg.toLocaleString("pt-BR")} s
-        · {c.paralelo} em paralelo · cache por cliente
-        {api.ate && <> · última consulta {dataHora(api.ate)}</>}. O token fica no script de snapshot e nunca chega ao navegador.
+        Quando o bureau falha, a consulta é repetida até {c.tentativas} vezes, esperando um pouco mais a cada tentativa
+        {api.ate && <> · última consulta {dataHora(api.ate)}</>}.
       </p>
     </ChartCard>
   );
