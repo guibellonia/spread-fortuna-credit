@@ -20,7 +20,7 @@ const GRUPOS: [string, Campo[]][] = [
   ["Cliente", [
     { k: "renda_declarada", rotulo: "Renda declarada (R$/mês)" },
     { k: "tipo_vinculo", rotulo: "Vínculo" },
-    { k: "idade", rotulo: "Idade (anos)" },
+    { k: "idade", rotulo: "Idade (anos)", opcional: true },
     { k: "meses_conta", rotulo: "Meses de conta" },
   ]],
   ["Bureau", [
@@ -210,7 +210,7 @@ export function AreaSimulador({ motor }: { motor: Motor }) {
         {GRUPOS.map(([grupo, campos]) => (
           <fieldset key={grupo} className="sim-grupo">
             <legend>{grupo}</legend>
-            {campos.map(({ k, rotulo }) => (
+            {campos.filter(({ k }) => k !== "idade" || motor.atributos.includes("idade")).map(({ k, rotulo }) => (
               <label key={k} className="field">
                 <span>{rotulo}</span>
                 {k === "prazo_meses" ? (

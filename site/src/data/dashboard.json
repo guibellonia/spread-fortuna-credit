@@ -1,5 +1,5 @@
 {
- "geradoEm": "2026-11-11T13:50",
+ "geradoEm": "2026-11-11T13:56",
  "corte": "2026-09-30",
  "reproducaoAtual": 1.0,
  "pedidos": {
@@ -424,49 +424,49 @@
  "api": {
   "clientes": 2000,
   "comBureau": 2000,
-  "chamadas": 2110,
+  "chamadas": 2105,
   "status": {
    "200": 2000,
-   "503": 110
+   "503": 105
   },
-  "clientesComRetry": 104,
+  "clientesComRetry": 100,
   "maxTentativas": 3,
   "latencia": {
-   "p50": 0.199,
-   "p90": 0.32,
-   "p95": 1.569,
-   "p99": 4.443,
-   "max": 5.353,
-   "media": 0.375
+   "p50": 0.224,
+   "p90": 0.46,
+   "p95": 0.865,
+   "p99": 4.626,
+   "max": 5.447,
+   "media": 0.406
   },
   "histograma": [
    {
     "faixa": "< 0,25 s",
-    "n": 1687
+    "n": 1345
    },
    {
     "faixa": "0,25–0,5 s",
-    "n": 306
+    "n": 576
    },
    {
     "faixa": "0,5–1 s",
-    "n": 11
+    "n": 85
    },
    {
     "faixa": "1–2 s",
-    "n": 10
+    "n": 13
    },
    {
     "faixa": "2–5 s",
-    "n": 92
+    "n": 79
    },
    {
     "faixa": "≥ 5 s",
-    "n": 4
+    "n": 7
    }
   ],
-  "desde": "2026-11-11T13:49:05",
-  "ate": "2026-11-11T13:50:30",
+  "desde": "2026-11-11T09:48:12",
+  "ate": "2026-11-11T09:49:44",
   "config": {
    "timeoutSeg": 10,
    "tentativas": 6,
@@ -610,6 +610,81 @@
    "barreira": 543,
    "amarela": 401,
    "laranja": 329
+  }
+ },
+ "resultadoIA": {
+  "aprovados": 1412,
+  "volume": 9338100,
+  "lucro": 1116876,
+  "prejuizo": 326255,
+  "resultado": 790621,
+  "calotes": 82.0,
+  "porRisco": [
+   {
+    "faixa": "até 5%",
+    "aprovados": 660,
+    "volume": 4319500,
+    "lucro": 530320,
+    "prejuizo": 86243,
+    "resultado": 444077,
+    "calotes": 21.7
+   },
+   {
+    "faixa": "5% a 10%",
+    "aprovados": 606,
+    "volume": 4079400,
+    "lucro": 482200,
+    "prejuizo": 169523,
+    "resultado": 312678,
+    "calotes": 42.2
+   },
+   {
+    "faixa": "10% a 17,5%",
+    "aprovados": 146,
+    "volume": 939200,
+    "lucro": 104356,
+    "prejuizo": 70489,
+    "resultado": 33866,
+    "calotes": 18.1
+   }
+  ],
+  "porFaixa": [
+   {
+    "faixa": "verde",
+    "aprovados": 716,
+    "volume": 4857500,
+    "lucro": 586922,
+    "prejuizo": 141626,
+    "resultado": 445296,
+    "calotes": 34.7
+   },
+   {
+    "faixa": "amarela",
+    "aprovados": 388,
+    "volume": 2584500,
+    "lucro": 307524,
+    "prejuizo": 97827,
+    "resultado": 209697,
+    "calotes": 24.0
+   },
+   {
+    "faixa": "laranja",
+    "aprovados": 308,
+    "volume": 1896100,
+    "lucro": 222430,
+    "prejuizo": 86803,
+    "resultado": 135627,
+    "calotes": 23.2
+   }
+  ],
+  "calibracao": {
+   "fator": 0.8168,
+   "resultado": 645795
+  },
+  "atual": {
+   "aprovados": 1145,
+   "volume": 8856446,
+   "resultado": 285955
   }
  },
  "comparacao": [
