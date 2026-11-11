@@ -195,7 +195,7 @@ function Area({ onResumo }: { onResumo: (s: string) => void }) {
         </div>
         <label className="field">
           <span>Buscar pedido</span>
-          <input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="P-00070" inputMode="text" />
+          <input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="número do pedido" inputMode="text" />
         </label>
         {erro && <p className="erro" role="alert">{erro}</p>}
         {lista && lista.length === 0 && <p className="muted">Nenhum pedido neste filtro.</p>}

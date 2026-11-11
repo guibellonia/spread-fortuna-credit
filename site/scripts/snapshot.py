@@ -271,7 +271,7 @@ def padroes() -> dict:
 
 
 def sem_ids(texto: str) -> None:
-    achou = re.findall(r"\b[CP]-\d{3,}\b", texto)
+    achou = re.findall(r"\b[CP]-\d{5}\b", texto)  # formato dos ids do kit
     if achou:
         raise SystemExit(f"o JSON tem {len(achou)} id(s) de cliente/pedido; nada foi gravado")
 
