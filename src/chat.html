@@ -84,6 +84,7 @@ async function perguntar(texto) {
     const j = await r.json().catch(() => ({}));
     if (r.status === 401) { if (chave) { chave = ""; guardar.set(""); } tela(); aviso();
       espera.innerHTML = "<span class='erro'>" + esc(j.erro || "acesso negado") + "</span>"; return; }
+    if (r.status === 503) { espera.innerHTML = "<span class='erro'>O Hermes está iniciando (leva cerca de 1 minuto depois de uma atualização). Tente de novo já já.</span>"; return; }
     if (!r.ok) { espera.innerHTML = "<span class='erro'>" + esc(j.erro || ("erro " + r.status)) + "</span>"; return; }
     const tools = (j.tools || []).map(t => t.tool);
     espera.innerHTML = md(j.resposta || "(sem resposta)") +
