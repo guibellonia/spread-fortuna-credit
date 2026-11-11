@@ -77,3 +77,29 @@ python agente.py "o score importa depois dos filtros?"
 python agente.py --chat
 python agente.py --conselho "vale subir o teto de parcela para 30%?"
 ```
+
+## Pipeline (`.github/workflows/ci.yml`)
+
+Roda em todo push e em todo pull request para a `main`:
+
+| Job | O que confere | Bloqueia? |
+|---|---|---|
+| Segredos | nenhum `.env`, dump, cache do bureau, token (48 hex) ou chave de API versionados | sim |
+| Lint | erros que quebram (sintaxe, nome indefinido); imports sem uso só avisam | sim |
+| Testes | `pytest tests`: parcela Price, políticas, validador do CSV, bureau (retry/401), tools e agente | sim |
+| Integração | com o segredo `FORTUNA_DSN` (Supabase): contagens do banco batem com o kit; sem o segredo, só avisa | sim, se configurado |
+| CSV | todo `*_final.csv` e `decisoes_*.csv` versionado passa no validador (modo offline) | sim |
+
+Banco: `src/db.py` e `validacao/db.py` leem `FORTUNA_DSN` (ex.: Supabase com `?sslmode=require`); sem ela, usam o
+arquivo local. O schema precisa se chamar `hackathon`.
+
+**Proteger a `main` (só o admin do repositório):** Settings → Branches → Add rule `main` → "Require a pull request
+before merging" + "Require status checks to pass" (Segredos, Lint (Python), Testes, Formato dos CSVs de decisão).
+Pelo terminal:
+
+```bash
+gh api -X PUT repos/guibellonia/spread-fortuna-credit/branches/main/protection --input - <<'JSON'
+{"required_status_checks":{"strict":true,"contexts":["Segredos","Lint (Python)","Testes","Formato dos CSVs de decisão"]},
+ "enforce_admins":false,"required_pull_request_reviews":{"required_approving_review_count":0},"restrictions":null}
+JSON
+```

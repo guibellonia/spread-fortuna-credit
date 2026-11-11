@@ -1,7 +1,6 @@
 """Gera o painel de experimentação (saida/painel.html) a partir das ferramentas determinísticas."""
 import html
 import json
-from pathlib import Path
 
 import pandas as pd
 

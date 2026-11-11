@@ -1,5 +1,4 @@
 """Backtest: treina até set/2025 e compara as políticas em out/2025–mar/2026 (desfecho conhecido)."""
-import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
