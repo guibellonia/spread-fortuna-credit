@@ -41,7 +41,7 @@ jobs:
 
       - name: Railway CLI
         if: env.RAILWAY_TOKEN != ''
-        run: npm install -g @railway/cli@3.17.0 && railway --version
+        run: npm install -g @railway/cli@5.69.0 && railway --version
 
       - name: Copia os Secrets para as variáveis do serviço (só os preenchidos)
         if: env.RAILWAY_TOKEN != ''
