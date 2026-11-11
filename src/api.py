@@ -1,5 +1,6 @@
 """API HTTP do Hermes: o agente LLM e as tools determinísticas atrás de uma chave de acesso.
 
+    GET  / ou /chat                 sem chave: página de chat (a chave é digitada nela)
     GET  /health                    sem chave: {"status": "ok"|"preparando"|"erro", ...}
     POST /perguntar                 {"pergunta": "..."} -> resposta do agente, modelo usado e tools chamadas
     POST /tools/<nome>              argumentos da tool no corpo (JSON) -> resultado da tool, sem LLM
@@ -23,6 +24,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 ESTADO = {"status": "preparando", "detalhe": "carregando base e modelos"}
 TRAVA_AGENTE = threading.Semaphore(int(os.environ.get("HERMES_CONCORRENCIA", "2")))
 MAX_CORPO = 64 * 1024
+CHAT_HTML = Path(__file__).resolve().parent / "chat.html"
+SITE_DO_TIME = os.environ.get("HERMES_SITE_ORIGEM", "https://guibellonia.github.io")
 
 
 def preparar():
@@ -63,7 +66,24 @@ class Handler(BaseHTTPRequestHandler):
             raise ValueError("corpo grande demais")
         return json.loads(self.rfile.read(n) or b"{}") if n else {}
 
+    def _pagina_chat(self):
+        dados = CHAT_HTML.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(dados)))
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "no-referrer")
+        # só a própria página e o site do time podem embutir o chat (iframe)
+        self.send_header("Content-Security-Policy",
+                         "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
+                         f"connect-src 'self'; frame-ancestors 'self' {SITE_DO_TIME}")
+        self.end_headers()
+        self.wfile.write(dados)
+
     def do_GET(self):
+        if self.path in ("/", "/chat"):
+            return self._pagina_chat()
         if self.path == "/health":
             return self._json(200 if ESTADO["status"] == "ok" else 503, ESTADO)
         if not self._autorizado():

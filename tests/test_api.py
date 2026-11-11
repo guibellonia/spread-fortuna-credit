@@ -63,3 +63,11 @@ def test_perguntar_usa_o_agente(servidor, monkeypatch):
     monkeypatch.setattr(agente, "perguntar", lambda p, **k: ("resposta de teste", [], [{"tool": "simular_politica"}], "groq/x"))
     code, j = _req(servidor + "/perguntar", "POST", {"pergunta": "quanto ganha?"}, chave="chave-de-teste")
     assert code == 200 and j["resposta"] == "resposta de teste" and j["tools"][0]["tool"] == "simular_politica"
+
+
+def test_pagina_de_chat_sem_chave_e_sem_segredo(servidor):
+    with urllib.request.urlopen(servidor + "/") as r:
+        html = r.read().decode("utf-8")
+        assert r.status == 200 and "text/html" in r.headers["Content-Type"]
+        assert "frame-ancestors" in r.headers["Content-Security-Policy"]
+    assert "Hermes" in html and "chave-de-teste" not in html
