@@ -1,0 +1,30 @@
+# Banco do hackathon (PostgreSQL 16, mesma versão do dump) restaurado automaticamente no primeiro start.
+#
+#   1. Copie fortuna_hackathon.dump para ./data/  (o .gitignore barra *.dump)
+#   2. Copie .env.example para .env e preencha PGPASSWORD
+#   3. docker compose up -d
+#
+# Usa as mesmas variáveis PG* do .env que os scripts leem, então os scripts conectam sem mudar nada.
+# A restauração só roda com o volume vazio. Para restaurar de novo: docker compose down -v && docker compose up -d
+services:
+  db:
+    image: postgres:16.6
+    container_name: fortuna-db
+    environment:
+      POSTGRES_USER: ${PGUSER:-postgres}
+      POSTGRES_PASSWORD: ${PGPASSWORD:?preencha PGPASSWORD no .env}
+      POSTGRES_DB: ${PGDATABASE:-fortuna}
+    ports:
+      - "127.0.0.1:${PGPORT:-5434}:5432"
+    volumes:
+      - fortuna-data:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+      - ${FORTUNA_DUMP:-./data/fortuna_hackathon.dump}:/dump/fortuna_hackathon.dump:ro
+    healthcheck:
+      test: ["CMD-SHELL", "psql -U $${POSTGRES_USER} -d $${POSTGRES_DB} -tAc \"select count(*) from hackathon.pedidos\" | grep -q 12000"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+
+volumes:
+  fortuna-data:
