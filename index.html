@@ -51,7 +51,36 @@
   <span class="sub">situação às 09h15 · entrega até <b>15h30</b> · arquivo <b>spread_final.csv</b> · decisão final do time</span>
 </header>
 
-<nav class="abas"><button data-aba="censura">Padrões e censura</button><button data-aba="abertura">Regras do desafio</button><a class="repo" href="https://github.com/guibellonia/spread-fortuna-credit">análises, dados e prompts em .md no repositório ↗</a></nav>
+<nav class="abas"><button data-aba="resumo">Resumo</button><button data-aba="censura">Padrões e censura</button><button data-aba="documentos">Documentos</button><a class="repo" href="https://github.com/guibellonia/spread-fortuna-credit">análises, dados e prompts em .md no repositório ↗</a></nav>
+<section class="painel" id="p-resumo" hidden>
+<div class="grade">
+<section><h2>A conta do jogo</h2><ul>
+<li>Aprovado que paga em dia <span class="destaque">+15%</span> · com atraso <span class="destaque">+5%</span> · não paga <span class="destaque">−60%</span> · negado 0</li>
+<li>1 calote apaga 4 bons pagadores</li>
+<li>Só vale aprovar com calote abaixo de <span class="destaque">~17,5%</span> (≈23% dos que pagam atrasam)</li>
+<li>Nota: 40 ganho sobre a política atual · 25 padrões · 15 pitch · 10 painel · 10 técnica</li>
+<li>Entrega: <b>spread_final.csv</b> até <b>15h30</b> · checkpoint 14h15 · pitch 15h45</li></ul></section>
+<section><h2>Política atual (a bater)</h2><ul>
+<li>Score &gt; 600 · renda &gt; R$ 2.000 · zero restrição</li>
+<li>Valor = menor entre pedido, R$ 30 mil e o que cabe em 30% da renda (<b>reduz, não nega</b>)</li>
+<li>Nos 2.000 novos: <b>1.145</b> aprovados · R$ 8,86 mi</li>
+<li>Calote projetado médio dos aprovados: ~16% (contratos abertos corrigidos)</li>
+<li>Os que ela reduziu: <b>55,9%</b> não pagam (−R$ 670 mil no histórico)</li></ul></section>
+<section><h2>Padrões mais fortes (calote projetado)</h2><ul>
+<li>Saídas &gt; entradas em algum dos 3 meses antes: <span class="destaque">91%</span> · 97 dos novos</li>
+<li>Cheque especial nos 2 meses antes, sem o sinal acima: <span class="destaque">30%</span></li>
+<li>Parcela &gt; 28% da renda real: <span class="destaque">50%</span> · 159 dos novos</li>
+<li>1 restrição ativa: <span class="destaque">39,4%</span> (metade dos que pagam atrasa) · score 500–599: <span class="destaque">26,6%</span> · abaixo de 500: 20,6%</li>
+<li>Score ≥ 600: 15,0% a 16,0% · aposentados pagam melhor</li></ul></section>
+<section><h2>Roteiro</h2><ul>
+<li><b>até 12h</b> política congelada (filtros + regra de valor)</li>
+<li><b>13h</b> CSV validado no canal · conversa com a Gabi</li>
+<li><b>14h15</b> checkpoint com mentor</li>
+<li><b>15h00</b> envio final · <b>15h30</b> prazo sem tolerância</li>
+<li><b>15h45</b> pitch: 5 min + 2 de perguntas</li></ul></section>
+</div>
+<p class="pequeno">Detalhe e método: aba <b>Padrões e censura</b>. Números refeitos por mais de uma análise do time; scripts em <code>analysis/</code>.</p>
+</section>
 <div class="painel" id="p-situacao"><div class="grade">
 
   <section>
@@ -297,6 +326,14 @@ Depois, em cima do piso, decidir o que afrouxar (score, 1 restrição) com teste
 </details>
 </div>
 <section class="painel" id="p-abertura" data-src="analysis/resumo-abertura.md" data-autor="Enio · regras, nota e prazos do manual" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-banco" data-src="analysis/analise-banco.md" data-autor="Juliano" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-censura" data-src="analysis/censura-agregado.md|analysis/padroes-agregado.md" data-autor="análise agregada do time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-complementos" data-src="analysis/analise-enio.md" data-autor="Enio · onde confirma e onde diverge" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-pendencias" data-src="analysis/PENDENCIAS.md|analysis/pendencias-agregado.md" data-autor="time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-prompts" data-src="prompts/README.md|prompts/enio-rocha_head-de-credito_v1.md|analysis/contexto-claude.md|analysis/contexto-gpt.md" data-autor="prompts do time, com autor e versão" hidden><p class="pequeno">Carregando…</p></section>
+<section class="painel" id="p-documentos" hidden><article class="doc"><h2>Documentos do repositório</h2>
+<table><tr><th>Documento</th><th>Arquivo</th><th>Atualizado</th></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/padroes-agregado.md">Padrões por grupo (tabelas completas)</a></td><td class="pequeno">analysis/padroes-agregado.md</td><td data-f="analysis/padroes-agregado.md" class="pequeno">…</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/censura-agregado.md">Censura e inadimplência projetada</a></td><td class="pequeno">analysis/censura-agregado.md</td><td data-f="analysis/censura-agregado.md" class="pequeno">…</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-banco.md">Análise do banco</a></td><td class="pequeno">analysis/analise-banco.md</td><td data-f="analysis/analise-banco.md" class="pequeno">…</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-enio.md">Complementos e discussão</a></td><td class="pequeno">analysis/analise-enio.md</td><td data-f="analysis/analise-enio.md" class="pequeno">…</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/resumo-abertura.md">Regras do desafio</a></td><td class="pequeno">analysis/resumo-abertura.md</td><td data-f="analysis/resumo-abertura.md" class="pequeno">…</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/transcricao-abertura.md">Transcrição da abertura</a></td><td class="pequeno">analysis/transcricao-abertura.md</td><td data-f="analysis/transcricao-abertura.md" class="pequeno">…</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/PENDENCIAS.md">Pendências</a></td><td class="pequeno">analysis/PENDENCIAS.md</td><td data-f="analysis/PENDENCIAS.md" class="pequeno">…</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/pendencias-agregado.md">Pendências técnicas</a></td><td class="pequeno">analysis/pendencias-agregado.md</td><td data-f="analysis/pendencias-agregado.md" class="pequeno">…</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/api-baseline/baseline-agregado.md">Baseline da API do bureau</a></td><td class="pequeno">api-baseline/baseline-agregado.md</td><td data-f="api-baseline/baseline-agregado.md" class="pequeno">…</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/prompts/README.md">Prompts do time</a></td><td class="pequeno">prompts/README.md</td><td data-f="prompts/README.md" class="pequeno">…</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/README.md">README e como contribuir</a></td><td class="pequeno">README.md</td><td data-f="README.md" class="pequeno">…</td></tr></table>
+<p class="pequeno">A data vem do último commit de cada arquivo. Rodar tudo: veja o README.</p></article></section>
+<script>
+document.addEventListener('click',e=>{if(e.target.dataset&&e.target.dataset.aba==='documentos')datas();});
+let datasOk=false;async function datas(){if(datasOk)return;datasOk=true;for(const td of document.querySelectorAll('td[data-f]')){try{const r=await fetch('https://api.github.com/repos/guibellonia/spread-fortuna-credit/commits?per_page=1&path='+encodeURIComponent(td.dataset.f));const j=await r.json();const c=j[0];td.textContent=c?new Date(c.commit.author.date).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+' · '+c.commit.author.name:'—';}catch(e){td.textContent='—';}}}
+if(location.hash==='#documentos')datas();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script>
 const carregados={};
@@ -316,7 +353,7 @@ async function mostrar(aba){
   p.innerHTML=html; carregados[aba]=true;
 }
 document.querySelectorAll('nav.abas button').forEach(b=>b.onclick=()=>mostrar(b.dataset.aba));
-const pedida=(location.hash||'').slice(1).replace('aba=','');mostrar(document.getElementById('p-'+pedida)&&document.querySelector('nav.abas button[data-aba="'+pedida+'"]')?pedida:'censura');
+const pedida=(location.hash||'').slice(1).replace('aba=','');mostrar(document.getElementById('p-'+pedida)&&document.querySelector('nav.abas button[data-aba="'+pedida+'"]')?pedida:'resumo');
 </script>
 </body>
 </html>
