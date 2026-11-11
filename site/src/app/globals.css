@@ -435,7 +435,8 @@ code { font-size: 12px; }
 .sim-lote { grid-column: 1 / -1; }
 .sim-res { position: sticky; top: 16px; }
 .sim-carregar { display: flex; align-items: flex-end; gap: 8px; }
-.sim-carregar .field { flex: 1; }
+.sim-carregar .field { flex: 1; min-width: 0; }
+.sim-carregar input { width: 100%; min-width: 0; }
 .sim-grupo { margin: 0; padding: 0; border: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
 .sim-grupo legend { grid-column: 1 / -1; padding: 0 0 6px; font-weight: 500; font-size: 13px; }
 .sim-grupo .field input, .sim-grupo .field select { padding: 9px 12px; }
@@ -455,6 +456,60 @@ code { font-size: 12px; }
 @media (max-width: 480px) {
   .sim-grupo { grid-template-columns: minmax(0, 1fr); }
   .pq-res { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* simulador: abas Digitar | Deslizar e vista com controles */
+.sim-modos { grid-column: 1 / -1; justify-self: start; display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--md-surface-container); }
+.sim-modo {
+  min-width: 120px; height: 40px; padding: 0 20px; border: 0; border-radius: 999px; background: transparent; cursor: pointer;
+  font: 500 14px/1 var(--font-body); color: var(--md-on-surface-variant); transition: background-color 200ms cubic-bezier(0.2, 0, 0, 1), color 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+.sim-modo:hover { opacity: 0.8; }
+.sim-modo[aria-selected="true"] { background: var(--md-primary); color: var(--md-on-primary); opacity: 1; }
+.chip-btn[role="radio"][aria-checked="true"] { background: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+.chip-btn[role="radio"] { height: 40px; padding: 0 16px; }
+
+.sd-grupo { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+.sd-campo { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sd-campo.is-vazio .sd-valor { color: var(--md-muted); font-weight: 600; }
+.sd-linha { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.sd-rotulo { font-size: 13px; color: var(--md-on-surface-variant); }
+.sd-valor { font: 600 20px/1.2 var(--font-display); color: var(--md-on-surface); text-align: right; white-space: nowrap; }
+.sd-pontas { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: var(--md-muted); min-height: 24px; }
+.sd-limpar { border: 0; background: none; padding: 0 8px; min-height: 28px; color: var(--md-primary); font: 500 12px var(--font-body); cursor: pointer; }
+.sd-limpar:hover { opacity: 0.7; }
+
+.sd-range { --p: 0%; width: 100%; height: 44px; margin: 0; padding: 0; background: transparent; cursor: pointer; -webkit-appearance: none; appearance: none; }
+.sd-range:focus-visible { outline: 2px solid var(--md-primary); outline-offset: 2px; border-radius: 12px; }
+.sd-range::-webkit-slider-runnable-track {
+  height: 8px; border-radius: 999px;
+  background: linear-gradient(to right, var(--md-primary) 0 var(--p), var(--data-track) var(--p) 100%);
+}
+.sd-range::-moz-range-track { height: 8px; border-radius: 999px; background: var(--data-track); }
+.sd-range::-moz-range-progress { height: 8px; border-radius: 999px; background: var(--md-primary); }
+.sd-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 24px; height: 24px; margin-top: -8px; border: 0; border-radius: 50%;
+  background: var(--md-primary); outline: 0 solid rgba(43, 94, 167, 0.16); transition: outline-width 150ms cubic-bezier(0.2, 0, 0, 1);
+}
+.sd-range::-moz-range-thumb {
+  width: 24px; height: 24px; border: 0; border-radius: 50%; background: var(--md-primary);
+  outline: 0 solid rgba(43, 94, 167, 0.16); transition: outline-width 150ms cubic-bezier(0.2, 0, 0, 1);
+}
+.sd-range:hover::-webkit-slider-thumb, .sd-range:active::-webkit-slider-thumb { outline-width: 8px; }
+.sd-range:hover::-moz-range-thumb, .sd-range:active::-moz-range-thumb { outline-width: 8px; }
+.is-vazio .sd-range { opacity: 0.55; }
+
+.sd-resumo { display: none; }
+@media (max-width: 1000px) {
+  .sd-resumo {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 80px calc(12px + env(safe-area-inset-bottom, 0px)) 16px; background: var(--md-surface-lowest);
+    border-top: 1px solid var(--md-surface-high);
+  }
+  .sim-grid:has(.sd-resumo) { padding-bottom: 72px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sd-range::-webkit-slider-thumb, .sd-range::-moz-range-thumb, .sim-modo { transition: none; }
 }
 
 /* ---------- revisão ---------- */

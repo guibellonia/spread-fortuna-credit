@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from "
 import { int, moeda, pct } from "@/lib/format";
 import { decidir, type Entrada, type Motor } from "@/lib/motor";
 import { supabase, supabaseConfigurado } from "@/lib/supabase";
+import { Deslizadores, SeletorModo, ResumoFixo, type Modo } from "./Deslizadores";
 import { PorQue } from "./PorQue";
 import { Login } from "./Revisao";
 import { TopBar } from "./TopBar";
@@ -165,6 +166,7 @@ export function AreaSimulador({ motor }: { motor: Motor }) {
   const [perfil, setPerfil] = useState("Cliente típico");
   const [pedido, setPedido] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
+  const [modo, setModo] = useState<Modo>("digitar");
   const { e, faltam } = useMemo(() => paraEntrada(form), [form]);
 
   async function carregar(id: string) {
@@ -179,6 +181,18 @@ export function AreaSimulador({ motor }: { motor: Motor }) {
   }
 
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("modo") === "deslizar") setModo("deslizar");
+  }, []); // a escolha fica na URL (?modo=deslizar); sem ela, abre em Digitar
+
+  function trocarModo(m: Modo) {
+    setModo(m);
+    const u = new URL(window.location.href);
+    if (m === "deslizar") u.searchParams.set("modo", "deslizar");
+    else u.searchParams.delete("modo");
+    window.history.replaceState(null, "", u);
+  }
+
+  useEffect(() => {
     const id = decodeURIComponent(window.location.hash.slice(1));
     if (id) carregar(id);
   }, []); // só na abertura: /simulador/#<pedido> vem do botão da Revisão
@@ -187,7 +201,9 @@ export function AreaSimulador({ motor }: { motor: Motor }) {
 
   return (
     <div className="sim-grid">
-      <section className="card sim-form" aria-label="Dados do cliente e do pedido">
+      <SeletorModo modo={modo} aoMudar={trocarModo} />
+      <section className="card sim-form" id="sim-painel" role="tabpanel" aria-labelledby={`sim-aba-${modo}`}
+        aria-label="Dados do cliente e do pedido">
         <header className="card-head"><h2 className="card-title">Cliente e pedido</h2></header>
         <div className="chips" role="group" aria-label="Perfis prontos">
           {PERFIS.map(([nome, ajuste]) => (
@@ -207,28 +223,35 @@ export function AreaSimulador({ motor }: { motor: Motor }) {
           </form>
         )}
         {msg && <p className="erro" role="alert">{msg}</p>}
-        {GRUPOS.map(([grupo, campos]) => (
-          <fieldset key={grupo} className="sim-grupo">
-            <legend>{grupo}</legend>
-            {campos.filter(({ k }) => k !== "idade" || motor.atributos.includes("idade")).map(({ k, rotulo }) => (
-              <label key={k} className="field">
-                <span>{rotulo}</span>
-                {k === "prazo_meses" ? (
-                  <select value={form[k]} onChange={muda(k)}>
-                    {PRAZOS.map((p) => <option key={p} value={String(p)}>{p} meses</option>)}
-                  </select>
-                ) : k === "tipo_vinculo" ? (
-                  <select value={form[k]} onChange={muda(k)}>
-                    {VINCULOS.map(([id, nome]) => <option key={id} value={id}>{nome}</option>)}
-                  </select>
-                ) : (
-                  <input inputMode="decimal" value={form[k]} onChange={muda(k)} />
-                )}
-              </label>
+        {modo === "deslizar" ? (
+          <Deslizadores motor={motor} grupos={GRUPOS} form={form} prazos={PRAZOS} vinculos={VINCULOS} numero={numero}
+            aoMudar={(k, v) => setForm({ ...form, [k]: v })} />
+        ) : (
+          <>
+            {GRUPOS.map(([grupo, campos]) => (
+              <fieldset key={grupo} className="sim-grupo">
+                <legend>{grupo}</legend>
+                {campos.filter(({ k }) => k !== "idade" || motor.atributos.includes("idade")).map(({ k, rotulo }) => (
+                  <label key={k} className="field">
+                    <span>{rotulo}</span>
+                    {k === "prazo_meses" ? (
+                      <select value={form[k]} onChange={muda(k)}>
+                        {PRAZOS.map((p) => <option key={p} value={String(p)}>{p} meses</option>)}
+                      </select>
+                    ) : k === "tipo_vinculo" ? (
+                      <select value={form[k]} onChange={muda(k)}>
+                        {VINCULOS.map(([id, nome]) => <option key={id} value={id}>{nome}</option>)}
+                      </select>
+                    ) : (
+                      <input inputMode="decimal" value={form[k]} onChange={muda(k)} />
+                    )}
+                  </label>
+                ))}
+              </fieldset>
             ))}
-          </fieldset>
-        ))}
-        <p className="foot">Os campos da conta podem ficar vazios se o cliente não tem movimentação.</p>
+            <p className="foot">Os campos da conta podem ficar vazios se o cliente não tem movimentação.</p>
+          </>
+        )}
       </section>
 
       <section className="card sim-res" aria-live="polite" aria-label="Decisão da IA">
@@ -239,6 +262,7 @@ export function AreaSimulador({ motor }: { motor: Motor }) {
         {e ? <PorQue motor={motor} entrada={e} /> : <p className="erro">Confira: {faltam.join(", ")}.</p>}
         <p className="foot">A mesma IA que decidiu os 2.000 pedidos novos.</p>
       </section>
+      {modo === "deslizar" && <ResumoFixo motor={motor} entrada={e} />}
 
       <Lote motor={motor} />
     </div>
