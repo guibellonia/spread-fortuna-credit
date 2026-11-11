@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spread · o que defendemos e como chegamos lá</title>
+<style>
+:root{--tx:#1b1b1f;--mu:#5d5f66;--bg:#f6f6f8;--card:#fff;--bd:#e2e2e8;--ok:#1e8e4e;--okbg:#e6f4ec;--no:#c0392b;--nobg:#fbeae8;--est:#9a6b00;--estbg:#fff5d9;--az:#2c5fa8}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:980px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:28px;margin:0 0 6px}h2{font-size:20px;margin:36px 0 10px;border-bottom:2px solid var(--bd);padding-bottom:6px}
+.tese{background:var(--card);border-left:5px solid var(--az);padding:16px 18px;font-size:18px;margin:18px 0}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.big{font-size:30px;font-weight:700}.mu{color:var(--mu);font-size:14px}
+.ok{color:var(--ok)}.no{color:var(--no)}.est{color:var(--est)}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.p-ok{background:var(--okbg);color:var(--ok)}.p-no{background:var(--nobg);color:var(--no)}.p-est{background:var(--estbg);color:var(--est)}
+table{width:100%;border-collapse:collapse;background:var(--card)}td,th{border-bottom:1px solid var(--bd);padding:8px;text-align:left;vertical-align:top}th{font-size:13px;color:var(--mu)}
+.bar{height:14px;border-radius:4px;display:inline-block;vertical-align:middle}
+.fonte{font-size:12px;color:var(--mu);margin-top:6px}
+.passos li{margin:6px 0}
+</style></head><body><main>
+<h1>Spread · o que defendemos e como chegamos lá</h1>
+<p class="mu">Desafio Fortuna Crédito · 11/11/2026 · documento para o time discutir a fala do pitch. Dados fictícios do hackathon. Cada número tem a fonte em cinza.</p>
+
+<div class="grid" style="margin:18px 0">
+ <div class="card" style="border-top:5px solid var(--ok)"><div class="mu">Resultado nos pedidos com desfecho conhecido</div><div class="big"><span class="no">R$ 251 mil</span> → <span class="ok">R$ 1,27 mi</span></div><div class="mu">política atual → proposta</div></div>
+ <div class="card" style="border-top:5px solid var(--ok)"><div class="mu">Calote</div><div class="big"><span class="no">13,6%</span> → <span class="ok">8,0%</span></div><div class="mu">nos mesmos 5.001 pedidos</div></div>
+ <div class="card" style="border-top:5px solid var(--az)"><div class="mu">Separar bom e mau pagador (AUC)</div><div class="big"><span class="no">0,50</span> → <span class="ok">0,74</span></div><div class="mu">score do birô → nosso modelo</div></div>
+</div>
+<div class="tese">“Usamos o que o mercado de crédito já valida: <b>corte por lucro</b>, <b>teste fora do tempo</b>, <b>modelo com sinal coerente</b> e <b>explicação por pedido</b>. E seguimos a LGPD e o Cadastro Positivo: <b>a IA sugere, o analista decide</b>, e o cliente pode pedir revisão.”</div>
+
+<h2>1. O resultado, com o que de fato aconteceu</h2>
+<p>Pedidos com mais de um ano, cujo desfecho é conhecido (5.001 pedidos, out/2024 a set/2025). Cada trimestre foi decidido por um modelo treinado sem ver aquele trimestre.</p>
+<div class="grid">
+ <div class="card"><div class="mu">Calote · política atual</div><div class="big no">13,6%</div><div class="mu">2.844 aprovados</div></div>
+ <div class="card"><div class="mu">Calote · proposta</div><div class="big ok">8,0%</div><div class="mu">2.510 aprovados com desfecho</div></div>
+ <div class="card"><div class="mu">Resultado · política atual</div><div class="big">R$ 251 mil</div></div>
+ <div class="card"><div class="mu">Resultado · proposta (observado)</div><div class="big ok">R$ 1,27 mi</div><div class="mu">cerca de 5 vezes</div></div>
+</div>
+<div class="fonte">Fonte: painel do time, página Histórico (<code>site/src/data/historico.json</code>, base <code>maduros</code>: <code>real</code> e <code>proposta</code>).</div>
+
+<h2>2. De onde vem a melhora, passo a passo</h2>
+<table>
+<tr><th>Passo</th><th>Pedidos</th><th>Calote deles</th><th>Efeito no resultado</th><th></th></tr>
+<tr><td>Barreira · parcela acima de 28% da <b>renda real</b> (o que entra na conta)</td><td>223</td><td>51%</td><td class="ok"><b>+R$ 742 mil</b></td><td><span class="bar" style="width:148px;background:var(--ok)"></span></td></tr>
+<tr><td>Barreira · <b>conta apertada</b> (saiu mais do que entrou em algum dos 3 meses antes)</td><td>67</td><td>91%</td><td class="ok"><b>+R$ 302 mil</b></td><td><span class="bar" style="width:60px;background:var(--ok)"></span></td></tr>
+<tr><td>IA · risco previsto acima de 17,5%</td><td>44</td><td>32%</td><td class="ok">+R$ 18 mil</td><td><span class="bar" style="width:4px;background:var(--ok)"></span></td></tr>
+<tr><td>Valor · emprestar menos que o pedido</td><td>632</td><td>8%</td><td class="no">−R$ 45 mil</td><td><span class="bar" style="width:9px;background:var(--no)"></span></td></tr>
+<tr><td>Aprovar quem a Fortuna negou <span class="pill p-est">estimado</span></td><td>999</td><td>sem desfecho</td><td class="est">+R$ 534 mil</td><td><span class="bar" style="width:107px;background:var(--est);opacity:.6"></span></td></tr>
+</table>
+<p><span class="pill p-ok">observado</span> o que aconteceu de fato · <span class="pill p-no">custo</span> o que a proposta perde e mostramos · <span class="pill p-est">estimado</span> sem desfecho, nunca somado ao observado.</p>
+<div class="fonte">Fonte: <code>historico.json</code>, base <code>maduros</code>, <code>ajustes</code>.</div>
+
+<div class="card"><b>Quem a proposta deixaria de aprovar:</b> dos pedidos que a Fortuna aprovou, a proposta negaria <b>334</b>. <span class="no"><b>56% deles deram calote.</b></span>
+<div class="fonte">Fonte: <code>historico.json</code>, base <code>maduros</code>, <code>matriz</code>.</div></div>
+
+<h2>3. Por que melhora</h2>
+<div class="grid">
+ <div class="card"><div class="mu">Separação bom × mau pagador · score do birô</div><div class="big no">0,50</div><div class="mu">igual a jogar uma moeda</div></div>
+ <div class="card"><div class="mu">Separação bom × mau pagador · nosso modelo</div><div class="big ok">0,74</div><div class="mu">AUC</div></div>
+</div>
+<p>Olhamos a <b>conta do cliente</b>, e não só a nota do birô. Os dois padrões que mais rendem vêm da movimentação: renda real e conta apertada.</p>
+<div class="card"><b>O piloto confirma:</b> dos 427 clientes que a Fortuna aprovou fora da regra, a proposta aprovaria <b>257</b>, que deram <span class="ok"><b>5,1% de calote</b></span>, e negaria <b>170</b>, que deram <span class="no"><b>27,7%</b></span>.
+<div class="fonte">Fonte: <code>historico.json</code>: <code>estimativa.aucModelo</code>, <code>estimativa.aucScore</code> e bloco <code>piloto</code>.</div></div>
+
+<h2>4. Como chegamos lá: o método</h2>
+<ol class="passos">
+<li><b>Corte por lucro, não por acerto.</b> Com +15% (paga em dia), +5% (atraso) e −60% (calote), só vale aprovar abaixo de ~17,5% de chance de calote. Esse é o teto.</li>
+<li><b>Calote corrigido.</b> Metade dos contratos ainda estava pagando. Contando só os que terminaram, o calote parece menor. Corrigimos isso antes de qualquer conta.</li>
+<li><b>Teste fora do tempo.</b> O modelo é treinado no passado e testado depois, nunca em sorteio. Foi esse teste que mostrou onde o modelo é otimista.</li>
+<li><b>Sinal coerente.</b> Mais renda nunca pode aumentar o risco; mais parcela nunca pode diminuí-lo.</li>
+<li><b>Padrões testados duas vezes</b>, em duas metades da base. O que não se repetiu (por exemplo, consultas ao CPF como regra própria) não entrou.</li>
+<li><b>Explicação por pedido.</b> A sugestão, o valor, a faixa de risco e os pontos a favor e contra.</li>
+</ol>
+
+<h2>5. Ética e lei</h2>
+<ul>
+<li><b>Idade, gênero, estado civil e CEP</b> fora do modelo. Medimos o custo de tirar a idade: −R$ 2 mil nos 2.000 novos, dentro do ruído.</li>
+<li><b>LGPD, art. 20:</b> quem tem crédito decidido por máquina pode pedir revisão e saber os critérios. Na nossa tela, a IA sugere e o analista decide, com o motivo à mão.</li>
+<li><b>Cadastro Positivo (Lei 12.414, art. 3º, §3º):</b> nada de dado sensível ou excessivo na nota.</li>
+</ul>
+<div class="fonte">Fontes: medição do motor v2 do Enio (custo da idade); texto das leis no site do Planalto, lido em 11/11 pela pesquisa da manhã.</div>
+
+<h2>6. O que não sabemos, e dizemos</h2>
+<ul>
+<li>O desfecho dos 2.000 pedidos novos vem de regras que não conhecemos. O ganho deles é estimativa (R$ 385 a 500 mil pelos avaliadores do time).</li>
+<li>Nas faixas de score de 500 a 600, o histórico mostra calote perto do limite (15–17%). É o ponto em que o modelo pode estar otimista.</li>
+<li>A base só tem desfecho de quem foi aprovado. Isso é mitigado, não corrigido.</li>
+</ul>
+
+<h2>7. A mesa do analista</h2>
+<ol class="passos">
+<li><b>Entra o pedido.</b> O sistema puxa o birô e a movimentação da conta; o analista não digita isso.</li>
+<li><b>A IA sugere</b> aprovar, reduzir ou negar, com o valor, a faixa (verde, amarelo, laranja) e os pontos a favor e contra.</li>
+<li><b>O analista decide</b> e registra o motivo. A versão final usa a decisão dele.</li>
+<li><b>Antes de mudar a regra</b>, testa no Simulador e confere no Histórico quanto ela teria rendido.</li>
+</ol>
+</main></body></html>
