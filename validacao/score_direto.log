@@ -1,0 +1,21 @@
+== Filtros B (restrição 0, <=1 mês saldo negativo, parcela <= 20% renda), aprovados históricos
+score <= 600                                            n=  213  inad KM vida =   6.7%  IC95 [3.6; 9.9]  (bruto observado 5.2%)
+score > 600                                             n= 4650  inad KM vida =   8.5%  IC95 [7.5; 9.5]  (bruto observado 5.6%)
+score > 600, só piloto (mesma safra/política)           n=  650  inad KM vida =   6.5%  IC95 [4.5; 8.6]  (bruto observado 5.1%)
+diferença (<=600) - (>600): -1.8 p.p. IC95 [-5.1; 1.6]
+diferença (<=600) - (>600 piloto): 0.2 p.p. IC95 [-3.2; 3.9]
+  ponto de equilíbrio: com PD 6.7% o ganho por R$ é no máx. +0.100 (se todos os demais pagassem em dia)
+  ponto de equilíbrio: com PD 8.5% o ganho por R$ é no máx. +0.086 (se todos os demais pagassem em dia)
+   score (0,500]                                        n=   74  inad KM vida =   4.1%  IC95 [0.0; 9.5]  (bruto observado 2.7%)
+   score (500,550]                                      n=   74  inad KM vida =   6.8%  IC95 [1.4; 13.5]  (bruto observado 5.4%)
+   score (550,600]                                      n=   65  inad KM vida =   9.6%  IC95 [3.1; 17.7]  (bruto observado 7.7%)
+   score (600,650]                                      n=  353  inad KM vida =   8.7%  IC95 [5.4; 12.4]  (bruto observado 6.5%)
+   score (650,700]                                      n=  601  inad KM vida =   7.0%  IC95 [4.3; 9.9]  (bruto observado 4.4%)
+   score (700,1001]                                     n= 3696  inad KM vida =   8.7%  IC95 [7.6; 9.9]  (bruto observado 5.7%)
+
+== Grupos com pouco suporte (aprovados históricos, sem filtro de parcela)
+restrição ativa >= 1 (só piloto)                        n=  127  inad KM vida =  23.5%  IC95 [15.7; 30.8]  (bruto observado 20.5%)
+restrição 0, piloto                                     n=  999  inad KM vida =  12.3%  IC95 [10.1; 14.4]  (bruto observado 10.2%)
+2+ meses com saldo mínimo negativo                      n=  164  inad KM vida =  74.7%  IC95 [64.3; 84.7]  (bruto observado 50.9%)
+<=1 mês com saldo mínimo negativo                       n= 5604  inad KM vida =  12.2%  IC95 [11.1; 13.3]  (bruto observado 8.4%)
+todos os aprovados                                      n= 5768  inad KM vida =  14.0%  IC95 [12.9; 15.0]  (bruto observado 9.6%)

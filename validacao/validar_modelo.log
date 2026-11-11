@@ -1,0 +1,35 @@
+{'caminho': 'C:\\Users\\Juliano Ferreira\\Downloads\\material\\spread\\validacao\\_val_corte2025.joblib', 'contratos': 2844, 'linhas_inad': 14571, 'eventos_inad': 165, 'linhas_atraso': 12343, 'eventos_atraso': 777}
+
+== V1 corte simulado 30/09/2025, desfecho em 30/09/2026 (mesmos contratos): n=2844 contratos, horizonte médio 14.0 parcelas
+  AUC inadimplência: 0.818 | AUC qualquer atraso: 0.748
+  inad prevista no horizonte 11.59% vs observada 13.96%
+  qualquer atraso previsto 39.00% vs observado 33.61%
+  calibração inadimplência (quintis de risco previsto):
+         n  previsto  observado
+faixa                          
+0      569       3.9        3.7
+1      569       5.5        5.8
+2      568       7.1        6.5
+3      569       9.8        7.2
+4      569      31.7       46.6
+  projeção vida inteira: inad 8.92% | atraso 25.42% | em dia 65.66%
+  horizonte médio no corte simulado 3.7 -> real 14.0 parcelas
+{'caminho': 'C:\\Users\\Juliano Ferreira\\Downloads\\material\\spread\\validacao\\_val_oot.joblib', 'contratos': 2844, 'linhas_inad': 39924, 'eventos_inad': 397, 'linhas_atraso': 31753, 'eventos_atraso': 956}
+
+== V2 fora do tempo: treino pedidos <=09/2025, teste pedidos 10/2025-09/2026: n=2496 contratos, horizonte médio 5.3 parcelas
+  AUC inadimplência: 0.833 | AUC qualquer atraso: 0.661
+  inad prevista no horizonte 8.49% vs observada 9.17%
+  qualquer atraso previsto 29.36% vs observado 34.09%
+  calibração inadimplência (quintis de risco previsto):
+         n  previsto  observado
+faixa                          
+0      500       1.1        1.4
+1      499       2.5        3.8
+2      499       4.1        2.6
+3      499       7.1        7.8
+4      499      27.7       30.3
+  projeção vida inteira: inad 15.33% | atraso 18.84% | em dia 65.84%
+
+== V3 calibração vida inteira, previsões fora da dobra (5-fold) vs Kaplan-Meier estratificado, quintis
+  P(não paga): Q1 prev 6.7% KM 7.8% | Q2 prev 8.0% KM 5.4% | Q3 prev 9.2% KM 7.0% | Q4 prev 11.8% KM 10.2% | Q5 prev 42.7% KM 39.9%
+  P(algum atraso ou não paga): Q1 prev 24.4% KM 26.6% | Q2 prev 28.0% KM 27.4% | Q3 prev 30.4% KM 28.8% | Q4 prev 34.8% KM 27.2% | Q5 prev 63.2% KM 61.9%
