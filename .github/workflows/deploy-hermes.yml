@@ -1,0 +1,73 @@
+# Publica o Hermes (API + agente + tools) no Railway depois que o CI passa na main.
+# As chaves NÃO vão para a imagem: este workflow copia os Secrets do GitHub para as variáveis do serviço no Railway.
+#
+# Pré-requisitos (uma vez):
+#   - No Railway: projeto com um serviço vazio (padrão "hermes"; outro nome -> variável de repositório RAILWAY_SERVICE)
+#   - Secrets: RAILWAY_TOKEN (token do projeto), HERMES_ACCESS_KEY, FORTUNA_DSN, FORTUNA_BUREAU_TOKEN e as chaves de IA
+name: Deploy do Hermes (Railway)
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-hermes
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      SERVICO: ${{ vars.RAILWAY_SERVICE || 'hermes' }}
+    steps:
+      - name: Sem RAILWAY_TOKEN não há deploy
+        if: env.RAILWAY_TOKEN == ''
+        run: echo "::notice::RAILWAY_TOKEN não configurado; deploy pulado" && exit 0
+
+      - uses: actions/checkout@v4
+        if: env.RAILWAY_TOKEN != ''
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Railway CLI
+        if: env.RAILWAY_TOKEN != ''
+        run: npm install -g @railway/cli@3.17.0 && railway --version
+
+      - name: Copia os Secrets para as variáveis do serviço (só os preenchidos)
+        if: env.RAILWAY_TOKEN != ''
+        env:
+          HERMES_ACCESS_KEY: ${{ secrets.HERMES_ACCESS_KEY }}
+          FORTUNA_DSN: ${{ secrets.FORTUNA_DSN }}
+          FORTUNA_BUREAU_TOKEN: ${{ secrets.FORTUNA_BUREAU_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          ZAI_API_KEY: ${{ secrets.ZAI_API_KEY }}
+          OMNIROUTE_BASE_URL: ${{ secrets.OMNIROUTE_BASE_URL }}
+          OMNIROUTE_API_KEY: ${{ secrets.OMNIROUTE_API_KEY }}
+          CONSELHO_MODELOS: ${{ vars.CONSELHO_MODELOS }}
+        run: |
+          set -eu
+          if [ -z "${HERMES_ACCESS_KEY}" ]; then echo "::warning::secret HERMES_ACCESS_KEY ausente: vale a que estiver nas variáveis do Railway (sem ela, a API recusa tudo)"; fi
+          args=(--set "RAILWAY_DOCKERFILE_PATH=hermes/Dockerfile")
+          for n in HERMES_ACCESS_KEY FORTUNA_DSN FORTUNA_BUREAU_TOKEN GROQ_API_KEY GOOGLE_API_KEY OPENROUTER_API_KEY \
+                   NVIDIA_API_KEY ZAI_API_KEY OMNIROUTE_BASE_URL OMNIROUTE_API_KEY CONSELHO_MODELOS; do
+            v="${!n:-}"
+            if [ -n "$v" ]; then args+=(--set "$n=$v"); echo "variável $n: enviada"; else echo "variável $n: vazia, mantida como está"; fi
+          done
+          railway variables --service "$SERVICO" --skip-deploys "${args[@]}" > /dev/null
+
+      - name: Build e deploy
+        if: env.RAILWAY_TOKEN != ''
+        run: railway up --service "$SERVICO" --ci
