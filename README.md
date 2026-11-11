@@ -35,6 +35,7 @@ nos segredos do GitHub. Nunca no Git.
 | `docker/`, `docker-compose.yml` | banco local | Guilherme Bellonia |
 | `.github/workflows/` | `ci.yml`: segredos, lint, testes, integração com o banco e formato dos CSVs · `static.yml`: publica o site a cada push na `main` | Juliano Ferreira · Guilherme Bellonia |
 | `index.html` | página do time | Enio Rocha |
+| `simulador/` | `grade.json`: resultado agregado das 9.000 regras do motor v2 nos 2.000 novos (sem dado por cliente), lido pela aba Simulador da página; gerado por `analysis/scripts-enio/gerar_grade_simulador.py` | Enio Rocha |
 | `CLAUDE.md`, `.claude/` | contexto do projeto e regras para o Claude Code | Guilherme Bellonia |
 
 ## Rodar (um comando)

@@ -35,7 +35,10 @@
   .tab::before { content:""; position:absolute; inset:0; border-radius:inherit; z-index:-1; background:currentColor; opacity:0; pointer-events:none; transition:opacity 150ms ease; }
   .tab:hover::before { opacity:.08; } .tab:focus-visible::before, .tab:active::before { opacity:.12; }
   .tab.ativa { background:var(--md-on-surface); color:var(--md-surface-lowest); }
-  a.repo { justify-self:end; color:var(--md-muted); font-size:13px; text-decoration:none; }
+  .dir { justify-self:end; display:flex; align-items:center; gap:16px; }
+  .btn-painel { display:inline-flex; align-items:center; height:36px; padding:0 16px; border-radius:999px; background:var(--md-primary); color:var(--md-on-primary); font-weight:500; font-size:13px; text-decoration:none; white-space:nowrap; }
+  .btn-painel:hover { filter:brightness(1.12); }
+  a.repo { color:var(--md-muted); font-size:13px; text-decoration:none; }
   a.repo:hover { text-decoration:underline; }
 
   .page { max-width:1440px; margin:0 auto; padding:4px 24px 40px; }
@@ -63,7 +66,6 @@
   details.ia button { margin-left:8px; height:28px; padding:0 12px; border:0; border-radius:8px; background:var(--md-surface-container); color:var(--md-on-surface-variant); cursor:pointer; font-size:12px; }
   details.ia pre { white-space:pre-wrap; font:12px/1.5 ui-monospace, Menlo, Consolas, monospace; margin:12px 0 0; max-height:60vh; overflow:auto; }
 
-  #p-documentos article.doc { max-width:none; }
   .painel article.doc { max-width:1100px; margin-bottom:16px; overflow-x:auto; }
   .painel article.doc h1 { font:600 24px/1.2 var(--font-display); }
   .painel article.doc h2 { font:600 18px/1.3 var(--font-display); margin-top:8px; }
@@ -77,10 +79,64 @@
   .painel article.doc code { background:var(--md-surface-low); border-radius:4px; padding:1px 4px; }
   .painel article.doc pre code { background:none; padding:0; }
 
+  /* Simulador (Enio Rocha, motor v2) */
+  .sim { display:grid; gap:16px; grid-template-columns:minmax(0,5fr) minmax(0,6fr); align-items:start; }
+  .sim .pilulas { display:flex; flex-wrap:wrap; gap:8px; }
+  .pilula { height:40px; padding:0 18px; border:0; border-radius:999px; cursor:pointer; font-weight:500; background:var(--md-surface-container); color:var(--md-on-surface-variant); }
+  .pilula:hover { background:var(--md-surface-high); }
+  .pilula.ativa { background:var(--md-primary); color:var(--md-on-primary); }
+  .ctl { padding:10px 0; } .ctl + .ctl { border-top:1px solid var(--md-surface-container); }
+  .ctl-top { display:flex; justify-content:space-between; gap:12px; align-items:baseline; margin-bottom:6px; }
+  .ctl label, .ctl .rot { font-weight:500; font-size:13px; }
+  .ctl .val { color:var(--md-primary); font-weight:600; text-align:right; font-size:13px; }
+  .ctl input[type=range] { width:100%; height:32px; margin:0; accent-color:var(--md-primary); }
+  .ticks { display:flex; justify-content:space-between; color:var(--md-muted); font-size:11px; }
+  .seg { display:flex; flex-wrap:wrap; gap:6px; }
+  .seg button { min-height:36px; padding:6px 12px; border:0; border-radius:8px; cursor:pointer; background:var(--md-surface-container); color:var(--md-on-surface-variant); font-size:12.5px; text-align:left; }
+  .seg button:hover { background:var(--md-surface-high); }
+  .seg button.ativa { background:var(--md-secondary-container); color:var(--md-on-surface); font-weight:600; box-shadow:inset 0 0 0 2px var(--md-primary); }
+  .res { border-radius:var(--radius-card); padding:16px 24px 20px; background:var(--md-surface-lowest); border-top:8px solid var(--cor); --cor:var(--md-muted); }
+  .res.verde { --cor:#1b873f; } .res.amarelo { --cor:#c28a00; } .res.vermelho { --cor:var(--critical-text); }
+  .res .big { font:600 36px/1.1 var(--font-display); color:var(--cor); margin:4px 0; }
+  .res.amarelo .big { color:#7a5700; }
+  .res .veredito { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:600; color:#fff; background:var(--cor); }
+  .metricas { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 16px; margin:12px 0 0; }
+  .metricas div { padding:8px 0; border-top:1px solid var(--md-surface-container); }
+  .metricas b { display:block; font:600 18px/1.2 var(--font-display); }
+  .metricas span { color:var(--md-muted); font-size:12px; }
+  .barra { margin-top:14px; } .barra .linha { display:grid; grid-template-columns:86px minmax(0,1fr) 92px; gap:8px; align-items:center; margin:4px 0; font-size:12px; }
+  .trilho { position:relative; height:16px; border-radius:8px; background:var(--md-surface-container); overflow:hidden; }
+  .trilho i { position:absolute; top:0; bottom:0; left:0; border-radius:8px; }
+  .trilho .ic { background:rgba(0,0,0,.18); border-radius:0; }
+  .trilho .zero { position:absolute; top:0; bottom:0; width:2px; background:var(--md-on-surface); opacity:.6; }
+  .leitura li { padding:8px 0; }
+  .nota { padding:12px 16px; border-radius:16px; background:var(--md-surface-low); font-size:12.5px; }
+  .nota b { font-weight:600; } .nota ul li { padding:3px 0; border:0; list-style:disc; margin-left:18px; }
+  @media (max-width:900px) { .sim { grid-template-columns:minmax(0,1fr); } }
+  @media (max-width:760px) { .res { padding:14px 16px 18px; } .res .big { font-size:28px; } .barra .linha { grid-template-columns:70px minmax(0,1fr) 76px; } }
+
+  /* Documentos: levar a uma IA */
+  .promptbox { display:grid; gap:6px; margin:4px 0 8px; } .promptbox textarea { width:100%; border:1px solid var(--md-surface-high); border-radius:12px; padding:10px 12px; font:400 16px/1.4 var(--font-body); background:var(--md-surface-low); color:var(--md-on-surface); resize:vertical; }
+  .baixar-tudo { display:inline-flex; align-items:center; margin-left:auto; text-decoration:none; background:var(--md-primary); color:var(--md-on-primary); }
+  .tabela { overflow-x:auto; } table.docs td { vertical-align:top; } table.docs td:first-child { min-width:200px; }
+  .fileira { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .fileira button, .fileira a.bt, .fileira summary { display:inline-flex; align-items:center; min-height:36px; padding:0 12px; border:0; border-radius:8px; background:var(--md-surface-container); color:var(--md-on-surface-variant); font-size:12.5px; font-weight:500; cursor:pointer; text-decoration:none; white-space:nowrap; list-style:none; }
+  .fileira button:hover, .fileira a.bt:hover, .fileira summary:hover { background:var(--md-surface-high); }
+  .fileira .pri { background:var(--md-secondary-container); color:var(--md-on-surface); }
+  .fileira details { position:relative; } .fileira summary::-webkit-details-marker { display:none; }
+  .fileira details .mn { position:absolute; z-index:5; top:40px; left:0; display:grid; gap:2px; min-width:210px; padding:6px; border-radius:12px; background:var(--md-surface-lowest); box-shadow:0 4px 16px rgba(0,0,0,.18); }
+  .fileira details .mn button { justify-content:flex-start; background:transparent; }
+  .fileira .dica { color:var(--md-muted); font-size:11px; }
+  .rodape-ia { margin-top:12px; } .rodape-ia .pequeno { margin-bottom:6px; }
+  #aviso { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); padding:10px 18px; border-radius:999px; background:var(--md-on-surface); color:var(--md-surface-lowest); font-weight:500; z-index:50; }
+  #manual { position:fixed; inset:auto 16px 16px 16px; max-width:640px; margin:0 auto; z-index:50; padding:12px; border-radius:16px; background:var(--md-surface-lowest); box-shadow:0 4px 24px rgba(0,0,0,.3); }
+  #manual textarea { width:100%; height:140px; font:12px/1.4 ui-monospace,monospace; } #manual button { margin-top:6px; }
+
   @media (max-width:1180px) { .topbar { grid-template-columns:1fr auto; } a.repo { display:none; } }
   @media (max-width:760px) {
-    .topbar { padding:12px 16px; } .brand-sub, .brand-name { display:none; }
-    .tab { height:32px; padding:0 12px; font-size:13px; }
+    .topbar { padding:12px 16px; grid-template-columns:auto 1fr; gap:8px 12px; } .brand-sub, .brand-name { display:none; } nav.abas { grid-column:1 / -1; grid-row:2; } .dir { grid-column:2; grid-row:1; }
+    .tab { height:32px; padding:0 10px; font-size:12.5px; }
+    table.docs, table.docs tbody, table.docs tr, table.docs td { display:block; } table.docs tr:first-child { display:none; } table.docs tr { padding:10px 0; border-top:1px solid var(--md-surface-container); } table.docs td { padding:2px 0 !important; background:transparent !important; } table.docs td:first-child { min-width:0; } table.docs td[data-f]::before { content:'Atualizado '; } table.docs td[data-f] + td::before { content:'Autor: '; } .fileira { margin-top:6px; }
     .page { padding:0 16px 32px; } .display { font-size:32px; } .filters { margin-left:0; }
     .grade { grid-template-columns:minmax(0,1fr); } .card, .painel article.doc, details.ia { padding:14px 16px 20px; }
   }
@@ -89,8 +145,8 @@
 <body>
 <header class="topbar">
   <a class="brand" href="."><span class="logo" aria-hidden="true">S</span><span class="brand-name">Spread</span><span class="brand-sub">Fortuna Crédito</span></a>
-  <nav class="tabs abas" aria-label="Seções"><button class="tab" data-aba="resumo">Resumo</button><button class="tab" data-aba="censura">Padrões e censura</button><button class="tab" data-aba="documentos">Documentos</button><a class="tab" href="dashboard/">Painel</a></nav>
-  <a class="repo" href="https://github.com/guibellonia/spread-fortuna-credit">análises, dados e prompts no repositório ↗</a>
+  <nav class="tabs abas" aria-label="Seções"><button class="tab" data-aba="resumo">Resumo</button><button class="tab" data-aba="simulador">Simulador</button><button class="tab" data-aba="censura">Padrões e censura</button><button class="tab" data-aba="documentos">Documentos</button></nav>
+  <div class="dir"><a class="repo" href="https://github.com/guibellonia/spread-fortuna-credit">análises, dados e prompts no repositório ↗</a><a class="btn-painel" href="dashboard/">Painel do time →</a></div>
 </header>
 <main class="page">
 <div class="page-head">
@@ -124,6 +180,7 @@
 <li><b>15h00</b> envio final · <b>15h30</b> prazo sem tolerância</li>
 <li><b>15h45</b> pitch: 5 min + 2 de perguntas</li></ul></section>
 </div>
+<div class="rodape-ia" data-f="analysis/resumo-abertura.md"></div>
 <p class="pequeno rodape">Detalhe e método: aba <b>Padrões e censura</b>. Números refeitos por mais de uma análise do time; scripts em <code>analysis/</code>.</p>
 
 <details class="ia">
@@ -372,15 +429,166 @@ Depois, em cima do piso, decidir o que afrouxar (score, 1 restrição) com teste
 
 
 </div>
+<section class="painel" id="p-simulador" hidden>
+<div class="sim">
+<section class="card" aria-label="Controles"><div class="card-head"><h2>Mesa de som da política</h2><span class="autor">Autoria: Enio Rocha (motor v2)</span></div>
+<div class="pilulas" role="group" aria-label="Pontos prontos"><button type="button" class="pilula" data-preset="seguro">Seguro</button><button type="button" class="pilula" data-preset="equilibrado">Equilibrado</button><button type="button" class="pilula" data-preset="agressivo">Agressivo</button></div>
+<p class="pequeno">Mexa nos controles: o resultado ao lado é a linha exata da varredura de 9.000 regras do motor v2, nos 2.000 pedidos novos. Nada é interpolado.</p>
+<div id="controles"></div></section>
+<div style="display:grid;gap:16px;min-width:0">
+<section class="res" id="res" aria-live="polite"></section>
+<section class="card leitura"><div class="card-head"><h2>Leitura</h2><span class="pequeno">Leitura automática por regra fixa, sem IA generativa</span></div><ul id="leitura"></ul></section>
+<section class="nota"><b>O que é hipótese</b><ul id="hipoteses"></ul></section>
+</div></div>
+<p class="pequeno rodape">Fonte: <code>simulador/grade.json</code>, gerado por <code>analysis/scripts-enio/gerar_grade_simulador.py</code> a partir de <code>varredura.csv</code> (só resultados agregados por regra). Linha de base: política atual, 1.145 aprovados e R$ 8.856.449,87 nos 2.000 novos.</p>
+</section>
 <section class="painel" id="p-abertura" data-src="analysis/resumo-abertura.md" data-autor="Enio · regras, nota e prazos do manual" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-banco" data-src="analysis/analise-banco.md" data-autor="Juliano" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-censura" data-src="analysis/censura-agregado.md|analysis/padroes-agregado.md" data-autor="análise agregada do time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-complementos" data-src="analysis/analise-enio.md" data-autor="Enio · onde confirma e onde diverge" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-pendencias" data-src="analysis/PENDENCIAS.md|analysis/pendencias-agregado.md" data-autor="time" hidden><p class="pequeno">Carregando…</p></section><section class="painel" id="p-prompts" data-src="prompts/README.md|prompts/enio-rocha_head-de-credito_v1.md|analysis/contexto-claude.md|analysis/contexto-gpt.md" data-autor="prompts do time, com autor e versão" hidden><p class="pequeno">Carregando…</p></section>
-<section class="painel" id="p-documentos" hidden><article class="doc"><h2>Documentos do repositório</h2>
-<table><tr><th>Documento</th><th>Arquivo</th><th>Atualizado</th><th>Autor</th></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/src/README.md">Pipeline de decisão: como rodar</a></td><td class="pequeno">src/README.md</td><td data-f="src/README.md" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/validacao/politicas.log">Validação das políticas</a></td><td class="pequeno">validacao/politicas.log</td><td data-f="validacao/politicas.log" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/padroes-agregado.md">Padrões por grupo (tabelas completas)</a></td><td class="pequeno">analysis/padroes-agregado.md</td><td data-f="analysis/padroes-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/censura-agregado.md">Censura e inadimplência projetada</a></td><td class="pequeno">analysis/censura-agregado.md</td><td data-f="analysis/censura-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-banco.md">Análise do banco</a></td><td class="pequeno">analysis/analise-banco.md</td><td data-f="analysis/analise-banco.md" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-enio.md">Complementos e discussão</a></td><td class="pequeno">analysis/analise-enio.md</td><td data-f="analysis/analise-enio.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/resumo-abertura.md">Regras do desafio</a></td><td class="pequeno">analysis/resumo-abertura.md</td><td data-f="analysis/resumo-abertura.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/transcricao-abertura.md">Transcrição da abertura</a></td><td class="pequeno">analysis/transcricao-abertura.md</td><td data-f="analysis/transcricao-abertura.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/PENDENCIAS.md">Pendências</a></td><td class="pequeno">analysis/PENDENCIAS.md</td><td data-f="analysis/PENDENCIAS.md" class="pequeno">…</td><td class="pequeno">time (chatbot-ia-gow)</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/pendencias-agregado.md">Pendências técnicas</a></td><td class="pequeno">analysis/pendencias-agregado.md</td><td data-f="analysis/pendencias-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/api-baseline/baseline-agregado.md">Baseline da API do bureau</a></td><td class="pequeno">api-baseline/baseline-agregado.md</td><td data-f="api-baseline/baseline-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/prompts/README.md">Prompts do time</a></td><td class="pequeno">prompts/README.md</td><td data-f="prompts/README.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/README.md">README e como contribuir</a></td><td class="pequeno">README.md</td><td data-f="README.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td></tr><tr><td><a href="dashboard/">Painel do time (dashboard)</a></td><td class="pequeno">site/</td><td data-f="site" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td></tr></table>
-<p class="pequeno">A data vem do último commit de cada arquivo. Rodar tudo: veja o README.</p></article></section>
+<section class="painel" id="p-documentos" hidden><article class="doc"><div class="card-head"><h2>Documentos do repositório</h2><a class="pilula baixar-tudo" href="https://github.com/guibellonia/spread-fortuna-credit/archive/refs/heads/main.zip">Baixar tudo (.zip)</a></div>
+<div class="promptbox"><label for="prompt-base"><b>Prompt</b> <span class="pequeno">um só, vale para todos os botões "com prompt", ChatGPT, Claude, Perplexity e terminal</span></label><textarea id="prompt-base" rows="3"></textarea></div>
+<div class="tabela"><table class="docs"><tr><th>Documento</th><th>Atualizado</th><th>Autor</th><th>Levar para</th></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/src/README.md">Pipeline de decisão: como rodar</a><div class="pequeno">src/README.md</div></td><td data-f="src/README.md" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td><td><div class="fileira" data-f="src/README.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/validacao/politicas.log">Validação das políticas</a><div class="pequeno">validacao/politicas.log</div></td><td data-f="validacao/politicas.log" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td><td><div class="fileira" data-f="validacao/politicas.log"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/padroes-agregado.md">Padrões por grupo (tabelas completas)</a><div class="pequeno">analysis/padroes-agregado.md</div></td><td data-f="analysis/padroes-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="analysis/padroes-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/censura-agregado.md">Censura e inadimplência projetada</a><div class="pequeno">analysis/censura-agregado.md</div></td><td data-f="analysis/censura-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="analysis/censura-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-banco.md">Análise do banco</a><div class="pequeno">analysis/analise-banco.md</div></td><td data-f="analysis/analise-banco.md" class="pequeno">…</td><td class="pequeno">Juliano Ferreira</td><td><div class="fileira" data-f="analysis/analise-banco.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/analise-enio.md">Complementos e discussão</a><div class="pequeno">analysis/analise-enio.md</div></td><td data-f="analysis/analise-enio.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="analysis/analise-enio.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/resumo-abertura.md">Regras do desafio</a><div class="pequeno">analysis/resumo-abertura.md</div></td><td data-f="analysis/resumo-abertura.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="analysis/resumo-abertura.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/transcricao-abertura.md">Transcrição da abertura</a><div class="pequeno">analysis/transcricao-abertura.md</div></td><td data-f="analysis/transcricao-abertura.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="analysis/transcricao-abertura.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/PENDENCIAS.md">Pendências</a><div class="pequeno">analysis/PENDENCIAS.md</div></td><td data-f="analysis/PENDENCIAS.md" class="pequeno">…</td><td class="pequeno">time (chatbot-ia-gow)</td><td><div class="fileira" data-f="analysis/PENDENCIAS.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/analysis/pendencias-agregado.md">Pendências técnicas</a><div class="pequeno">analysis/pendencias-agregado.md</div></td><td data-f="analysis/pendencias-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="analysis/pendencias-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/api-baseline/baseline-agregado.md">Baseline da API do bureau</a><div class="pequeno">api-baseline/baseline-agregado.md</div></td><td data-f="api-baseline/baseline-agregado.md" class="pequeno">…</td><td class="pequeno">Guilherme Bellonia</td><td><div class="fileira" data-f="api-baseline/baseline-agregado.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/prompts/README.md">Prompts do time</a><div class="pequeno">prompts/README.md</div></td><td data-f="prompts/README.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="prompts/README.md"></div></td></tr><tr><td><a href="https://github.com/guibellonia/spread-fortuna-credit/blob/main/README.md">README e como contribuir</a><div class="pequeno">README.md</div></td><td data-f="README.md" class="pequeno">…</td><td class="pequeno">Enio Rocha</td><td><div class="fileira" data-f="README.md"></div></td></tr></table></div>
+<p class="pequeno">A data vem do último commit de cada arquivo. Os links do ChatGPT, Claude e Perplexity levam o prompt e o link do arquivo (não o conteúdo, por causa do tamanho do endereço); para mandar o conteúdo, use "Copiar com prompt". Rodar tudo: veja o README.</p></article></section>
 </main>
 <script>
 document.addEventListener('click',e=>{if(e.target.dataset&&e.target.dataset.aba==='documentos')datas();});
 let datasOk=false;async function datas(){if(datasOk)return;datasOk=true;for(const td of document.querySelectorAll('td[data-f]')){try{const r=await fetch('https://api.github.com/repos/guibellonia/spread-fortuna-credit/commits?per_page=1&path='+encodeURIComponent(td.dataset.f));const j=await r.json();const c=j[0];td.textContent=c?new Date(c.commit.author.date).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';}catch(e){td.textContent='—';}}}
 if(location.hash==='#documentos')datas();
+(function(){
+const BLOB='https://github.com/guibellonia/spread-fortuna-credit/blob/main/';
+const PADRAO='Você é head de análise de crédito no desafio Fortuna Crédito (time Spread). Leia o documento abaixo, diga em 5 linhas o que ele decide, o que é número medido e o que é hipótese, e qual pergunta ainda falta responder.';
+const pb=document.getElementById('prompt-base');pb.value=PADRAO;
+const prompt=()=>pb.value.trim()||PADRAO;
+const link=f=>BLOB+f;
+const sh=t=>t.replace(/[\\"$`]/g,'\\$&');
+const cmd=(bin,f)=>bin+' "'+sh(prompt()+' '+link(f))+'"';
+let tAviso;function aviso(t){let a=document.getElementById('aviso');if(!a){a=document.createElement('div');a.id='aviso';a.setAttribute('role','status');document.body.appendChild(a);}a.textContent=t;a.hidden=false;clearTimeout(tAviso);tAviso=setTimeout(()=>{a.hidden=true;},2000);}
+function manual(t){let m=document.getElementById('manual');if(m)m.remove();m=document.createElement('div');m.id='manual';m.innerHTML='<p class="pequeno">Não consegui copiar sozinho. O texto está selecionado: use Ctrl+C.</p><textarea></textarea><button type="button" class="pilula">Fechar</button>';document.body.appendChild(m);const ta=m.querySelector('textarea');ta.value=t;ta.focus();ta.select();m.querySelector('button').onclick=()=>m.remove();}
+async function copiar(t){try{await navigator.clipboard.writeText(t);aviso('Copiado');}catch(e){manual(t);}}
+async function conteudo(f){const r=await fetch(f,{cache:'no-store'});if(!r.ok)throw new Error(r.status);return r.text();}
+async function comConteudo(f,fn){try{fn(await conteudo(f));}catch(e){aviso('Não consegui ler '+f);}}
+function fileira(f,compacta){
+  const d=document.createElement('div');d.className='fileira';d.dataset.f=f;
+  const b=(t,fn,c)=>{const x=document.createElement('button');x.type='button';x.textContent=t;if(c)x.className=c;x.onclick=fn;d.appendChild(x);return x;};
+  const a=(t,href,extra)=>{const x=document.createElement('a');x.className='bt';x.textContent=t;x.href=href;x.target='_blank';x.rel='noopener';if(extra)x.dataset.q=extra;x.onclick=ev=>{ev.preventDefault();window.open(x.dataset.base+encodeURIComponent(prompt()+'\n\n'+link(f)),'_blank','noopener');};x.dataset.base=href;d.appendChild(x);};
+  const cp=()=>comConteudo(f,t=>copiar(prompt()+'\n\n'+link(f)+'\n\n---\n\n'+t));
+  if(!compacta){const dl=document.createElement('a');dl.className='bt';dl.textContent='Baixar';dl.href=f;dl.setAttribute('download',f.split('/').pop());d.appendChild(dl);b('Copiar',()=>comConteudo(f,copiar));}
+  b('Copiar com prompt',cp,'pri');
+  a('ChatGPT','https://chatgpt.com/?q=');a('Claude','https://claude.ai/new?q=');
+  if(!compacta){a('Perplexity','https://www.perplexity.ai/search?q=');
+    const det=document.createElement('details');det.innerHTML='<summary>Levar ao terminal / editor ▾</summary><div class="mn"></div>';const mn=det.querySelector('.mn');
+    const it=(t,fn)=>{const x=document.createElement('button');x.type='button';x.textContent=t;x.onclick=()=>{fn();det.open=false;};mn.appendChild(x);};
+    it('Claude Code',()=>copiar(cmd('claude',f)));it('Orca (claude)',()=>copiar(cmd('claude',f)));it('Codex',()=>copiar(cmd('codex',f)));
+    const chat=()=>{copiar(prompt()+'\n'+link(f));setTimeout(()=>aviso('Copiado: cole no chat da ferramenta'),0);};
+    it('Warp (cole no chat)',chat);it('Antigravity (cole no chat)',chat);
+    d.appendChild(det);}
+  return d;
+}
+document.querySelectorAll('.fileira[data-f]').forEach(el=>el.replaceWith(Object.assign(fileira(el.dataset.f,false),{})));
+document.querySelectorAll('.rodape-ia[data-f]').forEach(el=>{el.appendChild(Object.assign(document.createElement('p'),{className:'pequeno',textContent:'Levar este documento ('+el.dataset.f+') a uma IA, com o prompt da aba Documentos:'}));el.appendChild(fileira(el.dataset.f,true));});
+window.__rodapeIA=(p,f)=>{if(p.querySelector('.rodape-ia'))return;const w=document.createElement('div');w.className='rodape-ia';w.appendChild(Object.assign(document.createElement('p'),{className:'pequeno',textContent:'Levar este documento ('+f+') a uma IA, com o prompt da aba Documentos:'}));w.appendChild(fileira(f,true));p.appendChild(w);};
+window.__fileiraMd=fileira;
+})();
+</script>
+<script>
+(function(){
+const R$=v=>(v<0?'−':'')+'R$ '+Math.abs(Math.round(v)).toLocaleString('pt-BR');
+const N=v=>Math.round(v).toLocaleString('pt-BR');
+let G=null, E=null, cur=null; const ui={};
+const CORTE=['sem corte','15%','17,5%','20%','25%'];
+const SCORE=['≥ 450','≥ 500','≥ 550','> 600','≥ 650'];
+const CONTA=['nenhum','saídas > entradas nos 3 meses','cheque especial 2 meses'];
+const CONTA_C=['Nenhum','Saídas > entradas (3 meses)','Cheque especial (2 meses)'];
+const CTL=[
+ {k:0,t:'range',l:'Parcela máxima sobre a renda real',f:i=>G.dim.teto[i]+'%',min:0},
+ {k:1,t:'seg',l:'Acima do teto',o:['Negar','Reduzir o valor']},
+ {k:2,t:'seg',l:'Sinal de conta apertada',o:CONTA_C},
+ {k:3,t:'range',l:'Score mínimo',f:i=>SCORE[i],ticks:SCORE},
+ {k:4,t:'seg',l:'Aceitar até N restrições',o:['0 restrição','1 restrição']},
+ {k:5,t:'seg',l:'Renda declarada mínima',o:['> R$ 1.500','> R$ 2.000']},
+ {k:6,t:'range',l:'Negar se o calote previsto passar de',f:i=>CORTE[i],ticks:CORTE}
+];
+function idx(c){let i=0;for(let d=0;d<7;d++)i=i*G.dim[G.ordem[d]].length+c[d];return i;}
+function row(c){const r=G.rows[idx(c)],o={};G.cols.forEach((n,j)=>o[n]=r[j]);return o;}
+function alt(k,v){const c=cur.slice();c[k]=v;return c;}
+function montar(){
+  const box=document.getElementById('controles');
+  CTL.forEach(c=>{
+    const d=document.createElement('div');d.className='ctl';
+    const id='c'+c.k;
+    if(c.t==='range'){
+      const n=G.dim[G.ordem[c.k]].length;
+      d.innerHTML='<div class="ctl-top"><label for="'+id+'">'+c.l+'</label><span class="val" id="v'+c.k+'"></span></div><input type="range" id="'+id+'" min="0" max="'+(n-1)+'" step="1">'
+        +(c.ticks?'<div class="ticks">'+c.ticks.map(t=>'<span>'+t+'</span>').join('')+'</div>':'<div class="ticks"><span>'+G.dim.teto[0]+'%</span><span>'+G.dim.teto[n-1]+'%</span></div>');
+      const inp=d.querySelector('input');inp.oninput=()=>{cur[c.k]=+inp.value;pintar();};ui[c.k]=inp;
+    }else{
+      d.innerHTML='<div class="ctl-top"><span class="rot">'+c.l+'</span></div><div class="seg" role="group" aria-label="'+c.l+'">'+c.o.map((t,i)=>'<button type="button" data-i="'+i+'">'+t+'</button>').join('')+'</div>';
+      d.querySelectorAll('button').forEach(b=>b.onclick=()=>{cur[c.k]=+b.dataset.i;pintar();});ui[c.k]=d;
+    }
+    box.appendChild(d);
+  });
+  document.querySelectorAll('.pilula').forEach(b=>b.onclick=()=>{cur=G.presets[b.dataset.preset].slice();pintar();});
+  document.getElementById('hipoteses').innerHTML=[
+   'O desfecho dos 2.000 novos vem de regras escondidas do organizador; o modelo foi treinado no histórico e supõe que o mecanismo é parecido.',
+   'Reduzir o valor baixa o risco no modelo (relação parcela/renda extrapolada do histórico), mas talvez não nas regras escondidas.',
+   'Prazos de 24 e 36 meses são extrapolados: nenhum contrato desses prazos terminou.',
+   'O intervalo de 90% mede a incerteza do modelo e do sorteio do desfecho, mas não corrige o efeito de escolher o máximo entre 9.000 regras: o melhor ponto tende a parecer melhor do que é.',
+   'Aprovar quem a atual nega depende de extrapolar o modelo para esses perfis.'].map(t=>'<li>'+t+'</li>').join('');
+}
+function barra(rot,a,b,max,fmt){
+  return '<div class="linha"><span>'+rot+'</span><div class="trilho"><i style="width:'+(100*a/max)+'%;background:var(--md-muted)"></i></div><span class="n">'+fmt(a)+'</span></div>'
+   +'<div class="linha"><span>Esta</span><div class="trilho"><i style="width:'+(100*b/max)+'%;background:var(--cor)"></i></div><span class="n">'+fmt(b)+'</span></div>';
+}
+function pintar(){
+  CTL.forEach(c=>{
+    if(c.t==='range'){ui[c.k].value=cur[c.k];document.getElementById('v'+c.k).textContent=c.f(cur[c.k]);}
+    else ui[c.k].querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('ativa',i===cur[c.k]);b.setAttribute('aria-pressed',i===cur[c.k]);});
+  });
+  document.querySelectorAll('.pilula').forEach(b=>b.classList.toggle('ativa',G.presets[b.dataset.preset].join()===cur.join()));
+  const r=row(cur),res=document.getElementById('res');
+  const cor=r.ic90_lo>0?'verde':(r.ganho<=0?'vermelho':'amarelo');
+  const ver={verde:'Ganho com folga: o intervalo fica acima de zero',amarelo:'Incerto: o intervalo cruza o zero',vermelho:'Perde para a atual'}[cor];
+  res.className='res '+cor;
+  // escala da barra de ganho
+  const mx=E.hi,mn=Math.min(0,E.lo),span=mx-mn,pz=100*(0-mn)/span,p=v=>100*(v-mn)/span;
+  const ganhoBar='<div class="linha"><span>Ganho</span><div class="trilho"><i class="ic" style="left:'+p(r.ic90_lo)+'%;width:'+Math.max(.5,p(r.ic90_hi)-p(r.ic90_lo))+'%"></i><i style="left:'+Math.min(pz,p(r.ganho))+'%;width:'+Math.abs(p(r.ganho)-pz)+'%;background:var(--cor);opacity:.85"></i><span class="zero" style="left:'+pz+'%"></span></div><span class="n">0 = atual</span></div>';
+  res.innerHTML='<span class="veredito">'+ver+'</span><div class="big n">'+(r.ganho>0?'+':'')+R$(r.ganho)+'</div>'
+   +'<div class="pequeno">ganho esperado sobre a política atual · intervalo de 90%: '+R$(r.ic90_lo)+' a '+R$(r.ic90_hi)+'</div>'
+   +'<div class="barra">'+ganhoBar+barra('Aprovados atual',G.atual.aprovados,r.aprovados,Math.max(G.atual.aprovados,r.aprovados,E.apr)*1.02,N)
+   +barra('Valor atual',G.atual.valor,r.valor,Math.max(G.atual.valor,r.valor,E.val)*1.02,v=>'R$ '+(v/1e6).toFixed(2).replace('.',',')+' mi')+'</div>'
+   +'<div class="metricas">'
+   +'<div><b class="n">'+N(r.aprovados)+'</b><span>aprovados (a atual: '+N(G.atual.aprovados)+')</span></div>'
+   +'<div><b class="n">'+R$(r.valor)+'</b><span>valor aprovado (a atual: '+R$(G.atual.valor)+')</span></div>'
+   +'<div><b class="n">'+N(r.n_negou_da_atual)+'</b><span>a atual aprovava e esta nega</span></div>'
+   +'<div><b class="n">'+N(r.n_aprovou_que_atual_nega)+'</b><span>a atual negava e esta aprova</span></div>'
+   +'<div><b class="n">'+N(r.n_reduziu)+'</b><span>com valor reduzido</span></div>'
+   +'<div><b class="n">'+R$(r.hist_ganho_fora_do_tempo_observado_proj)+'</b><span>ganho no período fora do tempo do histórico</span></div></div>'
+   +'<p class="pequeno" style="margin-top:10px">Autoria: Enio Rocha (motor v2). Regra: '+resumo(cur)+'.</p>';
+  leitura(r);
+}
+function resumo(c){return 'parcela até '+G.dim.teto[c[0]]+'% da renda real ('+(c[1]?'reduz':'nega')+' acima), score '+SCORE[c[3]]+', até '+c[4]+' restrição, renda declarada > '+N(G.dim.renda[c[5]])+', conta apertada: '+CONTA[c[2]]+', calote previsto: '+CORTE[c[6]];}
+function frase(nome,de,para,k,v,r){
+  const o=row(alt(k,v)),d=o.ganho-r.ganho;
+  return {w:Math.abs(d),t:nome+' de '+de+' para '+para+' '+(d>=0?'soma ':'tira ')+R$(Math.abs(d))+' no ganho central, e o limite inferior do intervalo '+(o.ic90_lo>=r.ic90_lo?'sobe':'cai')+' para '+R$(o.ic90_lo)+(o.ic90_lo<=0&&r.ic90_lo>0?' (passa a cruzar o zero)':'')+'.'};
+}
+function leitura(r){
+  const L=[];
+  const s=cur[3]; if(s>0) L.push(frase('Baixar o score',SCORE[s],SCORE[s-1],3,s-1,r)); else L.push(frase('Subir o score',SCORE[s],SCORE[s+1],3,s+1,r));
+  const c=cur[6]; if(c===0) L.push(frase('Incluir o corte de calote previsto',CORTE[0],CORTE[4],6,4,r)); else L.push(frase('Trocar o corte de calote previsto',CORTE[c],CORTE[c-1],6,c-1,r));
+  L.push(frase('Mudar o limite de restrições',cur[4]+'',(1-cur[4])+'',4,1-cur[4],r));
+  const a=1-cur[1];L.push(frase('Trocar a ação acima do teto',cur[1]?'reduzir':'negar',cur[1]?'negar':'reduzir',1,a,r));
+  L.sort((x,y)=>y.w-x.w);
+  const out=L.slice(0,3).map(x=>x.t);
+  if(r.n_aprovou_que_atual_nega>0) out.push('Do ganho, '+R$(r.ganho_afrouxar)+' vêm de afrouxar (aprovar '+N(r.n_aprovou_que_atual_nega)+' que a atual nega) e '+R$(r.ganho_apertar)+' de apertar. O ganho de afrouxar é extrapolação: depende do modelo para quem a atual nega.');
+  else out.push('Esta regra só aperta: nega '+N(r.n_negou_da_atual)+' que a atual aprova e reduz o valor de '+N(r.n_reduziu)+'. O ganho de '+R$(r.ganho_apertar)+' vem de cortar risco previsto, não de aprovar gente nova.');
+  if(r.hist_ganho_fora_do_tempo_observado_proj<=0) out.push('Atenção: no período fora do tempo do histórico esta regra não ganha da atual ('+R$(r.hist_ganho_fora_do_tempo_observado_proj)+').');
+  document.getElementById('leitura').innerHTML=out.slice(0,4).map(t=>'<li>'+t+'</li>').join('');
+}
+fetch('simulador/grade.json').then(r=>r.json()).then(g=>{
+  G=g;E={lo:1e18,hi:-1e18,apr:0,val:0};
+  const i=G.cols.indexOf.bind(G.cols);
+  G.rows.forEach(r=>{E.lo=Math.min(E.lo,r[i('ic90_lo')]);E.hi=Math.max(E.hi,r[i('ic90_hi')]);E.apr=Math.max(E.apr,r[0]);E.val=Math.max(E.val,r[1]);});
+  cur=G.presets.equilibrado.slice();montar();pintar();
+}).catch(e=>{document.getElementById('controles').innerHTML='<p class="pequeno">Não consegui carregar simulador/grade.json ('+e.message+').</p>';});
+})();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script>
@@ -400,6 +608,7 @@ async function mostrar(aba){
     }catch(e){ html+='<p class="pequeno">Não consegui carregar '+f+' ('+e.message+').</p>'; }
   }
   p.innerHTML=html; carregados[aba]=true;
+  if(aba==='censura'&&window.__rodapeIA)window.__rodapeIA(p,'analysis/censura-agregado.md');
 }
 document.querySelectorAll('nav.abas button').forEach(b=>b.onclick=()=>mostrar(b.dataset.aba));
 const pedida=(location.hash||'').slice(1).replace('aba=','');mostrar(document.getElementById('p-'+pedida)&&document.querySelector('nav.abas button[data-aba="'+pedida+'"]')?pedida:'resumo');
