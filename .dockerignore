@@ -1,0 +1,14 @@
+# nada de segredo, dado gerado ou modelo treinado dentro da imagem
+.env
+*.env
+**/.env
+.git
+saida/
+testes/
+data/
+site/
+supabase/
+analysis/
+**/*.pkl
+**/*.joblib
+**/__pycache__
