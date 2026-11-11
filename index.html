@@ -557,5 +557,7 @@ async function mostrar(aba){
 document.querySelectorAll('nav.abas button').forEach(b=>b.onclick=()=>mostrar(b.dataset.aba));
 const pedida=(location.hash||'').slice(1).replace('aba=','');mostrar(document.getElementById('p-'+pedida)&&document.querySelector('nav.abas button[data-aba="'+pedida+'"]')?pedida:'resumo');
 </script>
+<!-- ícone de chat do Hermes (mesmo arquivo do painel: site/public/hermes-widget.js, publicado em dashboard/) -->
+<script src="dashboard/hermes-widget.js" defer></script>
 </body>
 </html>

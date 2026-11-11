@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Montserrat, Poppins } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
@@ -19,7 +20,11 @@ export const viewport: Viewport = { themeColor: "#f4f6fa", colorScheme: "light" 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR" className={`${poppins.variable} ${montserrat.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* ícone de chat do Hermes em todas as páginas do painel (site/public/hermes-widget.js) */}
+        <Script src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/hermes-widget.js`} strategy="afterInteractive" />
+      </body>
     </html>
   );
 }
