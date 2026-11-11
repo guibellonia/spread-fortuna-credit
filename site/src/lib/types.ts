@@ -22,6 +22,44 @@ export type Politica = {
 
 export type Faixa = { faixa: string; n: number };
 
+// Formato de src/data/historico.json, gerado por scripts/historico.py (só agregados).
+export type BaseHist = {
+  pedidos: number;
+  periodo: string[];
+  real: { aprovados: number; volume: number; resultado: number; calotes: number; taxa: number | null };
+  proposta: {
+    aprovados: number; comDesfecho: number; volume: number; resultado: number; calotes: number; taxa: number | null;
+    novos: number; volumeNovos: number; resultadoNovos: number;
+  };
+  matriz: {
+    fortuna: boolean; proposta: boolean; pedidos: number; volumeReal: number; volumeProposta: number;
+    calotes: number | null; taxa: number | null;
+  }[];
+  ajustes: {
+    id: string; rotulo: string; pedidos: number; calotes: number | null; taxa: number | null; pNaoPaga?: number | null;
+    efeito: number; estimado: boolean;
+  }[];
+  meses: {
+    mes: string; maduro: boolean; real: number; proposta: number; estimado: number;
+    aprovadosReal: number; calotesReal: number; calotesProposta: number;
+  }[];
+};
+
+export type DadosHistorico = {
+  geradoEm: string;
+  maduroAte: string;
+  bases: { todos: BaseHist; maduros: BaseHist };
+  estimativa: {
+    contratos: number; calotes: number; aucModelo: number; aucScore: number;
+    faixas: { faixa: string; pedidos: number; estimada: number; observada: number }[];
+    ganhoEstimado: number; ganhoObservado: number; aprovadosProposta: number;
+  };
+  piloto: {
+    aprovadosForaDaRegra: number; propostaAprova: number; taxaAprova: number | null;
+    propostaNega: number; taxaNega: number | null;
+  } | null;
+};
+
 export type Dados = {
   geradoEm: string;
   corte: string;

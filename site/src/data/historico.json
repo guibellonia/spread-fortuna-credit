@@ -1,0 +1,658 @@
+{
+ "geradoEm": "2026-11-11T13:13",
+ "maduroAte": "2025-09-30",
+ "bases": {
+  "todos": {
+   "pedidos": 10000,
+   "periodo": [
+    "2024-10",
+    "2026-09"
+   ],
+   "real": {
+    "aprovados": 6033,
+    "volume": 48344323,
+    "resultado": 2066095,
+    "calotes": 582,
+    "taxa": 0.0965
+   },
+   "proposta": {
+    "aprovados": 6981,
+    "comDesfecho": 5228,
+    "volume": 37506100,
+    "resultado": 3351345,
+    "calotes": 284,
+    "taxa": 0.0543,
+    "novos": 1753,
+    "volumeNovos": 10729900,
+    "resultadoNovos": 932439
+   },
+   "matriz": [
+    {
+     "fortuna": true,
+     "proposta": true,
+     "pedidos": 5228,
+     "volumeReal": 39209900,
+     "volumeProposta": 37506100,
+     "calotes": 284,
+     "taxa": 0.0543
+    },
+    {
+     "fortuna": true,
+     "proposta": false,
+     "pedidos": 805,
+     "volumeReal": 9134423,
+     "volumeProposta": 0,
+     "calotes": 298,
+     "taxa": 0.3702
+    },
+    {
+     "fortuna": false,
+     "proposta": true,
+     "pedidos": 1753,
+     "volumeReal": 0,
+     "volumeProposta": 10729900,
+     "calotes": null,
+     "taxa": null
+    },
+    {
+     "fortuna": false,
+     "proposta": false,
+     "pedidos": 2214,
+     "volumeReal": 0,
+     "volumeProposta": 0,
+     "calotes": null,
+     "taxa": null
+    }
+   ],
+   "ajustes": [
+    {
+     "id": "restricao",
+     "rotulo": "Barreira · restrição ativa",
+     "pedidos": 127,
+     "calotes": 26,
+     "taxa": 0.2047,
+     "efeito": 73556,
+     "estimado": false
+    },
+    {
+     "id": "apertada",
+     "rotulo": "Barreira · conta apertada",
+     "pedidos": 132,
+     "calotes": 81,
+     "taxa": 0.6136,
+     "efeito": 391445,
+     "estimado": false
+    },
+    {
+     "id": "parcela",
+     "rotulo": "Barreira · parcela acima de 28% da renda real",
+     "pedidos": 451,
+     "calotes": 178,
+     "taxa": 0.3947,
+     "efeito": 1001310,
+     "estimado": false
+    },
+    {
+     "id": "risco",
+     "rotulo": "Modelo · risco acima de 17,5%",
+     "pedidos": 95,
+     "calotes": 13,
+     "taxa": 0.1368,
+     "efeito": -40335,
+     "estimado": false
+    },
+    {
+     "id": "valor",
+     "rotulo": "Valor · parcela até 28% e melhor valor do modelo",
+     "pedidos": 1293,
+     "calotes": 81,
+     "taxa": 0.0626,
+     "efeito": -140725,
+     "estimado": false
+    },
+    {
+     "id": "novos",
+     "rotulo": "Aprovações que a Fortuna negou",
+     "pedidos": 1753,
+     "calotes": null,
+     "taxa": null,
+     "pNaoPaga": 0.0552,
+     "efeito": 932439,
+     "estimado": true
+    }
+   ],
+   "meses": [
+    {
+     "mes": "2024-10",
+     "maduro": true,
+     "real": -29725,
+     "proposta": 87135,
+     "estimado": 60295,
+     "aprovadosReal": 248,
+     "calotesReal": 39,
+     "calotesProposta": 25
+    },
+    {
+     "mes": "2024-11",
+     "maduro": true,
+     "real": 11311,
+     "proposta": 84155,
+     "estimado": 46120,
+     "aprovadosReal": 228,
+     "calotesReal": 30,
+     "calotesProposta": 15
+    },
+    {
+     "mes": "2024-12",
+     "maduro": true,
+     "real": -43912,
+     "proposta": 90750,
+     "estimado": 51209,
+     "aprovadosReal": 241,
+     "calotesReal": 40,
+     "calotesProposta": 20
+    },
+    {
+     "mes": "2025-01",
+     "maduro": true,
+     "real": -51126,
+     "proposta": 84360,
+     "estimado": 45231,
+     "aprovadosReal": 256,
+     "calotesReal": 47,
+     "calotesProposta": 24
+    },
+    {
+     "mes": "2025-02",
+     "maduro": true,
+     "real": 24748,
+     "proposta": 68700,
+     "estimado": 43444,
+     "aprovadosReal": 212,
+     "calotesReal": 27,
+     "calotesProposta": 19
+    },
+    {
+     "mes": "2025-03",
+     "maduro": true,
+     "real": -4205,
+     "proposta": 75975,
+     "estimado": 46273,
+     "aprovadosReal": 240,
+     "calotesReal": 36,
+     "calotesProposta": 22
+    },
+    {
+     "mes": "2025-04",
+     "maduro": true,
+     "real": 17654,
+     "proposta": 109785,
+     "estimado": 36921,
+     "aprovadosReal": 231,
+     "calotesReal": 36,
+     "calotesProposta": 18
+    },
+    {
+     "mes": "2025-05",
+     "maduro": true,
+     "real": -10646,
+     "proposta": 83325,
+     "estimado": 32642,
+     "aprovadosReal": 231,
+     "calotesReal": 30,
+     "calotesProposta": 13
+    },
+    {
+     "mes": "2025-06",
+     "maduro": true,
+     "real": 82769,
+     "proposta": 136510,
+     "estimado": 52388,
+     "aprovadosReal": 242,
+     "calotesReal": 29,
+     "calotesProposta": 13
+    },
+    {
+     "mes": "2025-07",
+     "maduro": true,
+     "real": 72251,
+     "proposta": 148480,
+     "estimado": 42765,
+     "aprovadosReal": 267,
+     "calotesReal": 31,
+     "calotesProposta": 14
+    },
+    {
+     "mes": "2025-08",
+     "maduro": true,
+     "real": 55650,
+     "proposta": 139575,
+     "estimado": 31266,
+     "aprovadosReal": 228,
+     "calotesReal": 23,
+     "calotesProposta": 9
+    },
+    {
+     "mes": "2025-09",
+     "maduro": true,
+     "real": 126395,
+     "proposta": 136550,
+     "estimado": 45578,
+     "aprovadosReal": 220,
+     "calotesReal": 20,
+     "calotesProposta": 12
+    },
+    {
+     "mes": "2025-10",
+     "maduro": false,
+     "real": 12618,
+     "proposta": 151095,
+     "estimado": 21719,
+     "aprovadosReal": 307,
+     "calotesReal": 38,
+     "calotesProposta": 18
+    },
+    {
+     "mes": "2025-11",
+     "maduro": false,
+     "real": -5430,
+     "proposta": 164195,
+     "estimado": 24118,
+     "aprovadosReal": 301,
+     "calotesReal": 43,
+     "calotesProposta": 13
+    },
+    {
+     "mes": "2025-12",
+     "maduro": false,
+     "real": 21710,
+     "proposta": 122195,
+     "estimado": 29154,
+     "aprovadosReal": 306,
+     "calotesReal": 37,
+     "calotesProposta": 16
+    },
+    {
+     "mes": "2026-01",
+     "maduro": false,
+     "real": 136087,
+     "proposta": 179380,
+     "estimado": 16412,
+     "aprovadosReal": 301,
+     "calotesReal": 21,
+     "calotesProposta": 11
+    },
+    {
+     "mes": "2026-02",
+     "maduro": false,
+     "real": 148588,
+     "proposta": 153610,
+     "estimado": 20935,
+     "aprovadosReal": 301,
+     "calotesReal": 22,
+     "calotesProposta": 9
+    },
+    {
+     "mes": "2026-03",
+     "maduro": false,
+     "real": 90313,
+     "proposta": 156850,
+     "estimado": 16034,
+     "aprovadosReal": 304,
+     "calotesReal": 24,
+     "calotesProposta": 6
+    },
+    {
+     "mes": "2026-04",
+     "maduro": false,
+     "real": 195285,
+     "proposta": 164155,
+     "estimado": 45913,
+     "aprovadosReal": 234,
+     "calotesReal": 9,
+     "calotesProposta": 7
+    },
+    {
+     "mes": "2026-05",
+     "maduro": false,
+     "real": 210728,
+     "proposta": 166120,
+     "estimado": 48697,
+     "aprovadosReal": 223,
+     "calotesReal": 0,
+     "calotesProposta": 0
+    },
+    {
+     "mes": "2026-06",
+     "maduro": false,
+     "real": 229009,
+     "proposta": 191595,
+     "estimado": 48661,
+     "aprovadosReal": 219,
+     "calotesReal": 0,
+     "calotesProposta": 0
+    },
+    {
+     "mes": "2026-07",
+     "maduro": false,
+     "real": 218086,
+     "proposta": 191700,
+     "estimado": 47000,
+     "aprovadosReal": 230,
+     "calotesReal": 0,
+     "calotesProposta": 0
+    },
+    {
+     "mes": "2026-08",
+     "maduro": false,
+     "real": 251600,
+     "proposta": 207705,
+     "estimado": 43005,
+     "aprovadosReal": 224,
+     "calotesReal": 0,
+     "calotesProposta": 0
+    },
+    {
+     "mes": "2026-09",
+     "maduro": false,
+     "real": 306337,
+     "proposta": 257445,
+     "estimado": 36656,
+     "aprovadosReal": 239,
+     "calotesReal": 0,
+     "calotesProposta": 0
+    }
+   ]
+  },
+  "maduros": {
+   "pedidos": 5001,
+   "periodo": [
+    "2024-10",
+    "2025-09"
+   ],
+   "real": {
+    "aprovados": 2844,
+    "volume": 22740361,
+    "resultado": 251164,
+    "calotes": 388,
+    "taxa": 0.1364
+   },
+   "proposta": {
+    "aprovados": 3522,
+    "comDesfecho": 2516,
+    "volume": 17928400,
+    "resultado": 1245300,
+    "calotes": 204,
+    "taxa": 0.0811,
+    "novos": 1006,
+    "volumeNovos": 6102300,
+    "resultadoNovos": 534134
+   },
+   "matriz": [
+    {
+     "fortuna": true,
+     "proposta": true,
+     "pedidos": 2516,
+     "volumeReal": 18723400,
+     "volumeProposta": 17928400,
+     "calotes": 204,
+     "taxa": 0.0811
+    },
+    {
+     "fortuna": true,
+     "proposta": false,
+     "pedidos": 328,
+     "volumeReal": 4016961,
+     "volumeProposta": 0,
+     "calotes": 184,
+     "taxa": 0.561
+    },
+    {
+     "fortuna": false,
+     "proposta": true,
+     "pedidos": 1006,
+     "volumeReal": 0,
+     "volumeProposta": 6102300,
+     "calotes": null,
+     "taxa": null
+    },
+    {
+     "fortuna": false,
+     "proposta": false,
+     "pedidos": 1151,
+     "volumeReal": 0,
+     "volumeProposta": 0,
+     "calotes": null,
+     "taxa": null
+    }
+   ],
+   "ajustes": [
+    {
+     "id": "restricao",
+     "rotulo": "Barreira · restrição ativa",
+     "pedidos": 0,
+     "calotes": 0,
+     "taxa": null,
+     "efeito": 0,
+     "estimado": false
+    },
+    {
+     "id": "apertada",
+     "rotulo": "Barreira · conta apertada",
+     "pedidos": 67,
+     "calotes": 61,
+     "taxa": 0.9104,
+     "efeito": 302258,
+     "estimado": false
+    },
+    {
+     "id": "parcela",
+     "rotulo": "Barreira · parcela acima de 28% da renda real",
+     "pedidos": 223,
+     "calotes": 113,
+     "taxa": 0.5067,
+     "efeito": 742223,
+     "estimado": false
+    },
+    {
+     "id": "risco",
+     "rotulo": "Modelo · risco acima de 17,5%",
+     "pedidos": 38,
+     "calotes": 10,
+     "taxa": 0.2632,
+     "efeito": 3780,
+     "estimado": false
+    },
+    {
+     "id": "valor",
+     "rotulo": "Valor · parcela até 28% e melhor valor do modelo",
+     "pedidos": 615,
+     "calotes": 57,
+     "taxa": 0.0927,
+     "efeito": -54125,
+     "estimado": false
+    },
+    {
+     "id": "novos",
+     "rotulo": "Aprovações que a Fortuna negou",
+     "pedidos": 1006,
+     "calotes": null,
+     "taxa": null,
+     "pNaoPaga": 0.0543,
+     "efeito": 534134,
+     "estimado": true
+    }
+   ],
+   "meses": [
+    {
+     "mes": "2024-10",
+     "maduro": true,
+     "real": -29725,
+     "proposta": 87135,
+     "estimado": 60295,
+     "aprovadosReal": 248,
+     "calotesReal": 39,
+     "calotesProposta": 25
+    },
+    {
+     "mes": "2024-11",
+     "maduro": true,
+     "real": 11311,
+     "proposta": 84155,
+     "estimado": 46120,
+     "aprovadosReal": 228,
+     "calotesReal": 30,
+     "calotesProposta": 15
+    },
+    {
+     "mes": "2024-12",
+     "maduro": true,
+     "real": -43912,
+     "proposta": 90750,
+     "estimado": 51209,
+     "aprovadosReal": 241,
+     "calotesReal": 40,
+     "calotesProposta": 20
+    },
+    {
+     "mes": "2025-01",
+     "maduro": true,
+     "real": -51126,
+     "proposta": 84360,
+     "estimado": 45231,
+     "aprovadosReal": 256,
+     "calotesReal": 47,
+     "calotesProposta": 24
+    },
+    {
+     "mes": "2025-02",
+     "maduro": true,
+     "real": 24748,
+     "proposta": 68700,
+     "estimado": 43444,
+     "aprovadosReal": 212,
+     "calotesReal": 27,
+     "calotesProposta": 19
+    },
+    {
+     "mes": "2025-03",
+     "maduro": true,
+     "real": -4205,
+     "proposta": 75975,
+     "estimado": 46273,
+     "aprovadosReal": 240,
+     "calotesReal": 36,
+     "calotesProposta": 22
+    },
+    {
+     "mes": "2025-04",
+     "maduro": true,
+     "real": 17654,
+     "proposta": 109785,
+     "estimado": 36921,
+     "aprovadosReal": 231,
+     "calotesReal": 36,
+     "calotesProposta": 18
+    },
+    {
+     "mes": "2025-05",
+     "maduro": true,
+     "real": -10646,
+     "proposta": 83325,
+     "estimado": 32642,
+     "aprovadosReal": 231,
+     "calotesReal": 30,
+     "calotesProposta": 13
+    },
+    {
+     "mes": "2025-06",
+     "maduro": true,
+     "real": 82769,
+     "proposta": 136510,
+     "estimado": 52388,
+     "aprovadosReal": 242,
+     "calotesReal": 29,
+     "calotesProposta": 13
+    },
+    {
+     "mes": "2025-07",
+     "maduro": true,
+     "real": 72251,
+     "proposta": 148480,
+     "estimado": 42765,
+     "aprovadosReal": 267,
+     "calotesReal": 31,
+     "calotesProposta": 14
+    },
+    {
+     "mes": "2025-08",
+     "maduro": true,
+     "real": 55650,
+     "proposta": 139575,
+     "estimado": 31266,
+     "aprovadosReal": 228,
+     "calotesReal": 23,
+     "calotesProposta": 9
+    },
+    {
+     "mes": "2025-09",
+     "maduro": true,
+     "real": 126395,
+     "proposta": 136550,
+     "estimado": 45578,
+     "aprovadosReal": 220,
+     "calotesReal": 20,
+     "calotesProposta": 12
+    }
+   ]
+  }
+ },
+ "estimativa": {
+  "contratos": 2844,
+  "calotes": 388,
+  "aucModelo": 0.737,
+  "aucScore": 0.498,
+  "faixas": [
+   {
+    "faixa": "até 5%",
+    "pedidos": 1223,
+    "estimada": 0.0316,
+    "observada": 0.072
+   },
+   {
+    "faixa": "5% a 10%",
+    "pedidos": 891,
+    "estimada": 0.0699,
+    "observada": 0.0797
+   },
+   {
+    "faixa": "10% a 17,5%",
+    "pedidos": 352,
+    "estimada": 0.1277,
+    "observada": 0.142
+   },
+   {
+    "faixa": "17,5% a 25%",
+    "pedidos": 89,
+    "estimada": 0.2061,
+    "observada": 0.1573
+   },
+   {
+    "faixa": "acima de 25%",
+    "pedidos": 289,
+    "estimada": 0.5098,
+    "observada": 0.5709
+   }
+  ],
+  "ganhoEstimado": 1568636,
+  "ganhoObservado": 1245300,
+  "aprovadosProposta": 2516
+ },
+ "piloto": {
+  "aprovadosForaDaRegra": 427,
+  "propostaAprova": 257,
+  "taxaAprova": 0.0506,
+  "propostaNega": 170,
+  "taxaNega": 0.2765
+ }
+}

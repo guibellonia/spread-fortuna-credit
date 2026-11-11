@@ -30,6 +30,9 @@
   --data-soft: #86b6ef;
   --data-track: #eef2f9;
   --ref-line: #898781;
+  /* polo negativo do par divergente (azul ↔ vermelho, validado com o --data-1) */
+  --data-neg: #d0543f;
+  --data-neg-soft: #eda393;
 
   --radius-card: 24px;
   --font-body: var(--font-poppins), system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -303,6 +306,77 @@ code { font-size: 12px; }
 
 .page-foot { margin-top: 24px; color: var(--md-muted); font-size: 12px; text-align: center; }
 
+/* ---------- histórico (Proposta nos pedidos passados) ---------- */
+.grid.hist {
+  grid-template-areas:
+    "ver ver ver ver ver aj aj aj aj aj aj aj"
+    "mat mat mat mat mat mes mes mes mes mes mes mes"
+    "est est est est est est est pil pil pil pil pil";
+}
+.hist-intro { max-width: 860px; margin: -8px 0 20px; color: var(--md-on-surface-variant); }
+.chip.is-up { color: var(--good-text); }
+.chip.is-down { color: var(--critical-text); }
+.hist-total { margin-top: auto; padding: 12px 16px; border-radius: 16px; background: var(--md-surface-low); font-size: 13px; color: var(--md-on-surface-variant); }
+.hist-total b { font: 600 16px/1.2 var(--font-display); color: var(--md-on-surface); white-space: nowrap; }
+.sw.is-neg { background: var(--data-neg); }
+.sw.is-soft { background: linear-gradient(90deg, var(--data-soft) 50%, var(--data-neg-soft) 50%); }
+
+/* barras divergentes: efeito de cada ajuste */
+.div-wrap { position: relative; }
+.div-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.div-row {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) auto; gap: 4px 16px; align-items: center;
+  padding: 8px 10px; border-radius: 12px; cursor: default;
+}
+.div-label { font-size: 13px; font-weight: 500; }
+.div-sub { font-size: 12px; color: var(--md-muted); }
+.div-track { position: relative; height: 14px; }
+.div-track::after {
+  content: ""; position: absolute; top: -8px; bottom: -8px; left: calc(var(--z) * 100%); border-left: 1px solid var(--ref-line);
+}
+.div-bar {
+  position: absolute; top: 0; bottom: 0; left: calc(var(--l) * 100%); width: calc(var(--w) * 100%); min-width: 2px;
+  border-radius: 0 4px 4px 0; background: var(--data-1); transition: left 300ms ease, width 300ms ease;
+}
+.div-bar.is-neg { border-radius: 4px 0 0 4px; background: var(--data-neg); }
+.div-bar.is-est { background: var(--data-soft); }
+.div-val { min-width: 96px; text-align: right; white-space: nowrap; font: 600 15px/1.2 var(--font-display); }
+.stats .is-largo { grid-column: 1 / -1; }
+
+/* matriz 2 × 2: decisão real × Proposta */
+.matriz { width: calc(100% + 8px); margin: -4px; border-collapse: separate; border-spacing: 4px; table-layout: fixed; }
+.matriz thead th { padding: 0 14px 2px; text-align: left; font-size: 12px; font-weight: 400; color: var(--md-muted); }
+.matriz thead td { width: 76px; background: none; padding: 0; }
+.matriz tbody th { padding-right: 4px; text-align: left; vertical-align: top; padding-top: 14px; font-size: 12px; font-weight: 400; color: var(--md-muted); }
+.matriz td { padding: 14px; vertical-align: top; border-radius: 16px; background: var(--md-surface-low); }
+.matriz td.is-dif { background: var(--md-secondary-container); }
+.mat-n { display: block; font: 600 28px/1.1 var(--font-display); }
+.mat-sub { display: block; margin-top: 4px; font-size: 12px; color: var(--md-on-surface-variant); }
+.mat-sub b { font-weight: 600; color: var(--md-on-surface); }
+
+/* barras divergentes por mês */
+.mes { position: relative; margin-top: auto; }
+.mes-plot { position: relative; height: 220px; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 2px; }
+.mes-zero { position: absolute; left: 0; right: 0; bottom: calc(var(--z) * 100%); border-top: 1px solid var(--ref-line); z-index: 1; pointer-events: none; }
+.mes-col { position: relative; border-radius: 4px; }
+.mes-bar {
+  position: absolute; left: 0; right: 0; bottom: calc(var(--b) * 100%); height: calc(var(--h) * 100%); min-height: 2px;
+  border-radius: 4px 4px 0 0; background: var(--data-1); transition: bottom 300ms ease, height 300ms ease;
+}
+.mes-bar.is-neg { border-radius: 0 0 4px 4px; background: var(--data-neg); }
+.mes-bar.is-imaturo { background: var(--data-soft); }
+.mes-bar.is-neg.is-imaturo { background: var(--data-neg-soft); }
+
+/* estimada × observada por faixa de risco */
+.est-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 24px; align-items: end; }
+.est-layout .stats small { display: block; }
+.cal { position: relative; display: flex; flex-direction: column; gap: 8px; }
+.cal-plot { height: 200px; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 8px; align-items: end; }
+.cal-grupo { height: 100%; display: flex; align-items: flex-end; gap: 2px; padding: 0 6px; border-radius: 8px; }
+.cal-bar { flex: 1; height: calc(var(--p) * 100%); min-height: 2px; border-radius: 4px 4px 0 0; background: var(--data-soft); }
+.cal-bar.is-obs { background: var(--data-1); }
+.cal-x { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 8px; font-size: 11px; line-height: 1.3; color: var(--md-muted); text-align: center; }
+
 /* ---------- revisão ---------- */
 .estreito { max-width: 480px; }
 .vazio { justify-content: center; min-height: 240px; }
@@ -412,6 +486,31 @@ code { font-size: 12px; }
   .api-layout { grid-template-columns: minmax(0, 1fr); }
   .seg { width: 100%; }
   .seg-btn { flex: 1; justify-content: center; padding: 0 8px; }
+}
+
+@media (max-width: 1180px) {
+  .grid.hist {
+    grid-template-areas:
+      "ver ver ver ver ver ver"
+      "aj aj aj aj aj aj"
+      "mat mat mat pil pil pil"
+      "mes mes mes mes mes mes"
+      "est est est est est est";
+  }
+}
+
+@media (max-width: 760px) {
+  .grid.hist { grid-template-areas: "ver" "aj" "mat" "mes" "est" "pil"; }
+  .div-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .div-track { grid-column: 1 / -1; grid-row: 2; }
+  .div-val { grid-row: 1; grid-column: 2; }
+  .est-layout { grid-template-columns: minmax(0, 1fr); }
+  .matriz thead td { width: 64px; }
+  .matriz td { padding: 10px; }
+  .mat-n { font-size: 22px; }
+  .mes-plot { height: 180px; }
+  .tabs { gap: 0; }
+  .tab { padding: 0 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

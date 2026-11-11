@@ -54,6 +54,9 @@ Script, workflow do GitHub Actions, job agendado, hook, tool de agente ou migra�
 - Políticas do seletor: Atual (reprodução própria, conferida contra o histórico: bate 100%), Regras do time e
   Proposta, as duas últimas lidas de `saida/decisoes_mescla.csv`. Padrões (parte 1) são calculados no histórico
   maduro (12+ meses); a política em passos (parte 2) e o comparativo saem do mesmo snapshot.
+- Página Histórico (`/historico/`): a Proposta nos 10.000 pedidos do histórico contra a decisão real e o desfecho,
+  com o modelo de cada trimestre treinado sem ele. Dados em `site/src/data/historico.json`, gerados por
+  `site/scripts/historico.py` (precisa de `saida/hist.pkl` e do banco; não usa o bureau).
 - Bureau: `site/scripts/bureau_client.py` (timeout 10 s, até 6 tentativas com espera crescente e jitter,
   10 em paralelo, 401 interrompe, cache em `data/cache/bureau/`, registro em `data/cache/bureau_chamadas.jsonl`).
 - Deploy: `.github/workflows/static.yml` a cada push na `main` (build, checagem de ids, raiz + `/dashboard/`).

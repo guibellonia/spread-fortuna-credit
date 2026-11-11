@@ -55,7 +55,7 @@ jobs:
       - name: Confere que nenhum id de cliente ou pedido vai para o site
         run: |
           # ids do kit têm 5 dígitos (P-00070, C-86419); 3 dígitos pegariam P-256 (curva) dentro das bibliotecas
-          if grep -rIEn '\b[CP]-[0-9]{5}\b' site/src/data/dashboard.json site/out; then
+          if grep -rIEn '\b[CP]-[0-9]{5}\b' site/src/data site/out; then
             echo "::error::o painel contém id de cliente ou pedido (acima); tire do código ou gere de novo o dashboard.json"
             exit 1
           fi

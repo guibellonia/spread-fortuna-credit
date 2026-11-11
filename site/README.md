@@ -37,6 +37,26 @@ O script confere a política atual contra o histórico (hoje: 100% das decisões
 regras contra o CSV e imprime o resumo de cada política. A proposta é definida em `src/politica.py`; o painel só
 a mostra.
 
+## Proposta no histórico (`/historico/`)
+
+Aplica a Proposta (`src/politica.py`) aos 10.000 pedidos do histórico e compara com a decisão real da Fortuna e
+com o desfecho observado: resultado (+15% em dia, +5% com atraso, −60% sem pagar), o efeito de cada ajuste
+(barreiras, corte de risco, valor e aprovações novas), a matriz de concordância, a diferença mês a mês, a estimativa
+de risco contra o desfecho e o piloto da Fortuna. Alterna entre os 10.000 pedidos e só os maduros (até set/25).
+
+Sem vazamento: cada trimestre é decidido por um modelo (`src/cenarios.treinar_corrigido`) treinado sem ele. Pedidos
+que a Fortuna negou e a Proposta aprova não têm desfecho e entram pelo ganho esperado do modelo, sempre separados.
+
+Da raiz do repositório, depois de `cd src && python gerar_decisoes.py` (grava `saida/hist.pkl`), com o banco no
+`.env` (`PG*`) ou em `FORTUNA_DSN` (leva cerca de 1 minuto):
+
+```
+.venv/Scripts/python site/scripts/historico.py
+git add site/src/data/historico.json && git commit -m "painel: atualiza histórico" && git push
+```
+
+O script confere que os ajustes somam a diferença observada e para se o JSON tiver id de cliente ou de pedido.
+
 ## Integração com o bureau
 
 `scripts/bureau_client.py`, com a configuração medida em `api-baseline/baseline-agregado.md`:
@@ -92,6 +112,7 @@ Para simular o caminho do Pages: `PAGES_BASE_PATH=/spread-fortuna-credit/dashboa
 | Caminho | O que é |
 |---|---|
 | `scripts/snapshot.py` | banco + bureau → `src/data/dashboard.json` |
+| `scripts/historico.py` | Proposta nos 10.000 pedidos do histórico → `src/data/historico.json` |
 | `scripts/bureau_client.py` | cliente da API com retry, cache e registro |
 | `scripts/csp.mjs` | grava a CSP em cada HTML depois do build |
 | `src/components/` | cartões do painel (funil, volume, safras, pontos, padrões, API, comparativo) |

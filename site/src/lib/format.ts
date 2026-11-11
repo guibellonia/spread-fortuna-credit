@@ -17,6 +17,9 @@ export function brl(v: number) {
   return `R$ ${dec(v, 0)}`;
 }
 
+/** +R$ 1,29 mi · −R$ 141 mil */
+export const brlSinal = (v: number) => `${v > 0 ? "+" : v < 0 ? "−" : ""}${brl(Math.abs(v))}`;
+
 const real = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 /** R$ 12.100,00 */
 export const moeda = (v: number) => real.format(v);
