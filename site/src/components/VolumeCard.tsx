@@ -17,7 +17,7 @@ export function VolumeCard({ pol, atual }: { pol: Politica; atual: Politica }) {
         {pol.id !== atual.id && (
           <span className="chip chip-sm delta" title="Comparado ao volume da política atual">
             {delta >= 0 ? <IconUp /> : <IconDown />}
-            {pct(Math.abs(delta))} vs atual
+            {pct(Math.abs(delta))} {delta >= 0 ? "a mais" : "a menos"} que a política atual
           </span>
         )}
       </div>
