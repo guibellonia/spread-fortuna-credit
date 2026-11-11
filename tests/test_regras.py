@@ -70,6 +70,17 @@ def test_proposta_filtros_negam(monkeypatch, campo, valor, motivo):
     assert not d.aprova and d.valor == 0 and motivo in d.motivo
 
 
+def test_proposta_filtros_do_bilosca(monkeypatch):
+    apertada = _proposta(_pedidos(mov_meses_saida_maior_3m=1), monkeypatch=monkeypatch).iloc[0]
+    assert not apertada.aprova and "conta apertada" in apertada.motivo
+    # renda declarada 5.000, mas só entram 2.000 na conta: parcela de 10 mil/12m (1.004,62) = 50% da renda real
+    pesada = _proposta(_pedidos(mov_entradas_media=2000.0), monkeypatch=monkeypatch).iloc[0]
+    assert not pesada.aprova and "renda real" in pesada.motivo
+    desligado = _proposta(_pedidos(mov_entradas_media=2000.0), monkeypatch=monkeypatch,
+                          params={"teto_parcela_renda_real": 0}).iloc[0]
+    assert desligado.aprova
+
+
 def test_proposta_nega_risco_acima_do_limite(monkeypatch):
     d = _proposta(_pedidos(), p=0.30, monkeypatch=monkeypatch).iloc[0]
     assert not d.aprova

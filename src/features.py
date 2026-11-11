@@ -54,6 +54,8 @@ def movimentacao_agregada() -> pd.DataFrame:
     ag["mov_saldo_ult3"] = ult3["saldo_medio"].mean()
     ag["mov_cheque_ult3"] = ult3["dias_cheque_especial"].sum()
     ag["mov_entradas_ult3"] = ult3["total_entradas"].mean()
+    # conta apertada (filtro do Bilosca): meses, dos 3 antes do pedido, com saídas > entradas
+    ag["mov_meses_saida_maior_3m"] = ult3["saidas_maior_entradas"].sum()
     return ag.reset_index()
 
 
