@@ -6,6 +6,7 @@
 <title>Spread · situação</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap">
+<script>window.__grade=fetch('simulador/grade.json').then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});</script>
 <style>
   /* Mesmo padrão do painel (dashboard/): Material Design 3, tema claro, Poppins + Montserrat, cartões de 24px sem sombra. */
   :root { color-scheme: light;
@@ -81,6 +82,11 @@
 
   /* Simulador (Enio Rocha, motor v2) */
   .sim { display:grid; gap:16px; grid-template-columns:minmax(0,5fr) minmax(0,6fr); align-items:start; }
+  .carregando { display:flex; align-items:center; gap:10px; padding:16px 0; color:var(--md-muted); font-size:13px; }
+  .gira { width:16px; height:16px; border-radius:50%; border:2px solid var(--md-surface-high); border-top-color:var(--md-primary); animation:gira .9s linear infinite; flex:none; }
+  @keyframes gira { to { transform:rotate(360deg); } }
+  @media (prefers-reduced-motion:reduce) { .gira { animation:none; border-top-color:var(--md-primary); border-right-color:var(--md-primary); } }
+  .pilula:disabled { opacity:.5; cursor:default; }
   .sim .pilulas { display:flex; flex-wrap:wrap; gap:8px; }
   .pilula { height:40px; padding:0 18px; border:0; border-radius:999px; cursor:pointer; font-weight:500; background:var(--md-surface-container); color:var(--md-on-surface-variant); }
   .pilula:hover { background:var(--md-surface-high); }
@@ -119,14 +125,34 @@
   .promptbox { display:grid; gap:6px; margin:4px 0 8px; } .promptbox textarea { width:100%; border:1px solid var(--md-surface-high); border-radius:12px; padding:10px 12px; font:400 16px/1.4 var(--font-body); background:var(--md-surface-low); color:var(--md-on-surface); resize:vertical; }
   .baixar-tudo { display:inline-flex; align-items:center; margin-left:auto; text-decoration:none; background:var(--md-primary); color:var(--md-on-primary); }
   .tabela { overflow-x:auto; } table.docs td { vertical-align:top; } table.docs td:first-child { min-width:200px; }
-  .fileira { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
-  .fileira button, .fileira a.bt, .fileira summary { display:inline-flex; align-items:center; min-height:36px; padding:0 12px; border:0; border-radius:8px; background:var(--md-surface-container); color:var(--md-on-surface-variant); font-size:12.5px; font-weight:500; cursor:pointer; text-decoration:none; white-space:nowrap; list-style:none; }
-  .fileira button:hover, .fileira a.bt:hover, .fileira summary:hover { background:var(--md-surface-high); }
-  .fileira .pri { background:var(--md-secondary-container); color:var(--md-on-surface); }
+  .fileira { display:flex; flex-wrap:nowrap; gap:6px; align-items:center; justify-content:flex-end; }
+  .fileira .sep { width:1px; height:20px; background:var(--md-surface-high); margin:0 4px; flex:none; }
+  .fileira button, .fileira a.bt, .fileira summary { display:inline-flex; align-items:center; justify-content:center; gap:6px; width:36px; height:36px; padding:0; border:0; border-radius:50%; background:transparent; color:var(--md-on-surface-variant); font-size:12.5px; font-weight:500; cursor:pointer; text-decoration:none; white-space:nowrap; list-style:none; flex:none; transition:background .2s cubic-bezier(.2,0,0,1), filter .2s cubic-bezier(.2,0,0,1); }
+  .fileira svg { width:18px; height:18px; flex:none; display:block; }
+  .fileira .ico:hover, .fileira summary:hover { background:var(--md-surface-high); color:var(--md-on-surface); }
+  .fileira .pri { width:auto; padding:0 14px 0 12px; border-radius:999px; background:var(--md-secondary-container); color:var(--md-on-surface); }
+  .fileira .pri:hover { filter:brightness(.95); }
+  .fileira a.bt.ia-logo { color:#fff; } .fileira .ia-logo svg { width:18px; height:18px; fill:currentColor; }
+  .fileira a.bt.ia-logo:hover { filter:brightness(1.2); }
+  .fileira a.bt.chatgpt { background:#000; } .fileira a.bt.claude { background:#D97757; } .fileira a.bt.perplexity { background:#20808D; }
+  .fileira a.bt.ia-logo:hover { color:#fff; }
   .fileira details { position:relative; } .fileira summary::-webkit-details-marker { display:none; }
-  .fileira details .mn { position:absolute; z-index:5; top:40px; left:0; display:grid; gap:2px; min-width:210px; padding:6px; border-radius:12px; background:var(--md-surface-lowest); box-shadow:0 4px 16px rgba(0,0,0,.18); }
-  .fileira details .mn button { justify-content:flex-start; background:transparent; }
+  .fileira details .mn { position:fixed; z-index:20; display:grid; gap:2px; min-width:230px; padding:6px; border-radius:12px; background:var(--md-surface-lowest); box-shadow:0 4px 16px rgba(0,0,0,.18); }
+  .fileira details .mn button { width:100%; height:36px; justify-content:flex-start; padding:0 10px; border-radius:8px; background:transparent; }
+  .fileira details .mn button:hover { background:var(--md-surface-container); }
+  .fileira details .mn svg { width:16px; height:16px; fill:currentColor; }
   .fileira .dica { color:var(--md-muted); font-size:11px; }
+  table.docs td:last-child { white-space:nowrap; }
+  .rodape-ia .fileira { justify-content:flex-start; flex-wrap:wrap; }
+  @media (max-width:640px) {
+    table.docs, table.docs tbody { display:block; } table.docs tr:first-child { display:none; }
+    table.docs tr { display:grid; grid-template-columns:1fr auto; gap:2px 12px; padding:12px 0; border-bottom:1px solid var(--md-surface-high); }
+    table.docs td { display:block; padding:0 !important; background:transparent !important; min-width:0 !important; }
+    table.docs td:first-child { grid-column:1 / -1; overflow-wrap:anywhere; }
+    table.docs td:last-child { grid-column:1 / -1; margin-top:8px; white-space:normal; }
+    .fileira { flex-wrap:wrap; justify-content:flex-start; }
+    .fileira details .mn { max-width:calc(100vw - 32px); }
+  }
   .rodape-ia { margin-top:12px; } .rodape-ia .pequeno { margin-bottom:6px; }
   #aviso { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); padding:10px 18px; border-radius:999px; background:var(--md-on-surface); color:var(--md-surface-lowest); font-weight:500; z-index:50; }
   #manual { position:fixed; inset:auto 16px 16px 16px; max-width:640px; margin:0 auto; z-index:50; padding:12px; border-radius:16px; background:var(--md-surface-lowest); box-shadow:0 4px 24px rgba(0,0,0,.3); }
@@ -432,9 +458,9 @@ Depois, em cima do piso, decidir o que afrouxar (score, 1 restrição) com teste
 <section class="painel" id="p-simulador" hidden>
 <div class="sim">
 <section class="card" aria-label="Controles"><div class="card-head"><h2>Mesa de som da política</h2><span class="autor">Autoria: Enio Rocha (motor v2)</span></div>
-<div class="pilulas" role="group" aria-label="Pontos prontos"><button type="button" class="pilula" data-preset="seguro">Seguro</button><button type="button" class="pilula" data-preset="equilibrado">Equilibrado</button><button type="button" class="pilula" data-preset="agressivo">Agressivo</button></div>
+<div class="pilulas" role="group" aria-label="Pontos prontos"><button type="button" class="pilula" data-preset="seguro" disabled>Seguro</button><button type="button" class="pilula" data-preset="equilibrado" disabled>Equilibrado</button><button type="button" class="pilula" data-preset="agressivo" disabled>Agressivo</button></div>
 <p class="pequeno">Mexa nos controles: o resultado ao lado é a linha exata da varredura de 9.000 regras do motor v2, nos 2.000 pedidos novos. Nada é interpolado.</p>
-<div id="controles"></div></section>
+<div id="controles" aria-busy="true"><p class="carregando" role="status"><span class="gira" aria-hidden="true"></span>Carregando a tabela de 9.000 regras (≈570 KB)…</p></div></section>
 <div style="display:grid;gap:16px;min-width:0">
 <section class="res" id="res" aria-live="polite"></section>
 <section class="card leitura"><div class="card-head"><h2>Leitura</h2><span class="pequeno">Leitura automática por regra fixa, sem IA generativa</span></div><ul id="leitura"></ul></section>
@@ -465,21 +491,31 @@ function manual(t){let m=document.getElementById('manual');if(m)m.remove();m=doc
 async function copiar(t){try{await navigator.clipboard.writeText(t);aviso('Copiado');}catch(e){manual(t);}}
 async function conteudo(f){const r=await fetch(f,{cache:'no-store'});if(!r.ok)throw new Error(r.status);return r.text();}
 async function comConteudo(f,fn){try{fn(await conteudo(f));}catch(e){aviso('Não consegui ler '+f);}}
+const LOGO={"chatgpt": "M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z", "claude": "m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z", "perplexity": "M22.3977 7.0896h-2.3106V.0676l-7.5094 6.3542V.1577h-1.1554v6.1966L4.4904 0v7.0896H1.6023v10.3976h2.8882V24l6.932-6.3591v6.2005h1.1554v-6.0469l6.9318 6.1807v-6.4879h2.8882V7.0896zm-3.4657-4.531v4.531h-5.355l5.355-4.531zm-13.2862.0676 4.8691 4.4634H5.6458V2.6262zM2.7576 16.332V8.245h7.8476l-6.1149 6.1147v1.9723H2.7576zm2.8882 5.0404v-3.8852h.0001v-2.6488l5.7763-5.7764v7.0111l-5.7764 5.2993zm12.7086.0248-5.7766-5.1509V9.0618l5.7766 5.7766v6.5588zm2.8882-5.0652h-1.733v-1.9723L13.3948 8.245h7.8478v8.087z", "warp": "M12.035 2.723h9.253A2.712 2.712 0 0 1 24 5.435v10.529a2.712 2.712 0 0 1-2.712 2.713H8.047Zm-1.681 2.6L6.766 19.677h5.598l-.399 1.6H2.712A2.712 2.712 0 0 1 0 18.565V8.036a2.712 2.712 0 0 1 2.712-2.712Z"};
+const svgL=k=>'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+LOGO[k]+'"/></svg>';
+const svgS=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
+const IC={baixar:svgS('<path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/>'),copiar:svgS('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>'),faisca:svgS('<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 1.8L21.5 18.5l-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/>'),term:svgS('<path d="m5 7 5 5-5 5"/><path d="M13 18h6"/>')};
 function fileira(f,compacta){
   const d=document.createElement('div');d.className='fileira';d.dataset.f=f;
-  const b=(t,fn,c)=>{const x=document.createElement('button');x.type='button';x.textContent=t;if(c)x.className=c;x.onclick=fn;d.appendChild(x);return x;};
-  const a=(t,href,extra)=>{const x=document.createElement('a');x.className='bt';x.textContent=t;x.href=href;x.target='_blank';x.rel='noopener';if(extra)x.dataset.q=extra;x.onclick=ev=>{ev.preventDefault();window.open(x.dataset.base+encodeURIComponent(prompt()+'\n\n'+link(f)),'_blank','noopener');};x.dataset.base=href;d.appendChild(x);};
+  const rot=(x,t)=>{x.title=t;x.setAttribute('aria-label',t);};
+  const b=(html,t,fn,c)=>{const x=document.createElement('button');x.type='button';x.innerHTML=html;rot(x,t);x.className=c||'ico';x.onclick=fn;d.appendChild(x);return x;};
+  const a=(k,nome,href)=>{const x=document.createElement('a');x.className='bt ia-logo '+k;x.innerHTML=svgL(k);rot(x,'Abrir no '+nome);x.href=href;x.target='_blank';x.rel='noopener';x.onclick=ev=>{ev.preventDefault();window.open(x.dataset.base+encodeURIComponent(prompt()+'\n\n'+link(f)),'_blank','noopener');};x.dataset.base=href;d.appendChild(x);};
+  const sep=()=>{const s=document.createElement('span');s.className='sep';s.setAttribute('aria-hidden','true');d.appendChild(s);};
   const cp=()=>comConteudo(f,t=>copiar(prompt()+'\n\n'+link(f)+'\n\n---\n\n'+t));
-  if(!compacta){const dl=document.createElement('a');dl.className='bt';dl.textContent='Baixar';dl.href=f;dl.setAttribute('download',f.split('/').pop());d.appendChild(dl);b('Copiar',()=>comConteudo(f,copiar));}
-  b('Copiar com prompt',cp,'pri');
-  a('ChatGPT','https://chatgpt.com/?q=');a('Claude','https://claude.ai/new?q=');
-  if(!compacta){a('Perplexity','https://www.perplexity.ai/search?q=');
-    const det=document.createElement('details');det.innerHTML='<summary>Levar ao terminal / editor ▾</summary><div class="mn"></div>';const mn=det.querySelector('.mn');
-    const it=(t,fn)=>{const x=document.createElement('button');x.type='button';x.textContent=t;x.onclick=()=>{fn();det.open=false;};mn.appendChild(x);};
-    it('Claude Code',()=>copiar(cmd('claude',f)));it('Orca (claude)',()=>copiar(cmd('claude',f)));it('Codex',()=>copiar(cmd('codex',f)));
+  if(!compacta){const dl=document.createElement('a');dl.className='bt ico';dl.innerHTML=IC.baixar;rot(dl,'Baixar o arquivo');dl.href=f;dl.setAttribute('download',f.split('/').pop());d.appendChild(dl);b(IC.copiar,'Copiar o conteúdo',()=>comConteudo(f,copiar));sep();}
+  b(IC.faisca+'<span>Com prompt</span>','Copiar com prompt: o prompt, o link e o conteúdo do arquivo',cp,'pri');
+  sep();
+  a('chatgpt','ChatGPT','https://chatgpt.com/?q=');a('claude','Claude','https://claude.ai/new?q=');a('perplexity','Perplexity','https://www.perplexity.ai/search?q=');
+  if(!compacta){
+    const det=document.createElement('details');det.innerHTML='<summary class="ico">'+IC.term+'</summary><div class="mn"></div>';const sm=det.querySelector('summary');rot(sm,'Levar ao terminal / editor');const mn=det.querySelector('.mn');
+    const pos=()=>{const r=sm.getBoundingClientRect();const w=Math.min(230,innerWidth-32);const left=Math.max(16,Math.min(r.right-w,innerWidth-w-16));const alto=mn.offsetHeight||200;const abaixo=innerHeight-r.bottom>=alto+8;mn.style.left=left+'px';mn.style.top=(abaixo?r.bottom+6:Math.max(8,r.top-alto-6))+'px';};
+    det.addEventListener('toggle',()=>{if(det.open)pos();});
+    addEventListener('scroll',()=>{if(det.open)pos();},{passive:true,capture:true});document.addEventListener('click',ev=>{if(det.open&&!det.contains(ev.target))det.open=false;});
+    const it=(ico,t,fn)=>{const x=document.createElement('button');x.type='button';x.innerHTML=ico+'<span>'+t+'</span>';x.onclick=()=>{fn();det.open=false;};mn.appendChild(x);};
+    it(svgL('claude'),'Claude Code',()=>copiar(cmd('claude',f)));it(IC.term,'Orca (claude)',()=>copiar(cmd('claude',f)));it(svgL('chatgpt'),'Codex',()=>copiar(cmd('codex',f)));
     const chat=()=>{copiar(prompt()+'\n'+link(f));setTimeout(()=>aviso('Copiado: cole no chat da ferramenta'),0);};
-    it('Warp (cole no chat)',chat);it('Antigravity (cole no chat)',chat);
-    d.appendChild(det);}
+    it(svgL('warp'),'Warp (cole no chat)',chat);it(IC.term,'Antigravity (cole no chat)',chat);
+    sep();d.appendChild(det);}
   return d;
 }
 document.querySelectorAll('.fileira[data-f]').forEach(el=>el.replaceWith(Object.assign(fileira(el.dataset.f,false),{})));
@@ -510,7 +546,7 @@ function idx(c){let i=0;for(let d=0;d<7;d++)i=i*G.dim[G.ordem[d]].length+c[d];re
 function row(c){const r=G.rows[idx(c)],o={};G.cols.forEach((n,j)=>o[n]=r[j]);return o;}
 function alt(k,v){const c=cur.slice();c[k]=v;return c;}
 function montar(){
-  const box=document.getElementById('controles');
+  const box=document.getElementById('controles');box.innerHTML='';
   CTL.forEach(c=>{
     const d=document.createElement('div');d.className='ctl';
     const id='c'+c.k;
@@ -525,7 +561,7 @@ function montar(){
     }
     box.appendChild(d);
   });
-  document.querySelectorAll('.pilula').forEach(b=>b.onclick=()=>{cur=G.presets[b.dataset.preset].slice();pintar();});
+  document.querySelectorAll('.pilula[data-preset]').forEach(b=>b.onclick=()=>{cur=G.presets[b.dataset.preset].slice();pintar();});
   document.getElementById('hipoteses').innerHTML=[
    'O desfecho dos 2.000 novos vem de regras escondidas do organizador; o modelo foi treinado no histórico e supõe que o mecanismo é parecido.',
    'Reduzir o valor baixa o risco no modelo (relação parcela/renda extrapolada do histórico), mas talvez não nas regras escondidas.',
@@ -542,7 +578,7 @@ function pintar(){
     if(c.t==='range'){ui[c.k].value=cur[c.k];document.getElementById('v'+c.k).textContent=c.f(cur[c.k]);}
     else ui[c.k].querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('ativa',i===cur[c.k]);b.setAttribute('aria-pressed',i===cur[c.k]);});
   });
-  document.querySelectorAll('.pilula').forEach(b=>b.classList.toggle('ativa',G.presets[b.dataset.preset].join()===cur.join()));
+  document.querySelectorAll('.pilula[data-preset]').forEach(b=>b.classList.toggle('ativa',G.presets[b.dataset.preset].join()===cur.join()));
   const r=row(cur),res=document.getElementById('res');
   const cor=r.ic90_lo>0?'verde':(r.ganho<=0?'vermelho':'amarelo');
   const ver={verde:'Ganho com folga: o intervalo fica acima de zero',amarelo:'Incerto: o intervalo cruza o zero',vermelho:'Perde para a atual'}[cor];
@@ -582,11 +618,12 @@ function leitura(r){
   if(r.hist_ganho_fora_do_tempo_observado_proj<=0) out.push('Atenção: no período fora do tempo do histórico esta regra não ganha da atual ('+R$(r.hist_ganho_fora_do_tempo_observado_proj)+').');
   document.getElementById('leitura').innerHTML=out.slice(0,4).map(t=>'<li>'+t+'</li>').join('');
 }
-fetch('simulador/grade.json').then(r=>r.json()).then(g=>{
+(window.__grade||fetch('simulador/grade.json').then(r=>r.json())).then(g=>{
   G=g;E={lo:1e18,hi:-1e18,apr:0,val:0};
   const i=G.cols.indexOf.bind(G.cols);
   G.rows.forEach(r=>{E.lo=Math.min(E.lo,r[i('ic90_lo')]);E.hi=Math.max(E.hi,r[i('ic90_hi')]);E.apr=Math.max(E.apr,r[0]);E.val=Math.max(E.val,r[1]);});
   cur=G.presets.equilibrado.slice();montar();pintar();
+  document.querySelectorAll('.pilula[data-preset]').forEach(b=>b.disabled=false);document.getElementById('controles').removeAttribute('aria-busy');
 }).catch(e=>{document.getElementById('controles').innerHTML='<p class="pequeno">Não consegui carregar simulador/grade.json ('+e.message+').</p>';});
 })();
 </script>
