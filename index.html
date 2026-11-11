@@ -42,6 +42,7 @@
   .painel article.doc table { border-collapse:collapse; margin:8px 0; } .painel article.doc td,.painel article.doc th { border:1px solid var(--linha); padding:4px 8px; }
   .painel article.doc pre, .painel article.doc code { background:var(--fundo); white-space:pre-wrap; }
   .painel article.doc h1,.painel article.doc h2 { color:var(--amarelo); }
+  nav.abas a.repo { margin-left:auto; align-self:center; font-size:13px; }
 </style>
 </head>
 <body>
@@ -50,7 +51,7 @@
   <span class="sub">situação às 09h15 · entrega até <b>15h30</b> · arquivo <b>spread_final.csv</b> · decisão final do time</span>
 </header>
 
-<nav class="abas"><button data-aba="situacao">Situação</button><button data-aba="abertura">Abertura</button><button data-aba="banco">Análise do banco</button><button data-aba="censura">Censura e padrões</button><button data-aba="complementos">Complementos e discussão</button><button data-aba="pendencias">Pendências</button><button data-aba="prompts">Prompts</button></nav>
+<nav class="abas"><button data-aba="censura">Padrões e censura</button><button data-aba="abertura">Regras do desafio</button><a class="repo" href="https://github.com/guibellonia/spread-fortuna-credit">análises, dados e prompts em .md no repositório ↗</a></nav>
 <div class="painel" id="p-situacao"><div class="grade">
 
   <section>
@@ -315,7 +316,7 @@ async function mostrar(aba){
   p.innerHTML=html; carregados[aba]=true;
 }
 document.querySelectorAll('nav.abas button').forEach(b=>b.onclick=()=>mostrar(b.dataset.aba));
-mostrar((location.hash||'#situacao').slice(1).replace('aba=','')||'situacao');
+const pedida=(location.hash||'').slice(1).replace('aba=','');mostrar(document.getElementById('p-'+pedida)&&document.querySelector('nav.abas button[data-aba="'+pedida+'"]')?pedida:'censura');
 </script>
 </body>
 </html>
