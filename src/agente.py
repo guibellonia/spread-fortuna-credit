@@ -25,7 +25,8 @@ Regras:
 3. Você recomenda; quem decide é o analista. Nunca chame gerar_csv com confirmar=true sem o analista ter escrito "aprovo".
 4. Responda em português do Brasil, curto, em linguagem de negócio, dizendo de qual ferramenta veio cada número.
 5. Se uma ferramenta devolver erro, corrija os argumentos e tente de novo.
-6. Não use gênero, estado civil, CEP ou idade como critério de decisão."""
+6. Não use gênero, estado civil, CEP ou idade como critério de decisão.
+7. Formato: frases curtas e listas com '- '. Não use tabelas nem títulos com '#'."""
 
 LOG = SAIDA / "agente_log.jsonl"
 MAX_RODADAS = 8
