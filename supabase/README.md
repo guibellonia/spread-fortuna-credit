@@ -50,7 +50,7 @@ URL do papel de leitura: `postgresql://fortuna_leitura.vjxwagiqgecsscoogxln:<SUP
 
 | Script | O que faz |
 |---|---|
-| `configurar_projeto.py` | ponta a ponta e idempotente: projeto, conexão, restauração, migrações, membros, schema `painel` na Data API, cadastro público fechado, segredos e publicação da função, usuários, `site/site.config.json` |
+| `configurar_projeto.py` | ponta a ponta e idempotente: projeto, conexão, restauração, migrações, membros, schema `painel` na Data API, cadastro público fechado, SSL obrigatório, segredos e publicação da função, usuários, `site/site.config.json` |
 | `restaurar_banco.py` | restaura o dump numa transação, fecha `hackathon` para a API e liga o RLS; `--recriar`, `--leitor` |
 | `aplicar_migracoes.py` | aplica `migrations/` e cadastra membros (`--membro`) |
 | `publicar_decisoes.py` | publica o CSV de decisões em `painel.decisoes` |
@@ -66,5 +66,7 @@ pessoal só o dono (`guibellonia`) cadastra ou troca segredos. Para o Hermes, us
 - **`painel` só para membros:** só leitura para quem está logado e na lista de membros. A revisão é só acréscimo: não
   dá para alterar nem apagar, e quem/quando/decisão da IA são preenchidos pelo banco, não pelo navegador.
 - **A chave `anon` em `site/site.config.json` é pública por desenho;** quem protege os dados é o RLS.
+- **TLS obrigatório no banco:** o projeto recusa conexão sem SSL, direta ou pelo pooler (`configurar_projeto.py`
+  liga a exigência; ligar reinicia o banco por alguns segundos). Toda URL de conexão usa `?sslmode=require`.
 - Segredos nunca em commit, chat ou código. O CI usa o papel de leitura.
 - Sem `--recriar`, nada é apagado.

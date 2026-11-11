@@ -9,7 +9,7 @@ Etapas (todas idempotentes; rodar de novo só faz o que falta):
  2. grava SUPABASE_DB_URL (Session pooler) no .env;
  3. restaura o dump e cria o papel só de leitura (restaurar_banco.py --leitor), se o schema ainda não existir;
  4. aplica as migrações e cadastra os membros (aplicar_migracoes.py --membro ...);
- 5. expõe o schema painel na Data API e fecha o cadastro público no Auth;
+ 5. expõe o schema painel na Data API, fecha o cadastro público no Auth e exige SSL nas conexões ao banco;
  6. grava BUREAU_TOKEN, BUREAU_URL e ORIGENS_PERMITIDAS como segredos das Edge Functions e publica a função bureau;
  7. cria no Auth os usuários que ainda não existem, com senha aleatória gravada FORA do repositório;
  8. grava supabaseUrl e a chave anon (pública por desenho) em site/site.config.json.
@@ -144,6 +144,16 @@ def api_e_auth(api: Api, ref: str) -> None:
     print("5. schema painel exposto na Data API; cadastro público fechado no Auth")
 
 
+def exige_ssl(api: Api, ref: str) -> None:
+    """Recusa conexão sem TLS no Postgres e no pooler. Os clientes do time já usam sslmode=require.
+    Ligar reinicia o banco por alguns segundos; se já está ligado, não faz nada."""
+    if not api("GET", f"/projects/{ref}/ssl-enforcement")["currentConfig"]["database"]:
+        r = api("PUT", f"/projects/{ref}/ssl-enforcement", json={"requestedConfig": {"database": True}})
+        if not (r.get("appliedSuccessfully") and r["currentConfig"]["database"]):
+            sys.exit("a API não confirmou a exigência de SSL; confira em Database > Settings > SSL Configuration")
+    print("5. banco exige SSL: conexão sem TLS é recusada")
+
+
 def funcao(api: Api, ref: str) -> None:
     api("POST", f"/projects/{ref}/secrets", json=[
         {"name": "BUREAU_TOKEN", "value": env_obrigatoria("BUREAU_TOKEN")},
@@ -220,6 +230,7 @@ def main() -> None:
     url_banco(api, ref, senha)
     banco(emails)
     api_e_auth(api, ref)
+    exige_ssl(api, ref)
     funcao(api, ref)
     anon = usuarios_auth(api, ref, emails)
     site_config(ref, anon)
