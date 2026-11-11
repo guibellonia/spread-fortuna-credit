@@ -27,3 +27,33 @@ python painel.py                  # gera saida/painel.html
 | `bureau.py` | Cliente do bureau: retry com backoff em 503 e timeout, cache em disco, paralelo |
 | `validar_csv.py` | Confere o CSV nas regras do manual |
 | `painel.py` | Painel de experimentação para o analista de risco |
+
+## Tools para o agente LLM (`tools.py`)
+
+Todas devolvem JSON e todo número sai de código (o LLM interpreta e recomenda, não calcula).
+Esquemas no formato de function calling (OpenAI-compatível): `from tools import TOOLS, executar`.
+
+| Tool | O que faz |
+|---|---|
+| `politica_vigente` | parâmetros e passos da política proposta (cenário G) |
+| `listar_padroes` | padrões por grupo e combinações da árvore, no formato do manual |
+| `medir_grupo` | inadimplência projetada (corrigida de censura) com IC95 de um grupo definido por condições — para o LLM testar hipóteses |
+| `consultar_pedido` | dados de um pedido novo |
+| `decidir_pedido` | decisão, valor, motivo e probabilidades; e a decisão da política atual |
+| `avaliar_pedido` | conselho de 4 modelos (opiniões, divergência, veredito) + fatores |
+| `simular_politica` | resultado esperado de longo prazo de uma configuração (base, pessimista, otimista) vs atual |
+| `comparar_politicas` | várias configurações lado a lado |
+| `backtest_politica` | teste fora da amostra com desfecho observado |
+| `pedidos_em_divergencia` | fila para o analista: onde os modelos discordam |
+| `gerar_csv` | dry-run por padrão; só grava `saida/spread_final.csv` com `confirmar=true` (aprovação humana) |
+| `validar_arquivo` | valida o CSV nas regras do manual |
+
+Teste pela linha de comando:
+
+```bash
+python tools.py listar
+python tools.py decidir_pedido '{"id_pedido": "P-00070"}'
+python tools.py medir_grupo '{"condicoes": [{"campo": "r_saidas", "op": ">=", "valor": 0.8}]}'
+```
+
+Pré-requisito: rodar `gerar_decisoes.py` uma vez (monta `saida/hist.pkl`, `saida/novos.pkl` e o cache do bureau).

@@ -71,7 +71,8 @@ class Conselho:
         self.tabela = ((t.d + 2 * media) / (t.e + 2)).to_dict()  # suavizada para faixas pequenas
         self.media = media
         caminho = str(SAIDA / ("sobrev_ate.joblib" if ate else "sobrev.joblib"))
-        tool_risco.treinar(caminho=caminho, ate_data_pedido=ate)
+        if ate or not Path(caminho).exists():  # o modelo completo é reaproveitado se já foi treinado
+            tool_risco.treinar(caminho=caminho, ate_data_pedido=ate)
         self.sobrev = tool_risco.carregar_modelo(caminho)
         return self
 
