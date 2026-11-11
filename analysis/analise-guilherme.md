@@ -14,7 +14,7 @@ Complementa `analise-banco.md` (Juliano), `analise-enio.md` e `censura-agregado.
 | `g05*.py` | modelos de risco, validação fora do tempo | `out/g05*_*.md` |
 | `g06_auditoria_cenarios.py` | auditoria dos cenários A–H e da tabela 19,4 / 7,7 / 8,0 | `out/g06_auditoria.md` |
 | `g07_otimizacao.py` | grade de políticas e fronteira risco × resultado nos 2.000 novos | `out/g07_otimizacao.md` |
-| `g08_reducao.py` | teste decisivo da redução de valor e CSV da política recomendada | `out/g08_reducao.md`, `out/g08_decisoes_recomendadas.csv` |
+| `g08_reducao.py` | teste decisivo da redução de valor e CSV da política recomendada | `out/g08_reducao.md`, `out/g08_decisoes_recomendadas.csv` (gerado por `g08`, não versionado: tem ids de pedido) |
 
 Rodar tudo (da raiz, ~8 min): `for s in g01_diagnostico g02_base g03_perfil g04_financeiro g05_modelo g05b_modelo_em g05c_modelo_final g06_auditoria_cenarios g07_otimizacao g08_reducao; do .venv/Scripts/python analysis/scripts-guilherme/$s.py; done`
 (precisa de `tabulate` no `.venv`).
@@ -59,7 +59,7 @@ atrasou mais de 60 dias, e parar é definitivo. "Margem" = resultado esperado po
    "Acima da capacidade" = parcela pedida > 30% da renda declarada ou ≥ 50% da sobra.
    - Aprova 1.421, R$ 9,48 mi.
    - Ganho sobre a atual de **R$ 454–481 mil** se a redução funcionar e **R$ 515–553 mil** se não funcionar.
-   - É a política de melhor pior caso entre as ~40 testadas (`g08`). CSV gerado e validado:
+   - É a política de melhor pior caso entre as ~40 testadas (`g08`). CSV gerado por `g08` e validado (não versionado: tem ids de pedido):
      `out/g08_decisoes_recomendadas.csv`.
 
 **Principais riscos.**
@@ -308,7 +308,7 @@ ou de 50% da sobra mensal, **nega**; não reduz. Resultado:
 - ganho de R$ 454–553 mil;
 - PD do volume de 8,1–8,4% (KM por célula e tool_risco) contra 14,4–15,4% da atual.
 
-CSV: `analysis/scripts-guilherme/out/g08_decisoes_recomendadas.csv` (gerado por código, validado com
+CSV: `analysis/scripts-guilherme/out/g08_decisoes_recomendadas.csv` (gerado por `g08_reducao.py`, não versionado por conter ids de pedido; validado com
 `src/validar_csv.py`). Para virar a entrega oficial, a regra precisa entrar no `src/politica.py` do time.
 
 **2. Critérios de corte** (negar; evidência de PD ≥ 60% com n ≥ 75):

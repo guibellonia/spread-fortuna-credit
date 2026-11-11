@@ -9,3 +9,6 @@ __pycache__/
 analysis/out/*.pkl
 _base_*.pkl
 spread_final.csv
+# decisões por pedido (ids de pedido): geradas localmente, nunca versionadas
+validacao/decisoes_PROPRIA.csv
+analysis/scripts-guilherme/out/g08_decisoes_recomendadas.csv
