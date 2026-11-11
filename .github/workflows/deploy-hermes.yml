@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 20
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      SERVICO: ${{ vars.RAILWAY_SERVICE || 'hermes' }}
+      SERVICO: ${{ vars.RAILWAY_SERVICE || 'd7025f51-47ca-4ee9-9dd9-ca350ac55871' }}  # ID do serviço Hermes no Railway (não é segredo)
     steps:
       - name: Sem RAILWAY_TOKEN não há deploy
         if: env.RAILWAY_TOKEN == ''
@@ -66,7 +66,7 @@ jobs:
             v="${!n:-}"
             if [ -n "$v" ]; then args+=(--set "$n=$v"); echo "variável $n: enviada"; else echo "variável $n: vazia, mantida como está"; fi
           done
-          railway variables --service "$SERVICO" --skip-deploys "${args[@]}" > /dev/null
+          railway variables --service "$SERVICO" --skip-deploys "${args[@]}" > /dev/null && echo "variáveis atualizadas no serviço"
 
       - name: Build e deploy
         if: env.RAILWAY_TOKEN != ''
