@@ -4,6 +4,11 @@
 > Regra do manual (`analysis/resumo-abertura.md:15,49-50`): são 5 minutos com a solução funcionando, mais 2 de perguntas. A banca quer ver onde a IA entra, os principais padrões, a política e o que mudou depois do checkpoint, e como o analista valida. A banca pode pedir a decisão de pedidos ao vivo.
 > Ideia central: cada cartão do painel vale **uma frase de conceito e um número**. Não ler a tela, dizer o porquê.
 
+## O que o Miguel pediu (chamada, 14h47)
+> "Apresentar as propostas que a gente fez e o impacto no negócio do cliente: comparar como funciona hoje, como a nossa proposta atende, o que usamos para chegar nesse resultado, se escala ou não. São cinco minutos, tem que ser bem curto."
+
+Por isso, o roteiro abaixo responde quatro perguntas, nesta ordem: **hoje × proposta**, **impacto em R$**, **como chegamos lá** e **escala?** (bloco das 4:15).
+
 ## 0:00–0:30 · Visão geral (topo)
 **Conceito:** a régua do jogo.
 > "Aprovar rende 15%, 5% com atraso, e um calote perde 60%. Um calote come o lucro de quatro bons pagadores. Pela conta, só vale aprovar abaixo de ~17,5% de chance de não pagar. Esse é o nosso teto."
@@ -34,6 +39,7 @@
 ## 4:15–5:00 · Revisão do analista e o chat do agente
 **Conceito:** a IA sugere e o analista decide.
 > "Cada pedido sai com a decisão, o valor, a faixa de risco (verde, amarelo, laranja) e o motivo em uma linha. O analista pode buscar qualquer pedido pelo id e perguntar ao agente por que ele decidiu assim. O birô cai de propósito; tratamos com nova tentativa e cache, e o resultado é reproduzível."
+> **Escala?** "Sim. Tudo roda por código, num comando, e é reproduzível. O birô tem cache e nova tentativa. As regras são parâmetros que o analista ajusta sem programar. O modelo retreina com cada nova safra. O que não escala sozinho é a calibração: ela precisa ser conferida a cada safra contra o calote real."
 > Fechar convidando: "escolham um pedido e a gente mostra."
 
 ## Reserva para as perguntas (2 min)
