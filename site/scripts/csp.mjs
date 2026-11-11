@@ -8,7 +8,8 @@ import { fileURLToPath } from "node:url";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(raiz, "out");
-const { bureauOrigin, supabaseUrl } = JSON.parse(await readFile(join(raiz, "site.config.json"), "utf8"));
+const { bureauOrigin, supabaseUrl, hermesOrigin } = JSON.parse(await readFile(join(raiz, "site.config.json"), "utf8"));
+if (hermesOrigin && !/^https:\/\/[a-z0-9.-]+$/i.test(hermesOrigin)) throw new Error("hermesOrigin inválido em site.config.json");
 if (!/^https:\/\/[a-z0-9.-]+$/i.test(bureauOrigin)) throw new Error("bureauOrigin inválido em site.config.json");
 if (supabaseUrl && !/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(supabaseUrl)) throw new Error("supabaseUrl inválido em site.config.json");
 // o painel de revisão fala com a Data API, o Auth e as Edge Functions do projeto (mesma origem)
@@ -39,7 +40,8 @@ for await (const arq of paginas(out)) {
     "object-src 'none'",
     "base-uri 'none'",
     "form-action 'none'",
-    "frame-src 'none'",
+    // o ícone de chat abre o Hermes (API no Railway) num iframe; nada além dele pode ser embutido
+    hermesOrigin ? `frame-src ${hermesOrigin}` : "frame-src 'none'",
     "worker-src 'none'",
     "upgrade-insecure-requests",
   ].join("; ");
