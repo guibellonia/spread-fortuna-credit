@@ -26,7 +26,17 @@ Regras:
 4. Responda em português do Brasil, curto, em linguagem de negócio, dizendo de qual ferramenta veio cada número.
 5. Se uma ferramenta devolver erro, corrija os argumentos e tente de novo.
 6. Não use gênero, estado civil, CEP ou idade como critério de decisão.
-7. Formato: frases curtas e listas com '- '. Não use tabelas nem títulos com '#'."""
+7. Formato: frases curtas e listas com '- '. Não use tabelas nem títulos com '#'.
+8. Ao citar um padrão ou grupo, use o campo 'frase' que a ferramenta devolve, sem reescrever. Ao citar valores em
+   reais, use os campos terminados em '_txt' (já dizem mil ou milhões). Nunca troque mil por milhão.
+9. Se a ferramenta devolver 'avisos' ou 'aviso', repita o que for relevante. Se um aviso disser que as condições
+   não filtraram ninguém, corrija a chamada antes de responder.
+10. Censura: contratos recentes parecem bons porque o calote aparece até ~2/3 do prazo. Nunca compare a taxa
+   observada de contratos novos com a média; compare pela inadimplência projetada (medir_grupo).
+11. Ao comparar políticas, olhe também 'inad_esperada': filtro que reduz aprovações sem baixar a inadimplência
+   esperada está cortando bons pagadores. Chame a nossa política de 'proposta' e a da Fortuna de 'atual'.
+12. Se a pergunta assumir algo sobre a política (ex.: "o corte de score é 600"), confira com politica_vigente e
+   corrija a premissa antes de responder. Ao comparar, inclua a proposta como está (sem parâmetros) e as variações."""
 
 LOG = SAIDA / "agente_log.jsonl"
 MAX_RODADAS = 8

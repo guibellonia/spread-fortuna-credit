@@ -85,7 +85,21 @@ def _aprovados_com_peso():
     ap["comp_aprov"] = parcela_price(ap.valor_aprovado, ap.prazo_meses) / ap.renda_declarada
     ap["r_saidas"] = ap.mov_saidas_media / ap.mov_entradas_media.clip(lower=1)
     ap["sobra_mensal"] = ap.mov_entradas_media - ap.mov_saidas_media
+    ap["ano_pedido"] = ap.data_pedido.dt.year
+    ap["meses_ate_corte"] = ((pd.Timestamp("2026-09-30") - ap.data_pedido).dt.days / 30.44).round(1)
     return ap
+
+
+def _rs(v):
+    """Formata R$ para leitura humana (evita confundir mil com milhão)."""
+    v = float(v)
+    if abs(v) >= 1e6:
+        t = f"{v / 1e6:,.2f} milhões"
+    elif abs(v) >= 1e3:
+        t = f"{v / 1e3:,.1f} mil"
+    else:
+        t = f"{v:,.2f}"
+    return "R$ " + t.replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 @lru_cache(maxsize=1)
@@ -105,6 +119,15 @@ def _params(p):
     desconhecidos = set(p) - set(PARAMS)
     if desconhecidos:
         raise ValueError(f"parâmetros desconhecidos: {sorted(desconhecidos)}. Válidos: {sorted(PARAMS)}")
+    faixas = {"min_score": (0, 1000), "max_restricoes": (0, 10), "max_meses_negativos": (0, 12),
+              "max_comprometimento": (0.05, 0.6), "risco_max": (0.01, 0.6), "ganho_min": (-1, 1),
+              "teto_parcela_renda_real": (0, 1)}
+    if isinstance(p.get("min_score"), (int, float)) and 0 < p["min_score"] < 300:
+        raise ValueError(f"min_score={p['min_score']} inválido: use 0 (sem corte) ou um score em pontos, de 300 a 1000")
+    for k, v in p.items():
+        if k in faixas and isinstance(v, (int, float)) and not faixas[k][0] <= v <= faixas[k][1]:
+            raise ValueError(f"{k}={v} fora da faixa {faixas[k]} (min_score é pontuação 0-1000; percentuais vão "
+                             "em fração, ex. 0.28)")
     return {**PARAMS, **p}
 
 
@@ -122,18 +145,28 @@ def politica_vigente() -> dict:
     p = PARAMS
     passos = []
     if p["min_score"]:
-        passos.append(f"nega score até {p['min_score']}")
+        passos.append(f"Nega score até {p['min_score']}.")
     if p["max_meses_negativos"] < 12:
-        passos.append(f"nega com mais de {p['max_meses_negativos']} mês(es) de saldo negativo nos últimos 12")
+        passos.append(f"Nega quem teve mais de {p['max_meses_negativos']} mês(es) com saldo negativo nos últimos 12.")
     passos += [
-        f"nega com mais de {p['max_restricoes']} restrição(ões) ativa(s) no bureau",
-        f"parcela limitada a {p['max_comprometimento']:.0%} da renda declarada (reduz o valor)",
-        "nega conta apertada (saídas > entradas em algum dos 3 meses antes) e parcela > 28% da renda real",
-        "modelo corrigido para censura estima P(não paga) de vida inteira para valores de 100% a 10% do solicitado",
-        f"aprova o valor de maior ganho esperado com P(não paga) <= {p['risco_max']:.1%} e ganho > {p['ganho_min']}",
-        "limites do produto: R$ 500 a R$ 30.000, nunca acima do solicitado",
+        "Nega quem tem restrição ativa no bureau." if p["max_restricoes"] == 0
+        else f"Nega quem tem mais de {p['max_restricoes']} restrições ativas no bureau.",
+        "Nega conta apertada: saídas maiores que as entradas em algum dos 3 meses antes do pedido.",
+        f"Nega se a parcela do valor pedido passa de {p['teto_parcela_renda_real']:.0%} da renda real "
+        "(a menor entre a renda declarada e a média de entradas na conta).",
+        f"Limita a parcela a {p['max_comprometimento']:.0%} da renda declarada, reduzindo o valor se preciso.",
+        "Um modelo de risco, corrigido para contratos ainda abertos, estima a chance de não pagar para cada valor "
+        "possível (100% a 10% do pedido).",
+        f"Aprova o valor de maior ganho esperado, desde que a chance de não pagar seja de até {p['risco_max']:.1%}.",
+        "Limites do produto: de R$ 500 a R$ 30.000, nunca acima do valor pedido.",
     ]
-    return _j({"params": p, "passos": passos, "modelo": _modelo()[1],
+    desligados = []
+    if not p["min_score"]:
+        desligados.append("corte de score (depois dos filtros, o score não separa bons e maus pagadores)")
+    if p["max_meses_negativos"] >= 12:
+        desligados.append("regra de meses com saldo negativo (a conta apertada já pega esse risco)")
+    return _j({"passos_em_ordem": passos, "filtros_desligados": desligados,
+               "parametros_tecnicos": p, "modelo": _modelo()[1],
                "ganho_por_real": {"em_dia": 0.15, "atraso": 0.05, "nao_paga": -0.60},
                "fracao_pagadores_com_atraso": R_ATRASO, "ponto_equilibrio_p_nao_paga": LIMITE_EQUILIBRIO})
 
@@ -145,7 +178,11 @@ def listar_padroes(min_clientes: int = 40, limite: int = 30) -> dict:
     pad = [p for p in r["padroes"] if p["clientes"] >= min_clientes][:limite]
     comb = [p for p in r["combinacoes"] if p["clientes"] >= min_clientes][:limite]
     return _j({"base": r["base"], "padroes": pad, "combinacoes_arvore": comb,
-               "aviso": "taxas observadas em contratos com 6+ meses; para taxa corrigida de censura use medir_grupo"})
+               "aviso": ("taxas observadas em contratos com 6+ meses (ainda subestimam o calote); para a taxa "
+                         "corrigida de censura use medir_grupo. Grupos podem se sobrepor (ex.: parcela 25-30% está "
+                         "dentro de parcela > 20%; saldo negativo e conta apertada são quase sempre os mesmos "
+                         "clientes): não apresente padrões sobrepostos como independentes."),
+               "como_citar": "use o campo 'frase' de cada padrão, que já está no formato do manual"})
 
 
 CAMPOS_GRUPO = {
@@ -157,7 +194,22 @@ CAMPOS_GRUPO = {
     "mov_dias_cheque_total": "dias de cheque especial (12m)", "mov_saldo_medio": "saldo médio", "mov_entradas_cv": "variação das entradas",
     "prazo_meses": "prazo", "valor_aprovado": "valor aprovado", "meses_conta": "meses de conta", "idade": "idade",
     "tipo_vinculo": "vínculo", "politica_aplicada": "política que aprovou (atual/piloto)",
+    "mov_meses_saida_maior_3m": "meses, dos 3 antes do pedido, com saídas maiores que entradas (conta apertada)",
+    "ano_pedido": "ano do pedido", "meses_ate_corte": "meses entre o pedido e a data de corte (maturidade)",
 }
+OPS_TXT = {"<": "abaixo de", "<=": "até", ">": "acima de", ">=": "a partir de", "==": "igual a", "!=": "diferente de"}
+
+
+def _descrever(campo, op, val):
+    if campo == "mov_meses_saida_maior_3m" and ((op == ">" and val == 0) or (op == ">=" and val == 1)):
+        return "conta apertada (saídas maiores que as entradas em algum dos 3 meses antes do pedido)"
+    if campo == "ano_pedido" and op == "==":
+        return f"pedido em {val}"
+    if op == "in":
+        return f"{CAMPOS_GRUPO[campo]} em {val}"
+    return f"{CAMPOS_GRUPO[campo]} {OPS_TXT.get(op, op)} {val}"
+
+
 OPS = {"<": np.less, "<=": np.less_equal, ">": np.greater, ">=": np.greater_equal, "==": np.equal, "!=": np.not_equal}
 
 
@@ -179,9 +231,12 @@ def medir_grupo(condicoes: list) -> dict:
             m &= OPS[op](ap[campo].to_numpy(), val)
         else:
             raise ValueError(f"operador '{op}' inválido")
-        desc.append(f"{CAMPOS_GRUPO[campo]} {op} {val}")
+        desc.append(_descrever(campo, op, val))
+    if not condicoes:
+        raise ValueError("informe ao menos uma condição; sem condição a medida é a base inteira")
     g = ap[m]
     media = ap.inad.sum() / ap.w.sum()
+    observada = float(g.inad.mean()) if len(g) else 0.0
     d, e = int(g.inad.sum()), float(g.w.sum())
     if e <= 0:
         return {"grupo": " e ".join(desc), "clientes": int(len(g)), "erro": "sem exposição suficiente"}
@@ -189,12 +244,22 @@ def medir_grupo(condicoes: list) -> dict:
     # IC 95% aproximado (Poisson, Wilson-Hilferty)
     lo = 0.0 if d == 0 else d * (1 - 1 / (9 * d) - 1.96 / (3 * math.sqrt(d))) ** 3 / e
     hi = (d + 1) * (1 - 1 / (9 * (d + 1)) + 1.96 / (3 * math.sqrt(d + 1))) ** 3 / e
+    avisos = []
+    if len(g) == len(ap):
+        avisos.append("as condições não filtraram ninguém: isto é a base inteira, não um grupo; reveja o campo")
+    if d < 20:
+        avisos.append("amostra pequena: intervalo de confiança largo")
+    if observada < 0.7 * taxa:
+        avisos.append(f"censura: a taxa observada ({observada:.1%}) subestima o calote porque muitos contratos do "
+                      f"grupo ainda estão abertos (o calote aparece até ~2/3 do prazo). Compare pela projetada ({taxa:.1%}).")
     return _j({
         "grupo": " e ".join(desc), "clientes": len(g), "paradas": d, "exposicao": round(e, 1),
-        "inadimplencia_projetada": taxa, "ic95": [lo, hi], "media": media, "risco_relativo": taxa / media,
+        "inadimplencia_projetada": taxa, "inadimplencia_observada": observada, "ic95": [lo, hi],
+        "media_projetada_da_base": media, "risco_relativo": taxa / media,
         "acima_do_equilibrio": taxa > LIMITE_EQUILIBRIO,
-        "frase": f"Clientes com {' e '.join(desc)} têm inadimplência projetada de {taxa:.0%}, contra {media:.0%} da média. Afeta {len(g)} clientes.",
-        "aviso": "amostra pequena: IC largo" if d < 20 else None,
+        "frase": f"Clientes com {' e '.join(desc)} têm inadimplência de {taxa:.0%}, contra {media:.0%} da média. "
+                 f"Afeta {len(g)} clientes.",
+        "avisos": avisos,
     })
 
 
@@ -246,7 +311,9 @@ def simular_politica(params: dict | None = None, nome: str = "proposta") -> dict
     atual = politica_atual(x)
     base, ref = resultado(dec, x, m), resultado(atual, x, m)
     mot = dec.motivo.value_counts().to_dict()
-    return _j({"nome": nome, "params": _params(params), **base,
+    legivel = {"volume_txt": _rs(base["volume"]), "resultado_txt": _rs(base["resultado"]),
+               "ganho_vs_atual_txt": _rs(base["resultado"] - ref["resultado"])}
+    return _j({"nome": nome, "params": _params(params), **base, **legivel,
                "pessimista": resultado(dec, x, m, 1.2)["resultado"], "otimista": resultado(dec, x, m, 0.8)["resultado"],
                "politica_atual": ref, "ganho_vs_atual": base["resultado"] - ref["resultado"],
                "difere_da_atual": int((dec.aprova.values != atual.aprova.values).sum()), "motivos": mot})
@@ -256,7 +323,15 @@ def comparar_politicas(politicas: list) -> dict:
     """Compara várias configurações. politicas: lista de {"nome": ..., "params": {...}}."""
     linhas = [simular_politica(p.get("params"), p.get("nome", f"p{i}")) for i, p in enumerate(politicas)]
     cols = ["nome", "aprovados", "volume", "inad_esperada", "resultado", "pessimista", "otimista", "ganho_vs_atual"]
-    return _j({"comparacao": [{c: l[c] for c in cols} for l in linhas],
+    tabela = []
+    for li in linhas:
+        lin = {c: li[c] for c in cols}
+        lin.update(volume_txt=_rs(li["volume"]), resultado_txt=_rs(li["resultado"]),
+                   pessimista_txt=_rs(li["pessimista"]), ganho_vs_atual_txt=_rs(li["ganho_vs_atual"]))
+        tabela.append(lin)
+    return _j({"comparacao": tabela, "valores_em": "reais; ao citar, use os campos *_txt",
+               "leia_tambem": "compare inad_esperada: filtro que reduz aprovações sem baixar a inadimplência "
+                              "esperada está cortando bons pagadores",
                "melhor": max(linhas, key=lambda l: l["resultado"])["nome"],
                "aviso": "decisão e avaliação usam o mesmo modelo: ganhos tendem a ser otimistas; compare o cenário pessimista"})
 
@@ -340,7 +415,8 @@ def teste_sanidade() -> dict:
 # ----------------------------------------------------------------------------- schemas (function calling)
 _PARAMS_SCHEMA = {"type": "object", "description": "Sobrescreve parâmetros da política. Omitido = cenário G.",
                   "properties": {
-                      "min_score": {"type": "number", "description": "nega score <= este valor (0 = sem corte)"},
+                      "min_score": {"type": "number", "description": "nega score <= este valor, em pontos 0-1000 "
+                                                                      "(0 = sem corte, que é o padrão)"},
                       "max_restricoes": {"type": "integer"}, "max_meses_negativos": {"type": "integer"},
                       "max_comprometimento": {"type": "number", "description": "teto parcela/renda, ex. 0.20"},
                       "risco_max": {"type": "number", "description": "P(não paga) máxima, ex. 0.175"},
