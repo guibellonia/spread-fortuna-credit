@@ -15,7 +15,28 @@ PARAMS = {
     "max_comprometimento": 0.20,  # teto da parcela nova sobre a renda declarada
     "risco_max": 0.175,           # P(não pagar) máxima no valor aprovado
     "ganho_min": 0.0,             # ganho esperado mínimo por real
+    # filtros de cliente do Bilosca (src/politica_regras.py), que o modelo não captava sozinho:
+    "nega_conta_apertada_3m": True,      # nega se saídas > entradas em algum dos 3 meses antes do pedido
+    "teto_parcela_renda_real": 0.28,     # nega se a parcela do valor de referência passa de 28% da renda real
 }
+
+
+def filtros_cliente(x: pd.DataFrame, p: dict) -> tuple:
+    """Filtros de cliente medidos como na política por regras: a parcela é a do valor que a política atual
+    concederia (solicitado, limitado a 30% da renda declarada), e a renda real é a menor entre a declarada e as
+    entradas médias da conta. No teste fora da amostra, os clientes que só esses filtros barram deram 42% de calote."""
+    n = len(x)
+    apertada = np.zeros(n, bool)
+    if p.get("nega_conta_apertada_3m") and "mov_meses_saida_maior_3m" in x:
+        apertada = x["mov_meses_saida_maior_3m"].fillna(0).to_numpy() > 0
+    pesada = np.zeros(n, bool)
+    if p.get("teto_parcela_renda_real") and "mov_entradas_media" in x:
+        teto30 = 0.30 * x["renda_declarada"] * (1 - 1.03 ** (-x["prazo_meses"].astype(float))) / 0.03
+        ref = np.minimum(x["valor_solicitado"], teto30)
+        renda_real = np.minimum(x["renda_declarada"], x["mov_entradas_media"].fillna(x["renda_declarada"]))
+        parc = ref * 0.03 / (1 - 1.03 ** (-x["prazo_meses"].astype(float)))
+        pesada = (parc / renda_real).to_numpy() > p["teto_parcela_renda_real"]
+    return apertada, pesada
 
 
 def valor_max_parcela(renda, prazo, pct):
@@ -62,8 +83,11 @@ def politica_proposta(x: pd.DataFrame, modelo, params=None) -> pd.DataFrame:
     motivo[neg] = "2+ meses com saldo negativo na conta"
     score_baixo = x["score"].to_numpy() <= p["min_score"]
     motivo[score_baixo] = f"score até {p['min_score']}"
+    apertada, pesada = filtros_cliente(x, p)
+    motivo[pesada] = "parcela acima de 28% da renda real"
+    motivo[apertada] = "conta apertada: saídas > entradas nos últimos 3 meses"
     motivo[restr] = "restrição ativa no bureau"
-    valor = np.where(neg | restr | score_baixo, 0.0, melhor_valor)
+    valor = np.where(neg | restr | score_baixo | apertada | pesada, 0.0, melhor_valor)
     return pd.DataFrame({
         "id_pedido": x["id_pedido"], "aprova": valor > 0, "valor": valor,
         "p_em_dia": melhor_prob[:, 0].round(4), "p_atraso": melhor_prob[:, 1].round(4),
