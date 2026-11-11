@@ -1,0 +1,18 @@
+# Modelo do ~/.hermes/config.yaml (Hermes Agent, Nous Research). NÃO versione o arquivo real.
+# Copie para ~/.hermes/config.yaml e troque os <...>. Chaves vão em ~/.hermes/.env, nunca aqui.
+# Confira os nomes de chave na documentação da versão instalada: hermes-agent.nousresearch.com/docs
+
+model:
+  provider: custom                      # qualquer endpoint compatível com OpenAI
+  base_url: http://localhost:20128/v1   # OmniRoute (faz o fallback entre os provedores gratuitos)
+  default: spread                       # nome do combo criado no painel do OmniRoute
+# a chave do OmniRoute vai em ~/.hermes/.env como OPENAI_API_KEY=<chave gerada no painel do OmniRoute>
+
+mcp_servers:
+  spread:                               # as 14 tools determinísticas de src/tools.py
+    command: python
+    args: ["<caminho do repositório>/src/mcp_server.py"]
+    env:                                # servidores stdio recebem ambiente filtrado: liste o que precisam
+      FORTUNA_DSN: "<URI do Supabase com o papel fortuna_leitura e ?sslmode=require>"
+      PYTHONIOENCODING: utf-8
+      # SPREAD_PERMITE_GRAVAR: "1"      # só depois da aprovação do analista: libera gerar_csv(confirmar=true)
