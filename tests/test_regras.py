@@ -234,3 +234,10 @@ def test_llm_sem_provedor(monkeypatch):
 def test_limpar_chave_tolera_erros_de_colagem(bruto):
     import llm
     assert llm.limpar_chave(bruto) == "gsk_abc123"
+
+
+def test_tools_recusam_parametro_absurdo():
+    from tools import executar
+    assert "erro" in executar("simular_politica", {"params": {"min_score": 0.6}})
+    assert "erro" in executar("simular_politica", {"params": {"max_comprometimento": 28}})
+    assert "erro" in executar("medir_grupo", {"condicoes": []})

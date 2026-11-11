@@ -26,6 +26,8 @@ def base(hist: pd.DataFrame) -> pd.DataFrame:
 
 # grupos candidatos: (descrição em linguagem de negócio, filtro)
 GRUPOS = [
+    ("saídas maiores que as entradas em algum dos 3 meses antes do pedido (conta apertada)",
+     lambda b: b.get("mov_meses_saida_maior_3m", 0) > 0),
     ("parcela entre 25% e 30% da renda declarada", lambda b: (b.comp_aprov > 0.25) & (b.comp_aprov <= 0.30)),
     ("parcela acima de 20% da renda declarada", lambda b: b.comp_aprov > 0.20),
     ("parcela de até 10% da renda declarada", lambda b: b.comp_aprov <= 0.10),
