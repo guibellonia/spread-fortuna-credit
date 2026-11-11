@@ -217,3 +217,28 @@ export function decidir(x: Entrada, m: Motor): Decisao {
     curva,
   };
 }
+
+export type Sinal = { id: string; nome: string; peso: 1 | -1 };
+
+/** Sinais da faixa de risco (src/politica_mescla.py, pontuacao): +1 aumenta o risco, −1 diminui. `valor` é o
+ * valor decidido (0 se negado; aí a parcela é a do valor que a política atual concederia). */
+export function sinais(x: Entrada, valor: number): Sinal[] {
+  const prazo = x.prazo_meses;
+  const renda = x.renda_declarada;
+  const ent = num(x.mov_entradas_media);
+  const rendaReal = Math.min(renda, Number.isNaN(ent) ? renda : ent);
+  const teto30 = (0.3 * renda * (1 - 1.03 ** -prazo)) / 0.03;
+  const ref = valor > 0 ? valor : Math.min(x.valor_solicitado, teto30);
+  const parcela = (ref * 0.03) / (1 - 1.03 ** -prazo);
+  const comprom = (parcela + (num(x.parcelas_outras_instituicoes) || 0)) / rendaReal;
+  const v = x.tipo_vinculo;
+  const todos: [string, string, boolean, 1 | -1][] = [
+    ["prazo_curto", "prazo curto", prazo === 6 || prazo === 12, 1],
+    ["prazo_36", "prazo de 36 meses", prazo === 36, -1],
+    ["autonomo", "autônomo ou empresário", v === "autonomo" || v === "empresario", 1],
+    ["aposentado", "aposentado", v === "aposentado", -1],
+    ["instavel", "entradas instáveis", (num(x.mov_entradas_cv) || 0) >= 0.16, 1],
+    ["dividas", "parcela + dívidas ≥ 35% da renda real", comprom >= 0.35, 1],
+  ];
+  return todos.filter((t) => t[2]).map(([id, nome, , peso]) => ({ id, nome, peso }));
+}

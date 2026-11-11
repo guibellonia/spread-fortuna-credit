@@ -69,7 +69,7 @@ export function PorQue({ motor, entrada, publicada }: {
   );
 }
 
-function frase(d: Decisao) {
+export function frase(d: Decisao) {
   if (d.barreiras.restricao) return "Negado na primeira barreira: o bureau mostra restrição ativa.";
   if (d.barreiras.apertada) return "Negado: a conta teve saídas maiores que as entradas antes do pedido.";
   if (d.barreiras.pesada) return "Negado: a parcela pesa demais sobre a renda que de fato entra na conta.";

@@ -100,7 +100,8 @@ def main() -> None:
     fonte = f"treinar_corrigido(hist.pkl) · {len(conteudo['arvores'])} árvores · sha256:{hashlib.sha256(texto.encode()).hexdigest()[:12]}"
     conteudo["fonte"] = fonte
     entradas = [{c: limpo(v) for c, v in r.items()} for r in x[["id_pedido"] + CAMPOS].to_dict("records")]
-    esperado = dec[["id_pedido", "aprova", "valor", "p_nao_paga", "ganho_esperado", "motivo"]]
+    esperado = dec[["id_pedido", "aprova", "valor", "p_nao_paga", "ganho_esperado", "motivo"]].merge(
+        mescla[["pontos_detalhe"]], left_on="id_pedido", right_index=True)  # sinais da faixa, para conferir o TS
     esperado = [{k: limpo(v) for k, v in r.items()} for r in esperado.to_dict("records")]
 
     CACHE.mkdir(parents=True, exist_ok=True)

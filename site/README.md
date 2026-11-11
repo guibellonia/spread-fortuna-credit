@@ -78,8 +78,10 @@ barreiras, risco, escolha do valor e o ganho esperado de cada valor testado. O m
 ficam no Supabase, só para membros (`supabase/publicar_motor.py`); nada disso vai no build. Antes de publicar, o
 script roda `scripts/paridade-motor.mjs`, que exige as mesmas 2.000 decisões, valores e motivos do Python.
 
-- **Revisão:** cada pedido mostra "Por que a IA decidiu assim": os passos da política com o valor medido contra o
-  limite (passou, barrou ou não conta) e o gráfico do ganho esperado de cada valor, com o escolhido.
+- **Revisão:** cada pedido abre com os pontos a favor e contra o cliente lado a lado (barreiras, risco e os sinais
+  da faixa verde/amarela/laranja), cada um com o calote que aquele perfil teve no histórico (padrões do
+  `dashboard.json`). Abaixo, num bloco que abre, os passos da política contra os limites e o ganho esperado de cada
+  valor testado. Os sinais da faixa (`sinais` em `src/lib/motor.ts`) são conferidos contra o Python na paridade.
 - **Simulador (`/simulador/`, com login):** formulário de cliente e pedido com perfis prontos (típico, com restrição,
   conta apertada, renda real baixa, pedido alto, score baixo) ou a partir de um pedido real; responde na hora.
   "Simular variações" na Revisão abre o simulador com aquele pedido.

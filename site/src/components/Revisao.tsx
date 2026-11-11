@@ -5,7 +5,10 @@ import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { int, moeda, pct, quando } from "@/lib/format";
 import type { Entrada, Motor } from "@/lib/motor";
 import { supabase, supabaseConfigurado, type Bureau, type Decisao, type Revisao as Rev } from "@/lib/supabase";
+import painel from "@/data/dashboard.json";
+import type { Dados } from "@/lib/types";
 import { PorQue } from "./PorQue";
+import { ProsContras } from "./ProsContras";
 import { TopBar } from "./TopBar";
 import { IconCheck } from "./ui";
 
@@ -31,6 +34,7 @@ const BUREAU_CAMPOS: [string, string, (v: number) => string][] = [
 ];
 const POR_PAGINA = 50;
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const PADROES = (painel as unknown as Dados).padroes; // calote de cada perfil no histórico (só agregados)
 
 export function Revisao() {
   if (!supabaseConfigurado) {
@@ -341,8 +345,15 @@ function Detalhe({ id, motor, onSalvo }: { id: string; motor: Motor | null; onSa
     <section className="card detalhe" aria-label={`Pedido ${id}`}>
       <header className="card-head">
         <h2 className="card-title">{id}</h2>
-        <div className="card-actions"><Selo d={d} /></div>
+        <div className="card-actions">
+          {motor && entrada && (
+            <a className="btn-tonal sl link-sim" href={`${BASE}/simulador/#${encodeURIComponent(id)}`}>Simular variações</a>
+          )}
+          <Selo d={d} />
+        </div>
       </header>
+
+      {motor && entrada && <ProsContras motor={motor} entrada={entrada} padroes={PADROES} faixa={d.faixa} pontos={d.pontos} />}
 
       <div className="det-grid">
         <Info rotulo={`Decisão da IA${d.politica ? ` (${d.politica})` : ""}`} valor={dec(d.decisao, d.valor_aprovado)} />
@@ -352,21 +363,18 @@ function Detalhe({ id, motor, onSalvo }: { id: string; motor: Motor | null; onSa
         <Info rotulo="Chance de não pagar" valor={d.p_nao_paga != null ? pct(d.p_nao_paga) : "—"} />
         <Info rotulo="Ganho esperado" valor={d.ganho_esperado != null ? moeda(d.ganho_esperado) : "—"} />
       </div>
-      {d.motivo && <p className="det-motivo">{d.motivo}</p>}
-      {d.faixa && (
+      {!(motor && entrada) && d.motivo && <p className="det-motivo">{d.motivo}</p>}
+      {!(motor && entrada) && d.faixa && (
         <p className="det-faixa">
           <span className={`faixa is-${d.faixa}`}>Faixa {FAIXA_TEXTO[d.faixa]}{d.faixa !== "barreira" ? ` · ${d.pontos} ponto(s)` : ""}</span>
           <span className="muted">{d.pontos_detalhe}</span>
         </p>
       )}
       {motor && entrada && (
-        <div className="bureau-box">
-          <div className="linha">
-            <h3>Por que a IA decidiu assim</h3>
-            <a className="btn-tonal sl link-sim" href={`${BASE}/simulador/#${encodeURIComponent(id)}`}>Simular variações</a>
-          </div>
+        <details className="bureau-box pq-detalhe">
+          <summary>Passo a passo da decisão e valor escolhido</summary>
           <PorQue motor={motor} entrada={entrada} publicada={{ aprova: d.decisao === "APROVADO", valor: Number(d.valor_aprovado) }} />
-        </div>
+        </details>
       )}
       {d.revisao_acao && (
         <p className="muted">
