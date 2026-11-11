@@ -231,13 +231,13 @@ export function AreaSimulador({ motor }: { motor: Motor }) {
         <p className="foot">Os campos da conta podem ficar vazios se o cliente não tem movimentação.</p>
       </section>
 
-      <section className="card sim-res" aria-live="polite" aria-label="Decisão da IA">
+      <section className="card sim-res" aria-live="polite" aria-label="Sugestão da IA">
         <header className="card-head">
-          <h2 className="card-title">Decisão da IA</h2>
+          <h2 className="card-title">Sugestão da IA</h2>
           <span className="muted card-actions">{perfil}</span>
         </header>
         {e ? <PorQue motor={motor} entrada={e} /> : <p className="erro">Confira: {faltam.join(", ")}.</p>}
-        <p className="foot">A mesma IA que decidiu os 2.000 pedidos novos.</p>
+        <p className="foot">A mesma IA que sugeriu as decisões dos 2.000 pedidos novos.</p>
       </section>
 
       <Lote motor={motor} />

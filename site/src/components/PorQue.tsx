@@ -23,7 +23,7 @@ export function PorQue({ motor, entrada, publicada }: {
   return (
     <div className="pq">
       <div className="pq-head">
-        <span className={`selo ${d.aprova ? "is-ok" : "is-no"}`}>{d.aprova ? `Aprovado · ${moeda(d.valor)}` : "Negado"}</span>
+        <span className={`selo ${d.aprova ? "is-ok" : "is-no"}`}>{d.aprova ? `Sugere aprovar · ${moeda(d.valor)}` : "Sugere negar"}</span>
         <span className="pq-frase">{frase(d)}</span>
       </div>
       {difere && (

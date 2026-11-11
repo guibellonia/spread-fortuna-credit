@@ -96,7 +96,7 @@ a alternância para tabela.
 ## Revisão (`site/src/app/revisao/`)
 
 Página do painel com login (Supabase Auth, e-mail e senha; cadastro público fechado): fila de pedidos com
-filtros, decisão da IA com o "por que" visual (passos contra os limites e ganho de cada valor), bureau ao vivo e
+filtros, sugestão da IA com o "por que" visual (passos contra os limites e ganho de cada valor), bureau ao vivo e
 registro da revisão. O Simulador (`/simulador/`, mesmo login) testa clientes novos, um a um ou em lote por CSV.
 Os dois usam `site/src/lib/motor.ts`, a Proposta em TypeScript com o modelo de `painel.modelo`
 (`supabase/publicar_motor.py`, que só publica se o motor der as mesmas 2.000 decisões do Python). Usa `supabaseUrl` e a chave anon de

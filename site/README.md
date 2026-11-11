@@ -71,7 +71,7 @@ O script confere que os ajustes somam a diferença observada e para se o JSON ti
 O cartão "API do bureau" mostra os números desse registro e faz, do navegador, um teste ao vivo do `GET /health`
 (aberto, sem token).
 
-## Por que a IA decidiu, simulador e lote (`/revisao/` e `/simulador/`)
+## Por que a IA sugeriu, simulador e lote (`/revisao/` e `/simulador/`)
 
 `src/lib/motor.ts` refaz no navegador a decisão da Proposta (`src/politica.py` com o modelo de `src/cenarios.py`):
 barreiras, risco, escolha do valor e o ganho esperado de cada valor testado. O modelo e a entrada de cada pedido
@@ -90,7 +90,7 @@ script roda `scripts/paridade-motor.mjs`, que exige as mesmas 2.000 decisões, v
 
 ## Lucro e prejuízo esperados (Visão geral)
 
-O card "Lucro e prejuízo esperados das decisões da IA" (`resultadoIA` no `dashboard.json`, de `scripts/snapshot.py`)
+O card "Lucro e prejuízo esperados das sugestões da IA" (`resultadoIA` no `dashboard.json`, de `scripts/snapshot.py`)
 soma, nos aprovados da Proposta, prejuízo = 60% do valor × chance de não pagar e lucro = o que se espera de quem paga,
 por faixa de risco e por faixa do Daniel, com o ajuste pelo histórico (`historico.json`) e a política atual como
 referência.
@@ -98,7 +98,7 @@ referência.
 ## Revisão do analista (`/revisao/`)
 
 Login com e-mail e senha (Supabase Auth, cadastro público fechado), fila de pedidos com filtros (sem revisão,
-diferente da política atual, revisadas), decisão da IA com motivo e risco, bureau ao vivo pela Edge Function e
+diferente da política atual, revisadas), sugestão da IA com motivo e risco, bureau ao vivo pela Edge Function e
 registro da revisão (confirmar, aprovar com valor ou negar, com justificativa). Os dados vêm do schema `painel`
 do Supabase, só para membros; nada disso vai no build. Configuração em `site.config.json` (`supabaseUrl` e a
 chave anon, pública por desenho). Banco, função e acessos: `supabase/README.md`.

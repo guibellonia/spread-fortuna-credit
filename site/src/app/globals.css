@@ -386,7 +386,7 @@ code { font-size: 12px; }
 .cal-bar.is-obs { background: var(--data-1); }
 .cal-x { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 8px; font-size: 11px; line-height: 1.3; color: var(--md-muted); text-align: center; }
 
-/* ---------- por que a IA decidiu (Revisão e Simulador) ---------- */
+/* ---------- por que a IA sugeriu (Revisão e Simulador) ---------- */
 .pq { display: flex; flex-direction: column; gap: 16px; }
 .pq-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .pq-head .selo { height: 32px; padding: 0 14px; font-size: 14px; }

@@ -22,7 +22,7 @@ export type Politica = {
 
 export type Faixa = { faixa: string; n: number };
 
-/** Lucro e prejuízo esperados das decisões da IA nos 2.000 novos (scripts/snapshot.py). */
+/** Lucro e prejuízo esperados das sugestões da IA nos 2.000 novos (scripts/snapshot.py). */
 export type SomaIA = {
   aprovados: number; volume: number; lucro: number; prejuizo: number; resultado: number; calotes: number;
 };
