@@ -1,0 +1,103 @@
+variavel,grupo,clientes,inad_proj,paradas,atraso_pagadores,vs_media
+Score do bureau,<500,94,0.2061,11,0.3012,1.2973
+Score do bureau,500-599,183,0.2657,30,0.2941,1.6727
+Score do bureau,600-699,1161,0.1552,120,0.2571,0.9770
+Score do bureau,700-799,2266,0.1503,223,0.2385,0.9459
+Score do bureau,800+,2329,0.1595,242,0.2330,1.0041
+Restrições ativas,0,5906,0.1544,597,0.2368,0.9718
+Restrições ativas,1,127,0.3941,29,0.5204,2.4808
+Renda declarada,<2k,66,0.2456,10,0.2500,1.5463
+Renda declarada,2-3k,1045,0.1900,130,0.2606,1.1962
+Renda declarada,3-5k,2148,0.1595,228,0.2449,1.0038
+Renda declarada,5-10k,2201,0.1411,199,0.2336,0.8884
+Renda declarada,10k+,573,0.1569,59,0.2395,0.9879
+Renda real / declarada,<60%,55,0.9205,27,0.6316,5.7940
+Renda real / declarada,60-80%,1551,0.1663,169,0.2428,1.0466
+Renda real / declarada,80-95%,3335,0.1478,321,0.2431,0.9304
+Renda real / declarada,95%+,1092,0.1508,109,0.2339,0.9491
+Parcela / renda declarada,<10%,3770,0.1195,271,0.2322,0.7523
+Parcela / renda declarada,10-20%,1574,0.1186,136,0.2483,0.7466
+Parcela / renda declarada,20-30%,326,0.1940,52,0.2287,1.2211
+Parcela / renda declarada,30%+,363,0.6467,167,0.4305,4.0706
+Comprometimento real (parcela+outras)/renda real,<20%,2831,0.1112,197,0.2273,0.6999
+Comprometimento real (parcela+outras)/renda real,20-30%,1104,0.1074,80,0.2195,0.6763
+Comprometimento real (parcela+outras)/renda real,30-40%,1001,0.1831,124,0.2314,1.1527
+Comprometimento real (parcela+outras)/renda real,40-50%,604,0.2427,97,0.2578,1.5278
+Comprometimento real (parcela+outras)/renda real,50%+,493,0.3685,128,0.4369,2.3199
+Dívidas em outras instituições / renda real,0,2444,0.1464,235,0.2382,0.9214
+Dívidas em outras instituições / renda real,<10%,837,0.1543,84,0.2295,0.9713
+Dívidas em outras instituições / renda real,10-20%,1032,0.1634,111,0.2070,1.0288
+Dívidas em outras instituições / renda real,20%+,1720,0.1763,196,0.2788,1.1099
+Dias de cheque especial (média/mês),0,4263,0.1359,377,0.2442,0.8551
+Dias de cheque especial (média/mês),até 1,626,0.1498,62,0.2121,0.9432
+Dias de cheque especial (média/mês),1-3,945,0.1659,103,0.2391,1.0442
+Dias de cheque especial (média/mês),3+,199,0.6427,84,0.3956,4.0453
+Meses com cheque especial (12m),0,4263,0.1359,377,0.2442,0.8551
+Meses com cheque especial (12m),1-2,1694,0.1782,199,0.2329,1.1216
+Meses com cheque especial (12m),3-5,76,1.0305,50,0.7647,6.4867
+Saldo mínimo no período,< -2k,397,0.3348,84,0.2911,2.1073
+Saldo mínimo no período,-2k a 0,1373,0.1804,165,0.2283,1.1357
+Saldo mínimo no período,0-2k,975,0.1609,102,0.2403,1.0129
+Saldo mínimo no período,2k+,3288,0.1284,275,0.2453,0.8085
+Entradas últimos 3m vs anteriores,caiu 30%+,117,0.1435,10,0.3614,0.9033
+Entradas últimos 3m vs anteriores,caiu 10-30%,465,0.2149,66,0.2351,1.3528
+Entradas últimos 3m vs anteriores,estável,4584,0.1458,437,0.2393,0.9178
+Entradas últimos 3m vs anteriores,subiu 10%+,637,0.1784,75,0.2321,1.1233
+Variação das entradas (CV),<10%,3587,0.1449,339,0.2395,0.9122
+Variação das entradas (CV),10-20%,1382,0.1425,129,0.2237,0.8968
+Variação das entradas (CV),20-40%,432,0.1777,51,0.2605,1.1184
+Variação das entradas (CV),40%+,542,0.2435,86,0.2861,1.5327
+Saídas / entradas,<50%,5877,0.1362,524,0.2388,0.8576
+Saídas / entradas,80-100%,54,1.1197,38,0.7692,7.0483
+Saídas / entradas,100%+,102,1.0575,64,0.8095,6.6566
+Tempo de conta,<6m,364,0.1875,45,0.2642,1.1801
+Tempo de conta,6-12m,402,0.1175,30,0.2013,0.7394
+Tempo de conta,12-24m,724,0.1643,78,0.2382,1.0340
+Tempo de conta,24m+,4543,0.1592,473,0.2458,1.0024
+Consultas ao CPF em 90 dias,0,2192,0.1554,225,0.2341,0.9785
+Consultas ao CPF em 90 dias,1,1609,0.1259,131,0.2337,0.7927
+Consultas ao CPF em 90 dias,2,954,0.1557,98,0.2656,0.9802
+Consultas ao CPF em 90 dias,3,687,0.1373,62,0.2351,0.8644
+Consultas ao CPF em 90 dias,4+,591,0.2957,110,0.2786,1.8616
+Meses de histórico no bureau,<12,237,0.2429,34,0.2759,1.5287
+Meses de histórico no bureau,12-24,413,0.1904,53,0.2061,1.1985
+Meses de histórico no bureau,24-60,1246,0.1539,124,0.2289,0.9688
+Meses de histórico no bureau,60+,4137,0.1528,415,0.2487,0.9617
+Tipo de vínculo,aposentado,612,0.1117,47,0.2253,0.7030
+Tipo de vínculo,assalariado,3426,0.1501,332,0.2422,0.9447
+Tipo de vínculo,autonomo,1373,0.1784,162,0.2426,1.1232
+Tipo de vínculo,empresario,622,0.2127,85,0.2677,1.3391
+Prazo (meses),12,1238,0.1735,177,0.2412,1.0922
+Prazo (meses),18,1158,0.1351,114,0.2208,0.8504
+Prazo (meses),24,1800,0.1610,176,0.2428,1.0134
+Prazo (meses),36,1529,0.1253,89,0.2574,0.7886
+Prazo (meses),6,308,0.2564,70,0.2632,1.6140
+Valor aprovado,<3k,585,0.1317,50,0.2434,0.8289
+Valor aprovado,3-8k,3271,0.1252,269,0.2365,0.7882
+Valor aprovado,8-15k,1509,0.2056,205,0.2357,1.2943
+Valor aprovado,15-30k,668,0.2454,102,0.2940,1.5450
+Idade,<25,607,0.1535,59,0.2401,0.9661
+Idade,25-34,1205,0.1739,136,0.2529,1.0947
+Idade,35-49,1816,0.1613,193,0.2465,1.0152
+Idade,50-64,2046,0.1573,209,0.2348,0.9902
+Idade,65+,359,0.1166,29,0.2437,0.7340
+Gênero (só referência),feminino,2995,0.1619,313,0.2478,1.0193
+Gênero (só referência),masculino,2969,0.1536,302,0.2388,0.9671
+Gênero (só referência),nao_informado,69,0.2626,11,0.2174,1.6527
+Estado civil (só referência),casado,2161,0.1606,228,0.2456,1.0111
+Estado civil (só referência),divorciado,591,0.1655,63,0.2557,1.0418
+Estado civil (só referência),solteiro,2395,0.1670,261,0.2270,1.0511
+Estado civil (só referência),uniao_estavel,709,0.1409,65,0.2672,0.8867
+Estado civil (só referência),viuvo,177,0.0777,9,0.2806,0.4888
+"Região do CEP (1º dígito, só referência)",0,548,0.1502,55,0.2427,0.9452
+"Região do CEP (1º dígito, só referência)",1,277,0.2356,43,0.2574,1.4833
+"Região do CEP (1º dígito, só referência)",2,702,0.1748,80,0.2385,1.1004
+"Região do CEP (1º dígito, só referência)",3,714,0.1615,77,0.2556,1.0167
+"Região do CEP (1º dígito, só referência)",4,886,0.1442,82,0.2215,0.9076
+"Região do CEP (1º dígito, só referência)",5,470,0.1359,42,0.2621,0.8556
+"Região do CEP (1º dígito, só referência)",6,811,0.1607,85,0.2471,1.0118
+"Região do CEP (1º dígito, só referência)",7,365,0.1647,40,0.2068,1.0366
+"Região do CEP (1º dígito, só referência)",8,533,0.1524,52,0.2358,0.9594
+"Região do CEP (1º dígito, só referência)",9,727,0.1500,70,0.2620,0.9440
+Política aplicada,atual,4907,0.1470,480,0.2336,0.9254
+Política aplicada,piloto,1126,0.2161,146,0.2765,1.3606
