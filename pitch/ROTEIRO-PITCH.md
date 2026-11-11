@@ -29,6 +29,28 @@ O caminho do analista, para citar em uma frase cada:
 Frase de venda:
 > "Não é promessa: pegamos os 10 mil pedidos que vocês já decidiram e vimos o que teria acontecido. A proposta teria rendido 1,27 milhão a mais, e onde ela discorda da regra atual, acerta: os clientes fora da regra que ela aprovaria deram 5% de calote; os que ela negaria, 28%."
 
+## A fala da melhora, passo a passo, mostrando a página Histórico (sem slides)
+Usar os **contratos maduros** (mais de 1 ano, desfecho conhecido): é o número mais honesto. Fonte de todos os números: `site/src/data/historico.json`, base `maduros` (5.001 pedidos, out/2024 a set/2025).
+
+**Antes × depois (o que de fato aconteceu):**
+> "Nesses 5 mil pedidos, a Fortuna aprovou 2.844 e teve 13,6% de calote, com resultado de R$ 251 mil. Nos mesmos pedidos, a nossa proposta teria 8,0% de calote e resultado de R$ 1,27 milhão. Isso é cinco vezes mais."
+
+**De onde vem a melhora (cartão "efeito de cada ajuste"), um passo por frase:**
+- "A barreira da **parcela acima de 28% da renda real** tira 223 pedidos que deram 51% de calote: **+R$ 742 mil**."
+- "A barreira da **conta apertada** tira 67 pedidos que deram 91% de calote: **+R$ 302 mil**."
+- "O **teto de risco de 17,5%** tira mais 44 pedidos: +R$ 18 mil."
+- "**Emprestar menos que o pedido** custa R$ 45 mil. A gente mostra o que custa também."
+- "E há 999 pedidos que a Fortuna negou e a proposta aprovaria. Esses **não têm desfecho**, então o ganho deles (+R$ 534 mil) é **estimado** e aparece separado, em outra cor. Não misturamos estimado com observado."
+
+**Quem a proposta deixaria de aprovar (a matriz):**
+> "Dos pedidos que a Fortuna aprovou, a proposta negaria 334. Desses, 56% deram calote. É dinheiro que não se perde."
+
+**A frase de ética (dizer junto, não esconder):**
+> "Tudo isso é sobre pedidos que já aconteceram, com o modelo treinado sem ver o período que ele decide. O ganho dos 2.000 novos é estimativa, porque o desfecho deles depende de regras que não conhecemos. Por isso mostramos sempre o observado separado do estimado."
+
+**Por que melhora (o motivo, em uma frase):**
+> "Porque olhamos a conta do cliente e não só a nota do birô: o score separa bom e mau pagador quase como uma moeda (AUC 0,50), e o nosso modelo separa com AUC 0,74."
+
 ## 0:00–0:30 · Visão geral (topo)
 **Conceito:** a régua do jogo.
 > "Aprovar rende 15%, 5% com atraso, e um calote perde 60%. Um calote come o lucro de quatro bons pagadores. Pela conta, só vale aprovar abaixo de ~17,5% de chance de não pagar. Esse é o nosso teto."
