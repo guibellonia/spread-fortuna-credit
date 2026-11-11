@@ -12,7 +12,7 @@ from sklearn.metrics import roc_auc_score
 
 from db import consulta
 from modelo import SAIDA, atributos_para_valor, carregar
-from politica import PARAMS, politica_atual, politica_proposta
+from politica import politica_atual, politica_proposta
 
 R_ATRASO = 0.23
 

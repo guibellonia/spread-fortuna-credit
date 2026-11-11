@@ -2,7 +2,6 @@
 import numpy as np
 import pandas as pd
 
-from features import parcela_price
 from modelo import GANHO, probabilidades
 
 VALOR_MIN, VALOR_MAX = 500.0, 30000.0

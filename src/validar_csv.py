@@ -1,17 +1,29 @@
-"""Valida o arquivo de decisões nas regras do manual (seção 5.2) e mostra a composição do arquivo."""
+"""Valida o arquivo de decisões nas regras do manual (seção 5.2) e mostra a composição do arquivo.
+
+    python validar_csv.py arquivo.csv            # completo: confere ids e valores contra o banco
+    python validar_csv.py arquivo.csv --offline  # só formato (sem banco), usado no CI
+"""
 import csv
 import re
 import sys
 
-from db import consulta
-
 CABECALHO = ["id_pedido", "decisao", "valor_aprovado"]
+ID_PEDIDO = re.compile(r"P-\d{5}")
 
 
 def validar(caminho):
-    erros, avisos = [], []
+    """Validação completa: ids e valores solicitados vêm do banco."""
+    from db import consulta
     novos = consulta("SELECT id_pedido, valor_solicitado FROM hackathon.pedidos WHERE tipo_base = 'novo'")
-    sol = dict(zip(novos.id_pedido, novos.valor_solicitado.astype(float)))
+    return validar_formato(caminho, dict(zip(novos.id_pedido, novos.valor_solicitado.astype(float))))
+
+
+def validar_formato(caminho, sol=None):
+    """sol = {id_pedido: valor_solicitado}. Sem `sol` (modo offline), confere só o formato e as regras que
+    não dependem do banco; ids desconhecidos, ausentes e teto do solicitado não são checados."""
+    erros, avisos = [], []
+    offline = sol is None
+    sol = sol or {}
     with open(caminho, "rb") as f:
         bruto = f.read()
     if bruto.startswith(b"\xef\xbb\xbf"):
@@ -34,7 +46,9 @@ def validar(caminho):
         if i in vistos:
             erros.append(f"linha {n}: {i} repetido")
         vistos.add(i)
-        if i not in sol:
+        if not ID_PEDIDO.fullmatch(i):
+            erros.append(f"linha {n}: id '{i}' fora do formato P-00000")
+        elif not offline and i not in sol:
             erros.append(f"linha {n}: {i} não existe na base de novos")
         if d not in ("APROVADO", "NEGADO"):
             erros.append(f"linha {n}: decisao '{d}' (use APROVADO ou NEGADO)")
@@ -58,13 +72,16 @@ def validar(caminho):
     faltando = set(sol) - vistos
     if faltando:
         erros.append(f"{len(faltando)} pedidos novos ausentes do arquivo (contam como negado)")
-    rel = {"linhas": len(linhas) - 1, "pedidos_novos": len(sol), "aprovados": aprov, "negados": neg,
-           "valor_total_aprovado": round(total, 2)}
+    if offline and len(linhas) - 1 != 2000:
+        avisos.append(f"{len(linhas) - 1} linhas; a base de novos tem 2.000 pedidos")
+    rel = {"linhas": len(linhas) - 1, "pedidos_novos": len(sol) if not offline else None, "aprovados": aprov,
+           "negados": neg, "valor_total_aprovado": round(total, 2), "modo": "offline" if offline else "banco"}
     return erros, avisos, rel
 
 
 if __name__ == "__main__":
-    erros, avisos, rel = validar(sys.argv[1])
+    caminho = sys.argv[1]
+    erros, avisos, rel = validar_formato(caminho) if "--offline" in sys.argv else validar(caminho)
     print("composição:", rel)
     for a in avisos:
         print("AVISO:", a)
