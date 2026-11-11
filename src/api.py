@@ -27,8 +27,40 @@ TRAVA_AGENTE = threading.Semaphore(int(os.environ.get("HERMES_CONCORRENCIA", "2"
 MAX_CORPO = 64 * 1024
 CHAT_HTML = Path(__file__).resolve().parent / "chat.html"
 SITE_DO_TIME = os.environ.get("HERMES_SITE_ORIGEM", "https://guibellonia.github.io")
-# Modo público: o chat (/perguntar) funciona sem chave, com limites. Quem manda a chave do time não tem limite.
-PUBLICO = os.environ.get("HERMES_PUBLICO", "1") == "1"
+# Modo público (desligado por padrão): /perguntar sem chave, com limites. Em uso normal, o acesso é por:
+#   - chave do time (X-Access-Key), ou
+#   - login de membro do time no painel: o ícone de chat repassa o token do Supabase (Authorization: Bearer ...)
+#     e o Hermes confere com painel.eh_membro() no Supabase (mesma lista de membros do painel de revisão).
+PUBLICO = os.environ.get("HERMES_PUBLICO", "0") == "1"
+SUPABASE_URL = os.environ.get("HERMES_SUPABASE_URL", "https://vjxwagiqgecsscoogxln.supabase.co")
+# chave anon é pública por desenho (já está em site/site.config.json); quem protege é o RLS + eh_membro()
+SUPABASE_ANON = os.environ.get(
+    "HERMES_SUPABASE_ANON",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqeHdhZ2lxZ2Vjc3Njb29neGxuIiwicm9sZSI6ImFub24i"
+    "LCJpYXQiOjE3OTQ0MDI0NzYsImV4cCI6MjEwOTk3ODQ3Nn0.h-DifBlWRtYa3QkChzlqPN_mfCVhOo_EMcGDOsVNoOw")
+_MEMBROS_CACHE: dict = {}  # token -> (é membro?, válido até)
+
+
+def membro_do_time(token: str) -> bool:
+    """True se o token de login do Supabase é de alguém em painel.membros. Cache de 5 min por token."""
+    if not token or len(token) > 4096:
+        return False
+    agora = time.time()
+    em_cache = _MEMBROS_CACHE.get(token)
+    if em_cache and em_cache[1] > agora:
+        return em_cache[0]
+    try:
+        import requests
+        r = requests.post(f"{SUPABASE_URL}/rest/v1/rpc/eh_membro", json={}, timeout=10,
+                          headers={"apikey": SUPABASE_ANON, "Authorization": f"Bearer {token}",
+                                   "Content-Profile": "painel", "Accept-Profile": "painel"})
+        ok = r.status_code == 200 and r.json() is True
+    except Exception:
+        ok = False
+    if len(_MEMBROS_CACHE) > 1000:
+        _MEMBROS_CACHE.clear()
+    _MEMBROS_CACHE[token] = (ok, agora + (300 if ok else 30))
+    return ok
 
 
 class Limite:
@@ -90,7 +122,10 @@ class Handler(BaseHTTPRequestHandler):
     def _autorizado(self):
         chave = os.environ.get("HERMES_ACCESS_KEY", "")
         enviada = self.headers.get("X-Access-Key", "")
-        return bool(chave) and hmac.compare_digest(chave, enviada)
+        if chave and enviada and hmac.compare_digest(chave, enviada):
+            return True
+        auth = self.headers.get("Authorization", "")
+        return auth.startswith("Bearer ") and membro_do_time(auth[7:].strip())
 
     def _ip(self):
         # atrás do proxy do Railway o IP real vem no X-Forwarded-For (o primeiro da lista)
@@ -114,7 +149,7 @@ class Handler(BaseHTTPRequestHandler):
         # só a própria página e o site do time podem embutir o chat (iframe)
         self.send_header("Content-Security-Policy",
                          "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
-                         f"connect-src 'self'; frame-ancestors 'self' {SITE_DO_TIME}")
+                         f"connect-src 'self'; frame-ancestors {SITE_DO_TIME}")
         self.end_headers()
         self.wfile.write(dados)
 
@@ -134,7 +169,7 @@ class Handler(BaseHTTPRequestHandler):
         time_do_time = self._autorizado()
         publico_ok = PUBLICO and self.path == "/perguntar"
         if not time_do_time and not publico_ok:
-            return self._json(401, {"erro": "X-Access-Key ausente ou inválida"})
+            return self._json(401, {"erro": "entre no painel do time (aba Revisão) para usar o Hermes"})
         if ESTADO["status"] != "ok":
             return self._json(503, ESTADO)
         try:

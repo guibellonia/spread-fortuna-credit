@@ -97,3 +97,31 @@ def test_limite_diario_e_janela():
     ok, motivo = lim.permitir("3.3.3.3", 1020)
     assert not ok and "diário" in motivo                 # teto do dia
     assert lim.permitir("3.3.3.3", 1020 + 86400)[0]      # dia seguinte zera
+
+
+def test_login_de_membro_do_painel_libera(servidor, monkeypatch):
+    import agente
+    monkeypatch.setitem(api.ESTADO, "status", "ok")
+    monkeypatch.setattr(api, "PUBLICO", False)
+    monkeypatch.setattr(api, "membro_do_time", lambda t: t == "token-de-membro")
+    monkeypatch.setattr(agente, "perguntar", lambda p, **k: ("ok", [], [], "groq/x"))
+
+    def com_token(t):
+        r = urllib.request.Request(servidor + "/perguntar", method="POST", data=b'{"pergunta":"oi"}',
+                                   headers={"Content-Type": "application/json", "Authorization": f"Bearer {t}"})
+        try:
+            with urllib.request.urlopen(r) as resp:
+                return resp.status
+        except urllib.error.HTTPError as e:
+            return e.code
+    assert com_token("token-de-membro") == 200
+    assert com_token("token-de-outro") == 401
+    assert _req(servidor + "/perguntar", "POST", {"pergunta": "oi"})[0] == 401   # sem nada
+
+
+def test_publico_desligado_por_padrao():
+    assert api.PUBLICO is False or __import__("os").environ.get("HERMES_PUBLICO") == "1"
+
+
+def test_membro_do_time_rejeita_vazio_sem_rede():
+    assert api.membro_do_time("") is False
